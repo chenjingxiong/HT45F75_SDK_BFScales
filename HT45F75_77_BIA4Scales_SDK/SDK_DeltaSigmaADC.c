@@ -7,8 +7,8 @@ asm(" message' *   IDE3000    Ver. :      V7.96                   * ' ");
 asm(" message' *   RELEASE    Ver. :      1.0.0                   * ' ");
 asm(" message' *   RELEASE   DATA  :     2018/05/09               * ' ");
 asm(" message' *__________________________________________________* ' ");
-asm(" message' *    MCU / CFG Ver. :   BH66F2650 / 1.8            * ' ");
-asm(" message' *                       BH66F2660 / 1.2            * ' ");
+asm (" message' *    MCU / CFG Ver. :   HT45F75 / 1.6             * ' ");
+asm (" message' *                       HT45F77 / 2.2             * ' ");
 asm(" message' **************************************************** ' ");
 
 #include "SDK_Interface.h"
@@ -28,8 +28,8 @@ asm(" message' **************************************************** ' ");
 //                                  封庫設置                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#include "BH66F2650.h"
-#define ADC_VECTOR 0x00C // MCU ADC中斷地址
+#include "HT45F75.h"
+#define ADC_VECTOR 0x010 // MCU ADC中斷地址
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
 //                                  依賴參數                                            @
@@ -40,8 +40,8 @@ asm(" message' **************************************************** ' ");
 #define SET_LDO_EN2_9()		        { _pwrc = 0x82; }
 #define SET_LDO_EN3_3()		        { _pwrc = 0x83; }
 #define SET_LDO_ENBYPASS()	        { _pwrc = 0x84; }
-#define SET_LDO_DISABLE()	        { _ldoen = 0; }
-#define SET_LDO_ENABLE()	        { _ldoen = 1; }
+#define SET_LDO_DISABLE()	        { _enldo = 0; }
+#define SET_LDO_ENABLE()	        { _enldo = 1; }
 #define SET_ADCINTERRUPT_ENABLE()	{ _adf = 0; _ade = 1; _emi = 1;}
 #define SET_ADCINTERRUPT_DISABLE()	{ _ade = 0;}
 #define SET_ADCPOWER_ON()			{ _adoff = 0; }

@@ -7,8 +7,8 @@ asm (" message' *   IDE3000    Ver. :      V7.96                   * ' ");
 asm (" message' *   RELEASE    Ver. :      1.0.0                   * ' ");
 asm (" message' *   RELEASE   DATA  :     2018/05/09               * ' ");
 asm (" message' *__________________________________________________* ' ");
-asm (" message' *    MCU / CFG Ver. :   BH66F2650 / 1.8            * ' ");
-asm (" message' *                       BH66F2660 / 1.2            * ' ");
+asm (" message' *    MCU / CFG Ver. :   HT45F75 / 1.6              * ' ");
+asm (" message' *                       HT45F77 / 2.2              * ' ");
 asm (" message' **************************************************** ' ");
 
 #include "SDK_Interface.h"
@@ -34,7 +34,7 @@ asm (" message' **************************************************** ' ");
 //                                  封庫設置                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#include "BH66F2650.h"
+#include "HT45F75.h"
 #define SET_ADCGAIN_WEIGHT()        { _pgac0 = 0x27;}   // 稱重ADC放大設置,VGS=0.5,ADGN =1,PGA=128
 #define SET_DCSET_WEIGHT()          { _pgac1 = 0x00;}   // 稱重DCSET設置,DCSET = 0V
 #define SET_ADCCHAN_WEIGHT()        { _pgacs = 0x00;}   // 稱重ADC 通道AN0&AN1

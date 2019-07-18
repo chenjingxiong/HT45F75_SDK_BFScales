@@ -31,7 +31,7 @@ void fun_UARTPowerOnInit()
 	SET_UART_TRANSMITTER_EMPTY_ENABLE();
 	SET_UART_ENABLE();
 	// UART0 IO
-	SET_UART_PIN_PA5PA6();
+//	SET_UART_PIN_PA5PA6();
 //	SET_UART_PIN_PD2PD3();
 }
 ///********************************************************************
@@ -52,21 +52,21 @@ DEFINE_ISR(UART_ISR, 0x028)
 	if (_nf)
 	{
 		_acc = _usr;
-		_acc = _txr_rxr;
+		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
 	// 帧错误
 	if (_ferr)
 	{
 		_acc = _usr;
-		_acc = _txr_rxr;
+		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
 	// 溢出错误
 	if (_oerr)
 	{
 		_acc = _usr;
-		_acc = _txr_rxr;
+		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
 	// 发送数据
@@ -74,7 +74,7 @@ DEFINE_ISR(UART_ISR, 0x028)
 	{
 		if (lu8v_TxBufoffset <= lu8v_TxBufLength)
 		{
-			_txr_rxr = gu8v_UartTxBuf[lu8v_TxBufoffset];
+			_txrrxr = gu8v_UartTxBuf[lu8v_TxBufoffset];
 			_pa6 = ~_pa6;
 		}
 		else
@@ -89,7 +89,7 @@ DEFINE_ISR(UART_ISR, 0x028)
 	// 接收数据
 	if (_rxif)
 	{
-        gu8v_UartRxBuf[lu8v_RxBufoffset] = _txr_rxr;
+        gu8v_UartRxBuf[lu8v_RxBufoffset] = _txrrxr;
 		gu8v_TBRxTimeOutCnt = 0;
         lu8v_RxBufoffset++;
         // 用戶需要在此寫Rx數據長度
@@ -121,5 +121,5 @@ void  fun_UartStartTx( unsigned char TxLength)
 	gbv_IsBusyUartTx = 1; // uart 忙碌
 	lu8v_TxBufoffset = 1; // 因為0已經直接發送了
 	_acc = _usr;
-	_txr_rxr = gu8v_UartTxBuf[0];
+	_txrrxr = gu8v_UartTxBuf[0];
 }
