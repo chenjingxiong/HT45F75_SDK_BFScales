@@ -19,10 +19,10 @@ extern volatile bit gbv_UartRxSuccess;             // Rx is ok,user can process 
 void fun_UARTPowerOnInit();     // 初始化
 void fun_UartStartTx( unsigned char TxLength);  // 開始發送
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 預定義@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#define SET_UART_ENABLE()	{ _uarten = 1;_rxen = 1;_txen = 1;_urf = 0;_txif = 0; _ure = 1; _emi = 1; _ure = 1;}
+#define SET_UART_ENABLE()	{ _uarten = 1;_rxen = 1;_txen = 1;_uif = 0;_txif = 0; _uie = 1; _emi = 1; _uie = 1;}
 #define SET_UART_DISABLE()	{ _uarten = 0;_rxen = 0;_txen = 0;}
-#define SET_UART_PIN_PD2PD3() { _pds0 ^= 0xA0;_pds0 |= 0xA0; _rxps1 = 1; _rxps0 = 1;}
-#define SET_UART_PIN_PA5PA6() { _pas1 ^= 0x3C;_pas1 |= 0x3C; _rxps1 = 0; _rxps0 = 0;}
+//#define SET_UART_PIN_PD2PD3() { _pds0 ^= 0xA0;_pds0 |= 0xA0; _rxps1 = 1; _rxps0 = 1;}
+//#define SET_UART_PIN_PA5PA6() { _pas1 ^= 0x3C;_pas1 |= 0x3C; _rxps1 = 0; _rxps0 = 0;}
 
 #define SET_UART_Format_D8_P0_S1()			{ _ucr1 = 0x00; }// 傳輸8bit = (8bit-Data  None-Parity  None-Add)1bit-Stop
 #define SET_UART_Format_D7_PEVEN_S1()		{ _ucr1 = 0x20; }// 傳輸8bit = (7bit-Data  Enen-Parity  None-Add)1bit-Stop

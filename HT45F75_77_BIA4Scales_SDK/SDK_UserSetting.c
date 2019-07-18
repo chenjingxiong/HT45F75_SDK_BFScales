@@ -7,8 +7,8 @@ asm (" message' *   IDE3000    Ver. :      V7.96                   * ' ");
 asm (" message' *   RELEASE    Ver. :      2.0.3                   * ' ");
 asm (" message' *   RELEASE   DATA  :     2018/06/22               * ' ");
 asm (" message' *__________________________________________________* ' ");
-asm (" message' *    MCU / CFG Ver. :   BH66F2650 / 1.8            * ' ");
-asm (" message' *                       BH66F2660 / 1.2            * ' ");
+asm (" message' *    MCU / CFG Ver. :   HT45F75 / 1.6              * ' ");
+asm (" message' *                       HT45F77 / 2.2              * ' ");
 asm (" message' **************************************************** ' ");
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
@@ -17,9 +17,9 @@ asm (" message' **************************************************** ' ");
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #include "SDK_UserSetting.h"
 #include "SDK_Interface.h"
-#include "BH66F2660.h"
+#include "HT45F75.h"
 
-#define SINWAVE_DATA_ADDRESS	    0x300   //  SIN WAVE
+#define SINWAVE_DATA_ADDRESS	    0x280   //  SIN WAVE
 #define SINGAIN 					0.8 	//  玄波增益  range: 0.5~0.9
 // ADC DATA RARE 計算方式:
 // FMCLK = Fsys = 4000000,CHOP = 2, N = 12,OSR = 16384

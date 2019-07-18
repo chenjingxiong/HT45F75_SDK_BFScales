@@ -7,8 +7,8 @@ asm(" message' *   IDE3000    Ver. :      V7.96                   * ' ");
 asm(" message' *   RELEASE    Ver. :      1.0.2                   * ' ");
 asm(" message' *   RELEASE   DATA  :     2018/06/22               * ' ");
 asm(" message' *__________________________________________________* ' ");
-asm(" message' *    MCU / CFG Ver. :   BH66F2650 / 1.8            * ' ");
-asm(" message' *                       BH66F2660 / 1.2            * ' ");
+asm (" message' *    MCU / CFG Ver. :   HT45F75 / 1.6             * ' ");
+asm (" message' *                       HT45F77 / 2.2             * ' ");
 asm(" message' **************************************************** ' ");
 #include "SDK_Interface.h"
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -29,7 +29,7 @@ asm(" message' **************************************************** ' ");
 //                                  封庫設置                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#include "BH66F2650.h"
+#include "HT45F75.h"
 #define ImpedanceADCFilterUseBit 20 // 20 or 16 重量 ADC 數據使用的Bit數
 // 玄波發送器開關
 #define SET_BODYFAT_CIRCUIT_ON()        { _opaen =1; _sgen = 1; _bren = 1; _ftren = 1; _hysen = 1;}
@@ -47,22 +47,10 @@ asm(" message' **************************************************** ' ");
 #define	SET_BODYFAT_OPAGAIN_4()			{ _opac = 0x09; _daco = 0x3f;}
 #define	SET_BODYFAT_OPAGAIN_5() 		{ _opac = 0x0A; _daco = 0x3f;}
 // 體阻抗開關列表
-#define SET_BODYFAT_SWC_RF200()     { _swc0 = 0x00; _swc1 = 0x1C; _swc2 = 0x02;}    // 200
-#define SET_BODYFAT_SWC_RF1000()    { _swc0 = 0x00; _swc1 = 0x13; _swc2 = 0x02;}	// 1000
-#define SET_BODYFAT_SWC_TWOLEGS1K() { _swc0 = 0x00; _swc1 = 0x13; _swc2 = 0x1E;}    // 1000 & TwoLegs
-#define SET_BODYFAT_SWC_TWOARMS1K() { _swc0 = 0x00; _swc1 = 0x73; _swc2 = 0x62;}    // 1000 & TwoArms
-
-#define SET_BODYFAT_SWC_TWOLEGS()   { _swc0 = 0x00; _swc1 = 0x00; _swc2 = 0x1E;}    // TwoLegs
-#define SET_BODYFAT_SWC_TWOARMS()   { _swc0 = 0x00; _swc1 = 0x60; _swc2 = 0x60;}    // 雙手
-#define SET_BODYFAT_SWC_LEFTARM()   { _swc0 = 0x70; _swc1 = 0x00; _swc2 = 0x04;}    // 左手
-#define SET_BODYFAT_SWC_LEFTLEG()   { _swc0 = 0x07; _swc1 = 0x20; _swc2 = 0x00;}    // 左腳
-#define SET_BODYFAT_SWC_LEFTBODY()  { _swc0 = 0x03; _swc1 = 0x60; _swc2 = 0x00;}    // 左手+ 軀幹 + 左腳
-#define SET_BODYFAT_SWC_RIGHTBODY() { _swc0 = 0xC0; _swc1 = 0x00; _swc2 = 0x0A;}    // 右手+ 軀幹 + 右腳
-#define SET_BODYFAT_SWC_RIGHTARM()  { _swc0 = 0x08; _swc1 = 0x40; _swc2 = 0x60;}    // 右手
-#define SET_BODYFAT_SWC_RIGHTLEG()  { _swc0 = 0x80; _swc1 = 0x00; _swc2 = 0x1A;}    // 右腳
-#define SET_BODYFAT_SWC_TRUNK()	    { _swc0 = 0x24;	_swc1 = 0x00; _swc2 = 0x44;}    // 躯干
-#define SET_BODYFAT_SWC_RIGHTRAMANDLEFTLEG() { _swc0 = 0xC3; _swc1 = 0x00; _swc2 = 0x00;} // 右手左腳
-#define SET_BODYFAT_SWC_LEFTRAMANDRIGHTLEG() { _swc0 = 0x3C; _swc1 = 0x00; _swc2 = 0x00;} // 左手右腳
+#define SET_BODYFAT_SWC_RF200()     { _swc = 0B00001110;}  // 200
+#define SET_BODYFAT_SWC_RF1000()    { _swc = 0B00110010;}	// 1000
+#define SET_BODYFAT_SWC_TWOLEGS1K() { _swc = 0B11110011;}  // 1000 & TwoLegs
+#define SET_BODYFAT_SWC_TWOLEGS()   { _swc = 0B11000001;}  // TwoLegs
 // ADC 倍率設置
 #define SET_ADCGAIN_IMPENDACNE()    { _pgac0 = 0x20;}   // 阻抗ADC放大設置,VGS=0.5,ADGN =1,PGA=1
 #define SET_DCSET_IMPENDACNE()      { _pgac1 = 0x00;}   // 阻抗DCSET設置,DCSET = 0V
@@ -153,54 +141,6 @@ unsigned int fun_UseAdcGetImpedance()
 	return ImpedanceOhm;
 }
 /********************************************************************
-Function:  Impedance 通道選擇
-INPUT	:
-OUTPUT	:
-NOTE	:
-********************************************************************/
-void fun_SetRxImpedanceChannel()
-{
-	switch (SDKImpedance.Channel)
-	{
-	case IMPEDANCE_CHANNEL_TWOLEGS:
-		SET_BODYFAT_SWC_TWOLEGS();
-		break;
-	case IMPEDANCE_CHANNEL_TWOARMS:
-		SET_BODYFAT_SWC_TWOARMS();
-		break;
-	case IMPEDANCE_CHANNEL_LEFTARM:
-		SET_BODYFAT_SWC_LEFTARM();
-		break;
-	case IMPEDANCE_CHANNEL_RIGHTARM:
-		SET_BODYFAT_SWC_RIGHTARM();
-		break;
-	case IMPEDANCE_CHANNEL_LEFTLEG:
-		SET_BODYFAT_SWC_LEFTLEG();
-		break;
-	case IMPEDANCE_CHANNEL_RIGHTLEG:
-		SET_BODYFAT_SWC_RIGHTLEG();
-		break;
-	case IMPEDANCE_CHANNEL_LEFTBODY:
-		SET_BODYFAT_SWC_LEFTBODY();
-		break;
-	case IMPEDANCE_CHANNEL_RIGHTBODY:
-		SET_BODYFAT_SWC_RIGHTBODY();
-		break;
-	case IMPEDANCE_CHANNEL_LEFTRAMANDRIGHTLEG:
-		SET_BODYFAT_SWC_LEFTRAMANDRIGHTLEG();
-		break;
-	case IMPEDANCE_CHANNEL_RIGHTRAMANDLEFTLEG:
-		SET_BODYFAT_SWC_RIGHTRAMANDLEFTLEG();
-		break;
-	case IMPEDANCE_CHANNEL_TRUNK:
-		SET_BODYFAT_SWC_TRUNK();
-		break;
-	default:
-		break;
-	}
-}
-
-/********************************************************************
 Function: 阻抗量測模式
 INPUT	:
 OUTPUT	:
@@ -223,14 +163,10 @@ void fun_Impedance()
 		case STATE_IMPEDANCE_REFERENCE2:
 			BHSDKState++;
 			SET_BODYFAT_SWC_TWOLEGS1K();
-			if (SDKImpedance.flag.b.IsUseTwoArms)
-			{
-				SET_BODYFAT_SWC_TWOARMS1K();
-			}
 			break;
 		case STATE_IMPEDANCE_CHECKBODY:
 			BHSDKState++;
-			fun_SetRxImpedanceChannel();
+			SET_BODYFAT_SWC_TWOLEGS();
 #if ImpedanceADCFilterUseBit == 16
 			if (fun_unsigned32BitABS(SDKImpedance.CalADC.CalRx0, SDKImpedance.CalADC.Cal0) < 300)
 #endif
