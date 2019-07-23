@@ -145,19 +145,6 @@ typedef struct
 //              SDK接口  體阻抗接口                       @
 // ======================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-typedef enum {
-    IMPEDANCE_CHANNEL_TWOLEGS,  	// 量測雙腳阻抗
-    IMPEDANCE_CHANNEL_TWOARMS,      // 量測雙手阻抗
-    IMPEDANCE_CHANNEL_LEFTARM,      // 量測左手阻抗
-    IMPEDANCE_CHANNEL_RIGHTARM,     // 量測右手阻抗
-    IMPEDANCE_CHANNEL_LEFTLEG,      // 量測左腳阻抗
-    IMPEDANCE_CHANNEL_RIGHTLEG,     // 量測右腳阻抗
-    IMPEDANCE_CHANNEL_LEFTBODY,     // 量測左全身阻抗
-    IMPEDANCE_CHANNEL_RIGHTBODY,    // 量測右全身阻抗
-    IMPEDANCE_CHANNEL_RIGHTRAMANDLEFTLEG, // 量測左手右腳
-    IMPEDANCE_CHANNEL_LEFTRAMANDRIGHTLEG, // 量測右手左腳
-    IMPEDANCE_CHANNEL_TRUNK,        // 量測軀幹
-}impedance_channel_t;
 
 typedef struct
 {
@@ -169,31 +156,9 @@ typedef struct
         unsigned long CalRx;	// R    ADC值 - 待測電阻Rx
     }CalADC;
     union {
-        struct
-        {
-            unsigned char IsUseTwoArms : 1; // RW 0以足部阻抗是否存在檢測人體  1 以雙手阻抗檢測是否有人
-        } b;
         unsigned char byte;
     } flag;
-    impedance_channel_t Channel; // RW   阻抗 - 待測通道 設置,參考impedance_channel枚舉
     unsigned int Data;           // R    阻抗 - 阻抗值,單位ohm. 若為(0xffff-無待測阻抗錯誤)/(0xFFF1-接觸異常錯誤)/(0xFFF2-阻抗超出範圍)
 } Impedance_t;
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-// ======================================================@
-//              SDK接口    心率接口                       @
-// ======================================================@
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-typedef struct
-{
-    unsigned char Flag[6]; // R 心率保存标志位 如果参数设置为10  buff0 代表时间参数为10 的结果 ，buff1 代表时间参数为9 的结果……
-    unsigned char Data[6]; // R 心率值
-    union {
-        struct
-        {
-            unsigned char IsUseTwoArms : 1; // RW 0使用雙腳測量心率,1使用雙手測量心率
-        } b;
-        unsigned char byte;
-    } flag;
-} HeartRate_t;
 
 #endif

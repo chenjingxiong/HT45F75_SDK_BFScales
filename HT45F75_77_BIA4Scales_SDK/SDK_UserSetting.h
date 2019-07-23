@@ -36,7 +36,7 @@
 //operate : numeric  	fution: ~~
 #define ADCSTABLE_WEIGHT_CNT        10 //  range:  8~20 	數值越大，濾波要求越嚴格
 //operate : numeric  	fution: ~~
-#define ADCSTABLE_WEIGHT_THRESHOLD  75 // range: 1000~3000    數值越大，濾波比較寬松,建議使用1個分辨率對應的ADC值
+#define ADCSTABLE_WEIGHT_THRESHOLD  700 // range: 1000~3000    數值越大，濾波比較寬松,建議使用1個分辨率對應的ADC值
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
 //                                阻抗濾波  設置                                       @

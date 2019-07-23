@@ -28,7 +28,6 @@ extern ADCFilter_t SDKADCFilterData;         // 濾波ADC數據,詳細參考SDK_
 extern Weight_t SDKWeight;                   // 重量相關數據,詳細參考SDK_typedef.h Weight_t
 extern BodyScalesSetting_t SDKWeightSetting; // 重量用戶設定數據,詳細參考SDK_typedef.h BodyScalesSetting_t
 extern Impedance_t SDKImpedance;             // 阻抗相關數據,詳細參考SDK_typedef.h Impedance_t
-extern HeartRate_t SDKHeartRate;             // 心率相關數據,詳細參考SDK_typedef.h HeartRate_t
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ======================================================@
 //              SDK接口  其他接口                         @
