@@ -47,7 +47,6 @@ void fun_Enter_Heatrate();
 void fun_Weight_Normal();
 void fun_weight_Cal();
 void fun_Impedance();
-void fun_Heartrate();
 void fun_Weight_AutoOn();
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
@@ -138,12 +137,6 @@ void fun_BodyFatScalesSDK()
 			fun_Enter_Impedance();
 			break;
 		#endif
-		#if HEART_FUNCTION == 1
-		case ENTER_HEATRATE:
-			gu8v_ADCState 		 = BHSDKState;
-			fun_Enter_Heatrate();
-			break;
-		#endif
 		default:
 			break;
 	}
@@ -162,11 +155,6 @@ void fun_BodyFatScalesSDK()
 #if IMPEDANCE_FUNCTION == 1
 		case ENTER_IMPEDANCE:
 			fun_Impedance();
-			break;
-#endif
-#if HEART_FUNCTION == 1
-		case ENTER_HEATRATE:
-			fun_Heartrate();
 			break;
 #endif
 		default:
