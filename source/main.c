@@ -3,29 +3,35 @@
 volatile unsigned char Version[3];
 volatile unsigned long temp1;
 volatile unsigned long temp2;
-void main()
+u8 test;
+int main(void)
 {
 	// 判斷是否為上電復位或者非正常情況下的復位
 	// 如果是上電復位，執行上電復位初始化，反之執行WDT溢出初始化
 	if (_to == 0 || _pdf ==0)
 	{
+
+		//初始化//
+		fun_PowerOnSysInit();
+		//UART配置
 		fun_UARTPowerOnInit();
+		//显示
 		// 上電后調用fun_BodyFatScalesSDK_PowerOn()函數
 		fun_BodyFatScalesSDK_PowerOn();
 		// 切換為阻抗模式
-//		BHSDKState = ENTER_IMPEDANCE;
-//		SDKImpedance.Channel = IMPEDANCE_CHANNEL_TWOLEGS;
+/*		BHSDKState = ENTER_IMPEDANCE*/;
 		// 切換為稱重模式
-		BHSDKState = ENTER_WEIGHT_CAL;
-		// SDKWeight.flag.b.IsNeedTare = 1;			// 上電重量默認為0kg
+		BHSDKState = ENTER_WEIGHT_NORMAL;
+		 SDKWeight.flag.b.IsNeedTare = 1;			// 上電重量默認為0kg
 		// 切換為標定模式
-		// BHSDKState = ENTER_WEIGHT_CAL;	
+	/*	 BHSDKState = ENTER_WEIGHT_CAL;	*/
 	}
 	else
 	{
 		// WDT溢出復位初始化
 		GCC_CLRWDT();
 	}
+	test = 0;
 	//主循環
 	while(1)
 	{
@@ -43,7 +49,7 @@ void main()
 				// 切換為ENTER_WEIGHT_NORMAL后,通常有300ms左右稱重準備時間
 				break;
 			case STATE_WEIGHT_NOLOAD:	// 空載/當前重量小於最小稱重重量
-				// fun_DisplayMode_NoLoad();此處寫User UI,比如顯示臨時重量SDKWeight.DataCurrent
+				fun_DisplayMode_NoLoad();//此處寫User UI,比如顯示臨時重量SDKWeight.DataCurrent
 				break;
 			case STATE_WEIGHT_LOADUP:	// 有上稱動作/鎖定狀態下加載解鎖重量,重量由0點變成>最小稱重重量
 				// fun_DisplayMode_LoadUp();此處寫User UI,比如顯示臨時重量SDKWeight.DataCurrent
@@ -52,10 +58,10 @@ void main()
 	            // fun_DisplayMode_LoadOk();此處寫User UI,比如開始閃爍穩定重量SDKWeight.DataState等
 				break;
 			case STATE_WEIGHT_LOADFIX:	// 完成一次稱重測量后重量穩定沒有解鎖
-				// fun_DisplayMode_LoadFix();此處寫User UI,,比如開始閃爍穩定重量SDKWeight.DataState等
+				fun_DisplayMode_LoadFix();//此處寫User UI,,比如開始閃爍穩定重量SDKWeight.DataState等
 				break;
 			case STATE_WEIGHT_LOADDOWN:	// 下秤動作
-	            // fun_DisplayMode_LoadDown();此處寫User UI,,比如顯示鎖定SDKWeight.DataState等
+	            fun_DisplayMode_LoadDown();//此處寫User UI,,比如顯示鎖定SDKWeight.DataState等
 				break;
 			case STATE_WEIGHT_OVERLOAD:	// 超重,當前重量大於最大稱重重量
 				// fun_DisplayMode_OverLoad();此處寫User UI,,比如顯示-OL-等
@@ -67,7 +73,8 @@ void main()
 				// fun_DisplayMode_Impedanceing();此處寫User UI,,比如跑----/oooo提示阻抗測量中
 				break;
 			case STATE_IMPEDANCE_FINISH:	// 阻抗量測結束,此時可以讀取gu16v_CurrentImpedance_ohm
-				// fun_DisplayMode_ImpedanceFinish();
+//				fun_DisplayMode_ImpedanceFinish();
+				BHSDKState = ENTER_IMPEDANCE;
 				gbv_TxSDKImpedanceStatus = 1;
 			    break;
 			case STATE_AUTOON_FASTMODE:		// 快速ADC自動上稱判斷
@@ -103,5 +110,28 @@ void main()
 			default:
 				break;
 		}
+
+//		gu8v_LED_Buffer[0] = 8;
+//		gu8v_LED_Buffer[1] = 8;
+//		gu8v_LED_Buffer[2] = 8;
+//		gu8v_LED_Buffer[3] = 8;
+//		LED_Temp_Piont = 1;
+//		LED_Temp_Piont2 = 1;
+//		LED_BLE = 1;
+//		LED_UNIT_KG = 1;
+
+//		gu8v_LED_BufferPoint.u8 = 0xff;
+//		_pb6 = 0;
+
+//		if(fg_time_1s){
+//			fg_time_1s = 0;
+//			++test;
+//			if(16 <= test) test = 0;
+//			gu8v_LED_Buffer[0] = test;
+//			gu8v_LED_Buffer[1] = test;
+//			gu8v_LED_Buffer[2] = test;
+//			gu8v_LED_Buffer[3] = test;
+//		}
+
 	}
 }
