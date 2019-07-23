@@ -31,8 +31,7 @@ void fun_UARTPowerOnInit()
 	SET_UART_TRANSMITTER_EMPTY_ENABLE();
 	SET_UART_ENABLE();
 	// UART0 IO
-//	SET_UART_PIN_PA5PA6();
-//	SET_UART_PIN_PD2PD3();
+	
 }
 ///********************************************************************
 //Function: Uart數據發送和接收中斷子程序
@@ -75,7 +74,6 @@ DEFINE_ISR(UART_ISR, 0x028)
 		if (lu8v_TxBufoffset <= lu8v_TxBufLength)
 		{
 			_txrrxr = gu8v_UartTxBuf[lu8v_TxBufoffset];
-			_pa6 = ~_pa6;
 		}
 		else
 		{

@@ -7,4 +7,12 @@
 #include "BodyFat_R.h"
 #include "HT45F75_UART.h"
 #include "User_Protocol.h"
+#include "Sys_Init.h"
+#include "LEDScalesSDK.h"
+#include "GPIO.h"
+#include "function.h"
+#include "variants.h"
+#include "mydefine.h"
+
+/*#include "HT45F75_Sys.h"*/
 #endif
