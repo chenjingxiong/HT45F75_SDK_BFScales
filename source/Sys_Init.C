@@ -104,21 +104,16 @@ static void fun_GPIOInit()
 	_pdc = PDC_Default;
 	_pdpu= PDPU_Default;
 
-	 P_LED_BLE = 0;//蓝牙
+	 P_LED_BLE = LOW;//蓝牙
 	 P_LED_BLE_C = OUTPUT;
-	 P_LED_UNIT_PCT	= 0;//百分率:%
+	 P_LED_UNIT_PCT	= LOW;//百分率:%
 	 P_LED_UNIT_PCT_C = OUTPUT;
 
-	 LEDCOM1 = LOW ;
-	 LEDCOM2 = LOW ;
-	 LEDCOM3 = LOW ;
-	 LEDCOM4 = LOW ;
-	 LEDSEG = LOW;
-	 LEDCOMC1 = OUTPUT ;
-	 LEDCOMC2 = OUTPUT ;
-	 LEDCOMC3 = OUTPUT ;
-	 LEDCOMC4 = OUTPUT ;
-	 LEDSEGC  = OUTPUT ;
+	/*Bluetooth init */
+	 P_BT_Status_C = OUTPUT;//INPUT;//OUTPUT;
+	 P_BLE_EN_C = OUTPUT;
+	 P_BLE_EN = LOW;
+	 P_BT_Status = LOW;//LOW;
 
 	_ctrl0 = 0x00;
 
@@ -126,6 +121,25 @@ static void fun_GPIOInit()
 
 
 }
+
+void LED_Init(void)
+{
+	LEDCOM1 = LOW ;
+	LEDCOM2 = LOW ;
+	LEDCOM3 = LOW ;
+	LEDCOM4 = LOW ;
+	LEDSEG = LOW;
+	LEDCOMC1 = OUTPUT ;
+	LEDCOMC2 = OUTPUT ;
+	LEDCOMC3 = OUTPUT ;
+	LEDCOMC4 = OUTPUT ;
+	LEDSEGC  = OUTPUT ;
+	P_LED_BLE = LOW;
+	P_LED_BLE_C = OUTPUT;
+	P_LED_UNIT_PCT = LOW;
+	P_LED_UNIT_PCT_C = OUTPUT;
+}
+
 /********************************************************************
 Function: Timer初始化
 INPUT	: none
@@ -141,28 +155,39 @@ static void fun_TimerInit()
 	_tm0ah = 500/256;
 	_t0on  = 1;
 	SETCTMA_ISR_ENABLE();
+
 	// TM1
-    _ptm1c0= 0x20;		// fsys/4 4us
-    _ptm1c1= 0xc1;		// TimeCnt Mode
-    _ptm1al= 500%256;	// 500*4us = 2ms
-    _ptm1ah= 500/256;
-    _t1on=1;
-	SETPTM1A_ISR_ENABLE();
+//    _ptm1c0= 0x20;		// fsys/4 4us
+//    _ptm1c1= 0xc1;		// TimeCnt Mode
+//    _ptm1al= 500%256;	// 500*4us = 2ms
+//    _ptm1ah= 500/256;
+//    _t1on = 1;
+	_t1on = 0;
+//	SETPTM1A_ISR_ENABLE();
+
 	// TM2
    // _ptm2c0= 0x00;		// fsys/4 1us
    // _ptm2c1= 0xc1;		// TimeCnt Mode
    // _ptm2al= 1000%256;	// 1000*1us = 1ms
    // _ptm2ah= 1000/256;
-   // _pt2on=1;
+   // _ptm2on=1;
+	_t2on = 0;
 
 	// TimeBase 0
-	 SETTIMEBASE0_8MS();
-	 SETTIMEBASE0_ISR_Enable();
-	 SETTIMEBASE_ON();
+//	 SETTIMEBASE0_8MS();
+//	 SETTIMEBASE0_ISR_Enable();
+//	 SETTIMEBASE_ON();
+	SETTIMEBASE0_ISR_Disable();
+	SETTIMEBASE_OFF();
+
+
 	// TimeBase 1
-	 SETTIMEBASE1_1000MS();
-	 SETTIMEBASE1_ISR_Enable();
-	 SETTIMEBASE_ON();
+//	 SETTIMEBASE1_1000MS();
+//	 SETTIMEBASE1_ISR_Enable();
+//	 SETTIMEBASE_ON();
+	SETTIMEBASE1_ISR_Disable();
+	SETTIMEBASE_OFF();
+
 }
 /********************************************************************
 Function: MCU上電初始化
@@ -186,9 +211,10 @@ void fun_PowerOnSysInit()
 	//WDT
 	SETWDTTIME_125MS();
 	//LVR
-	SETLVR_2_1V();
+	SETLVR_2_1V();//正常执行时 LVR 会于休眠或空闲时自动除能关闭。
 	//LVD
 	SETLVD_LVDIN();
+	SETLVD_ENABLE();
 	//GPIO
 	fun_GPIOInit();
 	// TM & TimeBase
@@ -197,7 +223,7 @@ void fun_PowerOnSysInit()
 	// UART User Define
 	// ADC User Define
 
-	Set_AllLEDBuffer(0);
+	user_init();
 }
 /********************************************************************
 Function: 關閉各個模塊進入HLAT模式
@@ -217,6 +243,41 @@ void fun_PrepareToHalt()
 	SETTIMEBASE_OFF();
 //	_tbon = 1;
 	SETWDTTIME_1000MS();// 1S喚醒
+}
+
+/********************************************************************
+Function: 初始化用户设置.
+INPUT	:
+OUTPUT	:
+NOTE	:
+********************************************************************/
+void user_init(void)
+{
+	#if(_LVD_LVDEN == ENABLE)
+	if(LVD_LVDO)
+	{
+//		gu8v_worktasks = TASK_LOWBATTERY;
+	}
+	else
+	#endif
+	{
+//		gu8v_worktasks = TASK_STARTUP;
+		gu8v_worktasks = TASK_SCALES;
+	}
+
+	Set_AllLEDBuffer(0);
+	Set_DisplayMode(DISPLAY_ALLOFF);
+	gu8v_weigh_targeunit = UNIT_KG;
+	set_overtime2poweroff(C_TIME_10S);
+	//总中断位:=0 关总中断;=1 打开总中断.
+
+	_t0on  = 1;
+	SETCTMA_ISR_ENABLE();
+	_emi = 1;
+
+	fg_led_timing = 0;
+	fg_led_flash = 0;
+	fg_time_10s = 0;
 }
 
 //@------------�ⲿ�Д�0��ں���--------------@
@@ -311,6 +372,7 @@ DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 {
 /*	gu8v_HaltTime++;*/
+	_tb1f = 0;
 
 }
 //@-------MuFunction1 �Д���ں���-----------@

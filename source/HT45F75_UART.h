@@ -2,8 +2,8 @@
 #define _HT45F75_UART_H_
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 共用變量 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#define  UART_LENGTH_TX	20	// 協議中最大的長度
-#define  UART_LENGTH_RX	20	// 協議中最大的長度
+#define  UART_LENGTH_TX	11//20	// 協議中最大的長度
+#define  UART_LENGTH_RX	11//20	// 協議中最大的長度
 extern volatile unsigned char 	gu8v_UartTxBuf[UART_LENGTH_TX];
 extern volatile unsigned char 	gu8v_UartRxBuf[UART_LENGTH_RX];
 extern volatile unsigned char  lu8v_TxBufoffset;   // TX 偏移量
@@ -49,15 +49,24 @@ void fun_UartStartTx( unsigned char TxLength);  // 開始發送
 #define SET_UART_TRANSMITTER_EMPTY_ENABLE()		{ _teie = 1;} // TXIF(數據已加載到移位暫存器，TXR為空)置位時，可置中斷標誌位
 #define SET_UART_TRANSMITTER_EMPTY_DISABLE()	    { _teie = 0;}
 
-#define _HIRC_4_8M_
-
+//#define _HIRC_4_8M_
+#define _HIRC_4_0M_
+#ifdef _HIRC_4_0M_
+    #define SET_UART_BAUTRATE_300()			{ _brgh = 0; _brg = 207;}
+    #define SET_UART_BAUTRATE_1200()		{ _brgh = 0; _brg = 51;}
+    #define SET_UART_BAUTRATE_2400()		{ _brgh = 0; _brg = 25;}
+    #define SET_UART_BAUTRATE_4800()		{ _brgh = 0; _brg =  12;}
+    #define SET_UART_BAUTRATE_9600()		{ _brgh = 1; _brg =  25;}
+    #define SET_UART_BAUTRATE_19200()		{ _brgh = 1; _brg =  12;}
+    #define SET_UART_BAUTRATE_250000()		{ _brgh = 1; _brg =   0;}
+#endif
 
 #ifdef _HIRC_4_8M_
     #define SET_UART_BAUTRATE_300()			{ _brgh = 0; _brg = 207;}
-    #define SET_UART_BAUTRATE_1200()			{ _brgh = 1; _brg = 207;}
-    #define SET_UART_BAUTRATE_2400()			{ _brgh = 1; _brg = 103;}
-    #define SET_UART_BAUTRATE_4800()			{ _brgh = 1; _brg =  51;}
-    #define SET_UART_BAUTRATE_9600()			{ _brgh = 1; _brg =  25;}
+    #define SET_UART_BAUTRATE_1200()		{ _brgh = 1; _brg = 207;}
+    #define SET_UART_BAUTRATE_2400()		{ _brgh = 1; _brg = 103;}
+    #define SET_UART_BAUTRATE_4800()		{ _brgh = 1; _brg =  51;}
+    #define SET_UART_BAUTRATE_9600()		{ _brgh = 1; _brg =  25;}
     #define SET_UART_BAUTRATE_19200()		{ _brgh = 1; _brg =  12;}
     #define SET_UART_BAUTRATE_250000()		{ _brgh = 1; _brg =   0;}
 #endif
