@@ -47,7 +47,7 @@ asm (" message' **************************************************** ' ");
 #define EEPROM_ADDR_START 0x01		// EEPROM 存儲開始位置
 #define EEPROM_DATA_CALID_CODE 0xAA // 校準成功標誌數據,偵測到此數據,認為校準成功
 #define WeightADCFilterUseBit 20	// 20 or 16 重量 ADC 數據使用的Bit數
-#define ADCSourceUseBit 24			// 24 or 20  ADC 原始 ADC 數據Bit數,主要為匹配早期20Bit MCU 比如HT45F7x
+#define ADCSourceUseBit 20//24			// 24 or 20  ADC 原始 ADC 數據Bit數,主要為匹配早期20Bit MCU 比如HT45F7x
 
 #if WeightADCFilterUseBit == 16
 	typedef unsigned int typedefWeight;
@@ -225,6 +225,11 @@ void fun_weightAutoCal()
 			SDKWeight.CalADCDataTemp.Cal1 = SDKWeight.CalADCDataTemp.Cal1 - SDKWeight.CalADCData.Cal0;
 			SDKWeight.CalADCDataTemp.Cal0 = SDKWeight.CalADCData.Cal0;
 			SDKWeight.Span = SDKWeight.CalADCDataTemp.Cal1 / WEIGHT_CAL1;
+			unsigned long ABS1,ABS2;
+			unsigned int temp;
+			ABS1=fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal3, SDKWeight.CalADCDataTemp.Cal2);
+			ABS2=fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal2, SDKWeight.CalADCDataTemp.Cal1);
+			temp=(unsigned int)SDKWeight.Span * CALSPANCHECK;
 			// 每段斜率之間差值不能超過8倍Span
 			if (fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal3, SDKWeight.CalADCDataTemp.Cal2) < (unsigned int)SDKWeight.Span * CALSPANCHECK &&
 				fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal2, SDKWeight.CalADCDataTemp.Cal1) < (unsigned int)SDKWeight.Span * CALSPANCHECK)

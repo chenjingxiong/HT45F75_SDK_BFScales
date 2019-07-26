@@ -24,15 +24,17 @@ void fun_UARTPowerOnInit()
     // 數據傳輸格式設定
 	SET_UART_Format_D8_P0_S1();
     // 波特率設定
-	SET_UART_BAUTRATE_19200();
+	SET_UART_BAUTRATE_9600();
 	SET_UART_ADDRESS_DISABLE();
 	SET_UART_RECEIVER_IE_ENABLE();
 	SET_UART_TRANSMITTER_IE_ENABLE();
 	SET_UART_TRANSMITTER_EMPTY_ENABLE();
+	_mf1e = 1;
 	SET_UART_ENABLE();
 	// UART0 IO
-	
+
 }
+
 ///********************************************************************
 //Function: Uart數據發送和接收中斷子程序
 //INPUT	:

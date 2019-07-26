@@ -1,6 +1,6 @@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
-//                              æ­¤æ–‡ä»¶ä¸èƒ½ä¿®æ”¹!!!                                       @
+//                              ´ËÎÄ¼ş²»ÄÜĞŞ¸Ä!!!                                       @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #ifndef _SDK_TYPEDEF_H_
@@ -8,141 +8,141 @@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 typedef enum
 {
-    // é—œé–‰SDK
-    ENTER_SDK_NONE, // 0 SDK ç©ºå¾ªç’°,ADCåŠé˜»æŠ—é›»è·¯ä¿æŒåŸä¾†ç‹€æ…‹
-    STATE_SDK_NONE, // 1 SDK è™•æ–¼ç©ºå¾ªç’°,ADCåŠé˜»æŠ—é›»è·¯ä¿æŒåŸä¾†ç‹€æ…‹
-    // æ™®é€šç¨±é‡
-    ENTER_WEIGHT_NORMAL,   // 2 é€²å…¥æ­£å¸¸ç¨±é‡æ¨¡å¼
-    STATE_WEIGHT_PREPARE,  // 3 ç¨±é‡æº–å‚™ä¸­
-    STATE_WEIGHT_NOLOAD,   // 4 ç©ºè¼‰/ç•¶å‰é‡é‡å°æ–¼æœ€å°ç¨±é‡é‡é‡
-    STATE_WEIGHT_LOADUP,   // 5 æœ‰ä¸Šç¨±å‹•ä½œ/é–å®šç‹€æ…‹ä¸‹åŠ è¼‰è§£é–é‡é‡,é‡é‡ç”±0é»è®Šæˆ>æœ€å°ç¨±é‡é‡é‡
-    STATE_WEIGHT_LOADOK,   // 6å®Œæˆä¸€æ¬¡ç¨±é‡æ¸¬é‡
-    STATE_WEIGHT_LOADFIX,  // 7 å®Œæˆä¸€æ¬¡ç¨±é‡æ¸¬é‡åé‡é‡ç©©å®šæ²’æœ‰è§£é–
-    STATE_WEIGHT_LOADDOWN, // 8 ä¸‹ç§¤å‹•ä½œ
-    STATE_WEIGHT_OVERLOAD, // 9 è¶…é‡,ç•¶å‰é‡é‡å¤§æ–¼æœ€å¤§ç¨±é‡é‡é‡
-    // è‡ªå‹•ä¸Šç¨±
-    ENTER_WEIGHT_AUTOON,   // 10 é€²å…¥è‡ªå‹•ä¸Šç¨±æ¨¡å¼
-    STATE_AUTOON_FASTMODE, // 11 å¿«é€ŸADCè‡ªå‹•ä¸Šç¨±åˆ¤æ–·
-    STATE_AUTOON_SLOWMODE, // 12 æ…¢é€ŸADCè‡ªå‹•ä¸Šç¨±åˆ¤æ–·
-    STATE_AUTOON_PASS,     // 13 è‡ªå‹•ä¸Šç¨±OK, æ­¤æ™‚å¯ä»¥é»äº®é¡¯ç¤º,å¹¶åˆ‡æ›åˆ°æ™®é€šç¨±é‡æ¨¡å¼é€²è¡ŒMCUçš„æ­£å¸¸å·¥ä½œ
-    STATE_AUTOON_FAIL,     // 14 è‡ªå‹•ä¸Šç§¤å¤±æ•—,æ­¤æ™‚è«‹ç¹¼çºŒè®“ MCU é€²å…¥HALTç‹€æ…‹
-    // é‡é‡æ ¡æº–æ¨™å®š
-    ENTER_WEIGHT_CAL,      // 15 é€²å…¥é‡é‡æ ¡æº–æ¨¡å¼
-    STATE_WEIGHT_CAL0,     // 16 æ­£åœ¨æ¨™å®šé›¶é»
-    STATE_WEIGHT_CAL1,     // 17 æ­£åœ¨æ¨™å®šç¬¬1é»
-    STATE_WEIGHT_CAL2,     // 18 æ­£åœ¨æ¨™å®šç¬¬2é»
-    STATE_WEIGHT_CAL3,     // 19 æ­£åœ¨æ¨™å®šç¬¬3é»
-    STATE_WEIGHT_CALCHECK, // 20 æ¨™å®šåˆ¤æ–·
-    STATE_WEIGHT_CALPASS,  // 21 æ¨™å®šæˆåŠŸ
-    STATE_WEIGHT_CALFAIL,  // 22 æ¨™å®šå¤±æ•—
-    // é˜»æŠ—é‡æ¸¬
-    ENTER_IMPEDANCE,            // 23 é€²å…¥é˜»æŠ—æ¸¬é‡æ¨¡å¼
-    STATE_IMPEDANCE_REFERENCE1, // 24 æ­£åœ¨é‡æ¸¬åƒè€ƒé›»é˜»1
-    STATE_IMPEDANCE_REFERENCE2, // 25 æ­£åœ¨é‡æ¸¬åƒè€ƒé›»é˜»2
-    STATE_IMPEDANCE_CHECKBODY,  // 26 åˆ¤æ–·æ˜¯å¦æœ‰äººé«”
-    STATE_IMPEDANCE_RX,         // 27 æ­£åœ¨é‡æ¸¬å¾…æ¸¬é˜»æŠ—
-    STATE_IMPEDANCE_FINISH,     // 28 é˜»æŠ—é‡æ¸¬çµæŸ,æ­¤æ™‚å¯ä»¥è®€å–gu16v_CurrentImpedance_ohm
-    // æº«åº¦é‡æ¸¬,è‹¥libåå­—åŒ…å« Tempæœ‰æ•ˆ
-    ENTER_TEMP,     // 29 æ¸©åº¦æ¸¬é‡
-    STATE_TEMP_CAL, // 30 æ¸©åº¦æ ¡æº–
-    // å¿ƒç‡æ¸¬é‡,è‹¥libåå­—åŒ…å« Heatæœ‰æ•ˆ
-    ENTER_HEATRATE,         // 31 é€²å…¥å¿ƒç‡æ¸¬é‡
-    STATE_HEATRATE_PREPARE, // 32 å¿ƒç‡æ¸¬é‡æº–å‚™ä¸­
-    STATE_HEATRATE_UPDATE   // 33 å¿ƒç‡æ¸¬é‡OK,æ­¤æ™‚å¯ä»¥è®€å–æ•¸æ“š
+    // êPé]SDK
+    ENTER_SDK_NONE, // 0 SDK ¿ÕÑ­­h,ADC¼°×è¿¹ëŠÂ·±£³ÖÔ­í î‘B
+    STATE_SDK_NONE, // 1 SDK Ìì¶¿ÕÑ­­h,ADC¼°×è¿¹ëŠÂ·±£³ÖÔ­í î‘B
+    // ÆÕÍ¨·QÖØ
+    ENTER_WEIGHT_NORMAL,   // 2 ßMÈëÕı³£·QÖØÄ£Ê½
+    STATE_WEIGHT_PREPARE,  // 3 ·QÖØœÊ‚äÖĞ
+    STATE_WEIGHT_NOLOAD,   // 4 ¿Õİd/®”Ç°ÖØÁ¿Ğ¡ì¶×îĞ¡·QÖØÖØÁ¿
+    STATE_WEIGHT_LOADUP,   // 5 ÓĞÉÏ·Q„Ó×÷/æi¶¨ î‘BÏÂ¼Óİd½âæiÖØÁ¿,ÖØÁ¿ÓÉ0üc×ƒ³É>×îĞ¡·QÖØÖØÁ¿
+    STATE_WEIGHT_LOADOK,   // 6Íê³ÉÒ»´Î·QÖØœyÁ¿
+    STATE_WEIGHT_LOADFIX,  // 7 Íê³ÉÒ»´Î·QÖØœyÁ¿ºóÖØÁ¿·€¶¨›]ÓĞ½âæi
+    STATE_WEIGHT_LOADDOWN, // 8 ÏÂ³Ó„Ó×÷
+    STATE_WEIGHT_OVERLOAD, // 9 ³¬ÖØ,®”Ç°ÖØÁ¿´óì¶×î´ó·QÖØÖØÁ¿
+    // ×Ô„ÓÉÏ·Q
+    ENTER_WEIGHT_AUTOON,   // 10 ßMÈë×Ô„ÓÉÏ·QÄ£Ê½
+    STATE_AUTOON_FASTMODE, // 11 ¿ìËÙADC×Ô„ÓÉÏ·QÅĞ”à
+    STATE_AUTOON_SLOWMODE, // 12 ÂıËÙADC×Ô„ÓÉÏ·QÅĞ”à
+    STATE_AUTOON_PASS,     // 13 ×Ô„ÓÉÏ·QOK, ´Ë•r¿ÉÒÔücÁÁï@Ê¾,²¢ÇĞ“Qµ½ÆÕÍ¨·QÖØÄ£Ê½ßMĞĞMCUµÄÕı³£¹¤×÷
+    STATE_AUTOON_FAIL,     // 14 ×Ô„ÓÉÏ³ÓÊ§”¡,´Ë•rÕˆÀ^Àm×Œ MCU ßMÈëHALT î‘B
+    // ÖØÁ¿Ğ£œÊ˜Ë¶¨
+    ENTER_WEIGHT_CAL,      // 15 ßMÈëÖØÁ¿Ğ£œÊÄ£Ê½
+    STATE_WEIGHT_CAL0,     // 16 ÕıÔÚ˜Ë¶¨Áãüc
+    STATE_WEIGHT_CAL1,     // 17 ÕıÔÚ˜Ë¶¨µÚ1üc
+    STATE_WEIGHT_CAL2,     // 18 ÕıÔÚ˜Ë¶¨µÚ2üc
+    STATE_WEIGHT_CAL3,     // 19 ÕıÔÚ˜Ë¶¨µÚ3üc
+    STATE_WEIGHT_CALCHECK, // 20 ˜Ë¶¨ÅĞ”à
+           STATE_WEIGHT_CALPASS,  // 21 ˜Ë¶¨³É¹¦
+    STATE_WEIGHT_CALFAIL,  // 22 ˜Ë¶¨Ê§”¡
+    // ×è¿¹Á¿œy
+    ENTER_IMPEDANCE,            // 23 ßMÈë×è¿¹œyÁ¿Ä£Ê½
+    STATE_IMPEDANCE_REFERENCE1, // 24 ÕıÔÚÁ¿œy…¢¿¼ëŠ×è1
+    STATE_IMPEDANCE_REFERENCE2, // 25 ÕıÔÚÁ¿œy…¢¿¼ëŠ×è2
+    STATE_IMPEDANCE_CHECKBODY,  // 26 ÅĞ”àÊÇ·ñÓĞÈËów
+    STATE_IMPEDANCE_RX,         // 27 ÕıÔÚÁ¿œy´ıœy×è¿¹
+    STATE_IMPEDANCE_FINISH,     // 28 ×è¿¹Á¿œy½YÊø,´Ë•r¿ÉÒÔ×xÈ¡gu16v_CurrentImpedance_ohm
+    // œØ¶ÈÁ¿œy,ÈôlibÃû×Ö°üº¬ TempÓĞĞ§
+    ENTER_TEMP,     // 29 ÎÂ¶ÈœyÁ¿
+    STATE_TEMP_CAL, // 30 ÎÂ¶ÈĞ£œÊ
+    // ĞÄÂÊœyÁ¿,ÈôlibÃû×Ö°üº¬ HeatÓĞĞ§
+    ENTER_HEATRATE,         // 31 ßMÈëĞÄÂÊœyÁ¿
+    STATE_HEATRATE_PREPARE, // 32 ĞÄÂÊœyÁ¿œÊ‚äÖĞ
+    STATE_HEATRATE_UPDATE   // 33 ĞÄÂÊœyÁ¿OK,´Ë•r¿ÉÒÔ×xÈ¡”µ“ş
 } BHSDKState_t;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ======================================================@
-//              SDKæ¥å£  ADCæ¡æ¨£æ¥å£                      @
+//              SDK½Ó¿Ú  ADC’ñ˜Ó½Ó¿Ú                      @
 // ======================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 typedef struct
 {
-	unsigned char ByteHigh;		// R ADC åŸå§‹æ•¸æ“šé«˜ä½
-	unsigned char ByteMid;		// R ADC åŸå§‹æ•¸æ“šä¸­ä½
-	unsigned char ByteLow;		// R ADC åŸå§‹æ•¸æ“šä½ä½
-	unsigned char SamplingCnt;	// R ADC æ¡é›†æ¬¡æ•¸è¨ˆæ•¸
+	unsigned char ByteHigh;		// R ADC Ô­Ê¼”µ“ş¸ßÎ»
+	unsigned char ByteMid;		// R ADC Ô­Ê¼”µ“şÖĞÎ»
+	unsigned char ByteLow;		// R ADC Ô­Ê¼”µ“şµÍÎ»
+	unsigned char SamplingCnt;	// R ADC ’ñ¼¯´Î”µÓ‹”µ
 	union {
 		struct
 		{
-			unsigned char IsReady : 1;  // R æœ‰ä¸€ç­†åŸå§‹ADCæ•¸æ“š
+			unsigned char IsReady : 1;  // R ÓĞÒ»¹PÔ­Ê¼ADC”µ“ş
 		} b;
 		unsigned char byte;
 	} flag;
 } ADCSource_t;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ======================================================@
-//              SDKæ¥å£  ADCæ¿¾æ³¢æ¥å£                      @
+//              SDK½Ó¿Ú  ADCV²¨½Ó¿Ú                      @
 // ======================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 typedef struct
 {
-	unsigned long Current;			// R ç•¶å‰æ¿¾æ³¢ADCæ•¸æ“š
-	unsigned long BufMax;			// R æ¿¾æ³¢ buf ä¸­æœ€å¤§çš„ADCå€¼,å¦‚æœç‚º0x00000000,èªªæ˜è·³å‹•å€¼è¶…éè¨­ç½®æ¿¾æ³¢ç¯„åœ
-	unsigned long BufMin;			// R æ¿¾æ³¢ buf ä¸­æœ€å°çš„ADCå€¼,å¦‚æœç‚º0xFFFFFFFF,èªªæ˜è·³å‹•å€¼è¶…éè¨­ç½®æ¿¾æ³¢ç¯„åœ
-	unsigned int StableThreshold;   // RW ç›®æ¨™ç©©åº¦é–¥å€¼,ç”¨æˆ¶åœ¨SDK_UserSetting.hè¨­å®šå€¼
-	unsigned char StableCntTag;		// RW ç›®æ¨™ç©©åº¦æ¬¡æ•¸,ç”¨æˆ¶åœ¨SDK_UserSetting.hè¨­å®šå€¼
-	unsigned char StableCntCurrent; // R ç•¶å‰ç©©åº¦æ¬¡æ•¸
+	unsigned long Current;			// R ®”Ç°V²¨ADC”µ“ş
+	unsigned long BufMax;			// R V²¨ buf ÖĞ×î´óµÄADCÖµ,Èç¹ûé0x00000000,ÕfÃ÷Ìø„ÓÖµ³¬ß^ÔOÖÃV²¨¹ ‡ú
+	unsigned long BufMin;			// R V²¨ buf ÖĞ×îĞ¡µÄADCÖµ,Èç¹ûé0xFFFFFFFF,ÕfÃ÷Ìø„ÓÖµ³¬ß^ÔOÖÃV²¨¹ ‡ú
+	unsigned int StableThreshold;   // RW Ä¿˜Ë·€¶ÈéyÖµ,ÓÃ‘ôÔÚSDK_UserSetting.hÔO¶¨Öµ
+	unsigned char StableCntTag;		// RW Ä¿˜Ë·€¶È´Î”µ,ÓÃ‘ôÔÚSDK_UserSetting.hÔO¶¨Öµ
+	unsigned char StableCntCurrent; // R ®”Ç°·€¶È´Î”µ
 	union {
 		struct
 		{
-			unsigned char IsReady : 1;  // R æœ‰ä¸€ç­†æ¿¾æ³¢ADCæ•¸æ“š
-			unsigned char IsStable : 1; // R æ¿¾æ³¢ADCæ•¸æ“šè™•æ–¼ç©©å®šç‹€æ…‹
+			unsigned char IsReady : 1;  // R ÓĞÒ»¹PV²¨ADC”µ“ş
+			unsigned char IsStable : 1; // R V²¨ADC”µ“şÌì¶·€¶¨ î‘B
 		} b;
 		unsigned char byte;
 	} flag;
 } ADCFilter_t;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ======================================================@
-//              SDKæ¥å£  Weightæ¥å£                       @
+//              SDK½Ó¿Ú  Weight½Ó¿Ú                       @
 // ======================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 typedef struct
 {
     struct
     {
-        unsigned long Cal0;	    // R    ADCå€¼ - é›¶é»é‡é‡
-        unsigned long Cal1;	    // R    ADCå€¼ - ç¬¬1å€‹æ¨™å®šé‡é‡
-        unsigned long Cal2;	    // R    ADCå€¼ - ç¬¬2å€‹æ¨™å®šé‡é‡
-        unsigned long Cal3;	    // R    ADCå€¼ - ç¬¬3å€‹æ¨™å®šé‡é‡
-    }CalADCData;// æ ¡æº–æ•¸æ“š
+        unsigned long Cal0;	    // R    ADCÖµ - ÁãücÖØÁ¿
+        unsigned long Cal1;	    // R    ADCÖµ - µÚ1‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal2;	    // R    ADCÖµ - µÚ2‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal3;	    // R    ADCÖµ - µÚ3‚€˜Ë¶¨ÖØÁ¿
+    }CalADCData;// Ğ£œÊ”µ“ş
     struct
     {
-        unsigned long Cal0;	    // R    ADCå€¼ - é›¶é»é‡é‡
-        unsigned long Cal1;	    // R    ADCå€¼ - ç¬¬1å€‹æ¨™å®šé‡é‡
-        unsigned long Cal2;	    // R    ADCå€¼ - ç¬¬2å€‹æ¨™å®šé‡é‡
-        unsigned long Cal3;	    // R    ADCå€¼ - ç¬¬3å€‹æ¨™å®šé‡é‡
-    }CalADCDataTemp; // æ ¡æº–ä¸­æ•¸æ“š,for debug
-    unsigned char Span;	        // R    ADCå€¼ - 1å€‹åˆ†è¾¨ç‡
+        unsigned long Cal0;	    // R    ADCÖµ - ÁãücÖØÁ¿
+        unsigned long Cal1;	    // R    ADCÖµ - µÚ1‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal2;	    // R    ADCÖµ - µÚ2‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal3;	    // R    ADCÖµ - µÚ3‚€˜Ë¶¨ÖØÁ¿
+    }CalADCDataTemp; // Ğ£œÊÖĞ”µ“ş,for debug
+    unsigned char Span;	        // R    ADCÖµ - 1‚€·Ö±æÂÊ
 	union {
 		struct
 		{
-			unsigned char IsNeedTare : 1;  // RW å»çš®,ç•¶å‰é‡é‡ç‚ºç©©å®šé‡é‡æ™‚ç•¶å‰é‡é‡ç‚º0
+			unsigned char IsNeedTare : 1;  // RW È¥Æ¤,®”Ç°ÖØÁ¿é·€¶¨ÖØÁ¿•r®”Ç°ÖØÁ¿é0
 		} b;
 		unsigned char byte;
 	} flag;
-    unsigned int  DataCurrent;  // R    å½“å‰é‡é‡å€¼,å–®ä½ç‚ºjin,æ”¾å¤§10å€, è‹¥500,è¡¨ç¤ºé‡é‡ç‚º50.0æ–¤
-    unsigned int  DataStable;   // R    ç©©å®šé‡é‡å€¼,å–®ä½ç‚ºjin,æ”¾å¤§10å€, è‹¥500,è¡¨ç¤ºé‡é‡ç‚º50.0æ–¤
+    unsigned int  DataCurrent;  // R    µ±Ç°ÖØÁ¿Öµ,†ÎÎ»éjin,·Å´ó10±¶, Èô500,±íÊ¾ÖØÁ¿é50.0½ï
+    unsigned int  DataStable;   // R    ·€¶¨ÖØÁ¿Öµ,†ÎÎ»éjin,·Å´ó10±¶, Èô500,±íÊ¾ÖØÁ¿é50.0½ï
 }Weight_t;
 
 typedef struct
 {
-    unsigned long WeightMax;          // RW æœ€å¤§æ¸¬é‡é‡é‡
-    unsigned int WeightMin;           // RW æœ€å°æ¸¬é‡é‡é‡
-    unsigned int WeightAutoOn;        // RW è‡ªåŠ¨å”¤é†’é‡é‡
-    unsigned int WeightUnLockTemp;    // RW è‡ªå‹•è§£é–é‡é‡-è‡¨æ™‚
-    unsigned char WeightUnLockStable; // RW è‡ªå‹•è§£é–é‡é‡-ç©©å®š
+    unsigned long WeightMax;          // RW ×î´óœyÁ¿ÖØÁ¿
+    unsigned int WeightMin;           // RW ×îĞ¡œyÁ¿ÖØÁ¿
+    unsigned int WeightAutoOn;        // RW ×Ô¶¯»½ĞÑÖØÁ¿
+    unsigned int WeightUnLockTemp;    // RW ×Ô„Ó½âæiÖØÁ¿-ÅR•r
+    unsigned char WeightUnLockStable; // RW ×Ô„Ó½âæiÖØÁ¿-·€¶¨
     union {
         struct
         {
-            unsigned char IsAutoCalOn : 1;    // è‡ªå‹•æ ¡æº–å¼€å¯
-            unsigned char IsAutoUnlockOn : 1; // è‡ªå‹•è§£é–å¼€å¯
+            unsigned char IsAutoCalOn : 1;    // ×Ô„ÓĞ£œÊ¿ªÆô
+            unsigned char IsAutoUnlockOn : 1; // ×Ô„Ó½âæi¿ªÆô
         } b;
         unsigned char byte;
     } flag;
 } BodyScalesSetting_t;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ======================================================@
-//              SDKæ¥å£  é«”é˜»æŠ—æ¥å£                       @
+//              SDK½Ó¿Ú  ów×è¿¹½Ó¿Ú                       @
 // ======================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -150,15 +150,15 @@ typedef struct
 {
     struct
     {
-        unsigned long Cal0;	    // R    ADCå€¼ - åƒè€ƒé›»é˜»1
-        unsigned long Cal1;	    // R    ADCå€¼ - åƒè€ƒé›»é˜»2
-        unsigned long CalRx0;	// R    ADCå€¼ - åƒè€ƒé›»é˜»1ä¸¦è¯Rx
-        unsigned long CalRx;	// R    ADCå€¼ - å¾…æ¸¬é›»é˜»Rx
+        unsigned long Cal0;	    // R    ADCÖµ - …¢¿¼ëŠ×è1
+        unsigned long Cal1;	    // R    ADCÖµ - …¢¿¼ëŠ×è2
+        unsigned long CalRx0;	// R    ADCÖµ - …¢¿¼ëŠ×è1KÂ“Rx
+        unsigned long CalRx;	// R    ADCÖµ - ´ıœyëŠ×èRx
     }CalADC;
     union {
         unsigned char byte;
     } flag;
-    unsigned int Data;           // R    é˜»æŠ— - é˜»æŠ—å€¼,å–®ä½ohm. è‹¥ç‚º(0xffff-ç„¡å¾…æ¸¬é˜»æŠ—éŒ¯èª¤)/(0xFFF1-æ¥è§¸ç•°å¸¸éŒ¯èª¤)/(0xFFF2-é˜»æŠ—è¶…å‡ºç¯„åœ)
+    unsigned int Data;           // R    ×è¿¹ - ×è¿¹Öµ,†ÎÎ»ohm. Èôé(0xffff-Ÿo´ıœy×è¿¹åeÕ`)/(0xFFF1-½ÓÓ|®³£åeÕ`)/(0xFFF2-×è¿¹³¬³ö¹ ‡ú)
 } Impedance_t;
 
 #endif

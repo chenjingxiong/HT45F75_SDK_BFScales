@@ -69,15 +69,42 @@ void fun_TxSDKADCStatus()
  	gu8v_UartTxBuf[5] = gu8v_UartTxBuf[0] + gu8v_UartTxBuf[1] + gu8v_UartTxBuf[2] + gu8v_UartTxBuf[3] + gu8v_UartTxBuf[4];
 	fun_UartStartTx(5);
 }
+
+void UART_SendData(u8* pdata, u8 len)
+{
+	volatile u8 i = 0;
+	while(i < len){
+		GCC_CLRWDT();
+		if((_txif == 1)&&(_tidle == 1)){
+			_acc = _usr;
+			_txrrxr = *pdata;
+			i++;
+			pdata++;
+		}
+	}
+}
+
 void fun_TxSDKADCSourceData()
 {
-	gu8v_UartTxBuf[0] = 0x55;
-	gu8v_UartTxBuf[1] = 0x00;
- 	gu8v_UartTxBuf[2] = SDKADCSourceData.ByteLow;
- 	gu8v_UartTxBuf[3] = SDKADCSourceData.ByteMid;
- 	gu8v_UartTxBuf[4] = SDKADCSourceData.ByteHigh;
- 	gu8v_UartTxBuf[5] = gu8v_UartTxBuf[0] + gu8v_UartTxBuf[1] + gu8v_UartTxBuf[2] + gu8v_UartTxBuf[3] + gu8v_UartTxBuf[4];
-	fun_UartStartTx(5);
+#if 1
+	//CF03000000000
+	gu8v_UartTxBuf[0] = 0xCF;
+	gu8v_UartTxBuf[1] = 0x4E;
+ 	gu8v_UartTxBuf[2] = 0x11;//SDKADCSourceData.ByteLow;
+ 	gu8v_UartTxBuf[3] = 0x00;//SDKADCSourceData.ByteMid;
+ 	gu8v_UartTxBuf[4] = 0x14;//SDKADCSourceData.ByteHigh;
+ 	gu8v_UartTxBuf[5] = 0x00;//gu8v_UartTxBuf[0] + gu8v_UartTxBuf[1] + gu8v_UartTxBuf[2] + gu8v_UartTxBuf[3] + gu8v_UartTxBuf[4];
+	gu8v_UartTxBuf[6] = 0x00;
+	gu8v_UartTxBuf[7] = 0x00;
+	gu8v_UartTxBuf[8] = 0x00;
+	gu8v_UartTxBuf[9] = 0x22;
+	gu8v_UartTxBuf[10] = 0xA6;
+//	fun_UartStartTx(5);
+	UART_SendData(gu8v_UartTxBuf,11);
+#endif
+
+//	UART_SendData(gu8v_UartRxBuf,11);
+
 }
 /********************************************************************
 Function: uart 管理

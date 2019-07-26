@@ -22,13 +22,13 @@ const unsigned char lu8v_LED_HEX[C_LED_CHAR_NUM] ={\
 			 0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F, //显示字符
 			//'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 
-			//10,  11,  12,	 13,  14,      15
-    		 0x76,0x38,0x5C,0x40,0xFF,    0x00
-    	   //'H', 'L', 'O', '-', 'all on', 'all off'
+			//10,  11,  12,	 13,  14,    15		  16	17
+    		 0x76,0x38,0x5C,0x40,0x73,	0x77,	0xFF,    0x00
+    	   //'H', 'L', 'O', '-', 'P',	'A' ,  'all on', 'all off'
     	 };
 
 //由于硬件2COM的LED连接方式与另外三个COM不一样，所以需要再建个不同的显示数字表格.
-const unsigned char lu8v_2COM_HEX[C_LED_CHAR_NUM] = {\
+const unsigned char lu8v_2COM_HEX[16] = {\
 			//0,   1,   2,	 3,	  4,   5,   6,   7,   8,   9,   //数组下标
 			 0x6F,0x41,0x76,0x73,0x59,0x3B,0x3F,0x61,0x7F,0x7B, //显示字符
 			//'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -86,12 +86,12 @@ void Set_AllLEDBuffer(u8 OnOff)
 		for(i = 0; i < C_LED_BUFF_MAX; i++){
 			gu8v_LED_Buffer[i] = LED_CHAR_ALL;
 		}
-		LED_BufferPoint_Byte = 0xFF;
+		fg_led_Byte = 0xFF;
 	}else{
 		for(i = 0; i < C_LED_BUFF_MAX; i++){
 			gu8v_LED_Buffer[i] = LED_CHAR_OFF;
 		}
-		LED_BufferPoint_Byte = 0x00;
+		fg_led_Byte = 0x00;
 	}
 }
 
@@ -108,15 +108,15 @@ void fun_HEX2BCD(u16 DisplayNum)
     u8 i = 0,j = 4;
 
 	if(DisplayNum < 10){
-			LED_Temp_Piont = 0;
-			LED_Temp_Piont2 = 1;
+			fg_led_piont1 = 1;
+			fg_led_piont2 = 0;
 			gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_OFF;
-			gu8v_LED_Buffer[NUM_BAI]=DisplayNum/10;
-			gu8v_LED_Buffer[NUM_SHI]=DisplayNum%10;
-			gu8v_LED_Buffer[NUM_GE] = LED_CHAR_OFF;
+			gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_OFF;
+			gu8v_LED_Buffer[NUM_SHI]= DisplayNum/10;
+			gu8v_LED_Buffer[NUM_GE] = DisplayNum%10;
 	}else{
-		LED_Temp_Piont = 1;
-		LED_Temp_Piont2 = 0;
+		fg_led_piont1 = 1;
+		fg_led_piont2 = 0;
 		if (DisplayNum < 100){
 			gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_OFF;
 			gu8v_LED_Buffer[NUM_BAI] = LED_CHAR_OFF;
@@ -159,15 +159,13 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 	LEDCOMC3 = OUTPUT ;
 	LEDCOMC4 = OUTPUT ;
 	LEDSEGC	 = OUTPUT ;
-//	unsigned char NextSegData=0;
-//	NextSegData = gu8v_LED_Buffer[LEDScan_Cnt];
 	if(!fg_led_flash){
 
 		switch (LEDScan_Cnt)
 		{
 			case 0:
 				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_GE]];
-				if(LED_UNIT_KG)
+				if(fg_led_unit_kg)
 				{
 					LEDSEG_UNIT_PIONT=HIGH;
 				}
@@ -177,7 +175,7 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 
 			case 1:
 				LEDSEG = lu8v_2COM_HEX[gu8v_LED_Buffer[NUM_SHI]];
-				if(LED_UNIT_LB)
+				if(fg_led_unit_lb)
 				{
 					LEDSEG_UNIT_PIONT=HIGH;
 				}
@@ -187,7 +185,7 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 
 			case 2:
 				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_BAI]];
-				if(LED_Temp_Piont)
+				if(fg_led_piont1)
 				{
 					LEDSEG_UNIT_PIONT = HIGH;
 				}
@@ -197,7 +195,7 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 
 			case 3:
 				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_QIAN]];
-				if(LED_Temp_Piont2)
+				if(fg_led_piont2)
 				{
 					LEDSEG_UNIT_PIONT=HIGH;
 				}
@@ -210,14 +208,14 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 			break;
 		}
 
-		if(LED_BLE)//蓝牙
+		if(fg_led_ble)//蓝牙
 		{
 			P_LED_BLE = HIGH;
 		}else{
 			P_LED_BLE = LOW;
 		}
 
-		if(LED_UNIT_PCT)//%
+		if(fg_led_unit_pct)//%
 		{
 			P_LED_UNIT_PCT = HIGH;
 		}else{
@@ -228,6 +226,7 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 		P_LED_UNIT_PCT = LOW;
 		P_LED_BLE = LOW;
 		LEDSEG_UNIT_PIONT = LOW;
+		LEDSEG = LOW;
 	}
 }
 /********************************************************************

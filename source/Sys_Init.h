@@ -13,8 +13,11 @@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 共用函數 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 void fun_PowerOnSysInit();
 void fun_PrepareToHalt();
+void user_init(void);
 void fun_ResumeWork();
 void fun_ResumeWakeup();
+extern void LED_Init(void);
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Userdefine @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //					@---------------LVD config---------------@
 #define SETLVD_LVDIN()			{ _lvdc = 0x00; }

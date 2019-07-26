@@ -15,44 +15,50 @@
 #define KEY_CAL			_pa4
 #define KEY_CAL_IO		_pac4
 //*****************************************   數碼管  **********************************************
-//#define	LEDCom0			_pb7
-//#define	LEDCom0IO		_pbc7
-//#define LEDCom1			_pb6
-//#define LEDCom1IO		_pbc6
-//#define	LEDCom2			_pb5
-//#define	LEDCom2IO		_pbc5
-//#define LEDCom3			_pa7
-//#define LEDCom3IO		_pac7
+/*#define  LEDCOM5 	_pd3*/
+#define  LEDCOM4 				_pa7
+#define  LEDCOM3 				_pb5
+#define	 LEDCOM2 				_pb6
+#define	 LEDCOM1 				_pb7
+#define	 LEDSEG	     			_pc
+#define	 LEDSEGC     			_pcc
+#define  LEDSEG_UNIT_PIONT		_pc7
+#define	 LEDCOMC1   			_pbc7
+#define	 LEDCOMC2   			_pbc6
+#define	 LEDCOMC3   			_pbc5
+#define	 LEDCOMC4   			_pac7
 
-//#define LEDSeg			_pc
-//#define LEDSegIO		_pcc
-//#define LEDPoint        _pc7
+#define P_LED_BLE			_pd2
+#define P_LED_BLE_C			_pdc2
+#define P_LED_UNIT_PCT		_pb0
+#define P_LED_UNIT_PCT_C	_pbc0
+
 //********************************************  藍牙  **********************************************
 #define BT_Power        _pa6
 #define BT_Power_IO     _pac6
 
-#define BT_Status		_pd0
-#define BT_Status_IO	_pdc0
+#define P_BT_Status		_pd0
+#define P_BT_Status_C	_pdc0 //Status状态
 
-#define BT_WakeUp		_pd1
-#define BT_WakeUp_IO	_pdc1
+#define P_BLE_EN		_pd1
+#define P_BLE_EN_C		_pdc1
 //***************************************** IO Config  **********************************************
 #define PA_Default		0B00000000
 #define PAC_Default		0B00111000
 #define PAPU_Default	0B11111101
 #define PAWU_Default	0B00000000
 
-#define PB_Default		0B11111111
-#define PBC_Default		0B00011111
-#define PBPU_Default	0B00011111
+#define PB_Default		0B00011110
+#define PBC_Default		0B00011110
+#define PBPU_Default	0B00011110
 
 #define PC_Default		0B00000000
 #define PCC_Default		0B00000000
 #define PCPU_Default	0B00000000
 
-#define PD_Default		0B11111111
-#define PDC_Default		0B11111101
-#define PDPU_Default	0B11111101
+#define PD_Default		0B11111011
+#define PDC_Default		0B11111001
+#define PDPU_Default	0B11111001
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 預處理 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #define OUTPUT 			0
 #define INPUT			1
