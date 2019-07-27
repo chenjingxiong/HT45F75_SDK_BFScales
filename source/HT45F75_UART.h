@@ -25,11 +25,11 @@ void fun_UartStartTx( unsigned char TxLength);  // 開始發送
 //#define SET_UART_PIN_PA5PA6() { _pas1 ^= 0x3C;_pas1 |= 0x3C; _rxps1 = 0; _rxps0 = 0;}
 
 #define SET_UART_Format_D8_P0_S1()			{ _ucr1 = 0x00; }// 傳輸8bit = (8bit-Data  None-Parity  None-Add)1bit-Stop
-#define SET_UART_Format_D7_PEVEN_S1()		{ _ucr1 = 0x20; }// 傳輸8bit = (7bit-Data  Enen-Parity  None-Add)1bit-Stop
-#define SET_UART_Format_D7_PODD_S1()		{ _ucr1 = 0x30; }// 傳輸8bit = (7bit-Data  Odd -Parity  None-Add)1bit-Stop
-#define SET_UART_Format_D9_P0_S1()			{ _ucr1 = 0x40; }// 傳輸9bit = (9bit-Data  None-Parity  None-Add)1bit-Stop
-#define SET_UART_Format_D8_PEVEN_S1()		{ _ucr1 = 0x60; }// 傳輸9bit = (8bit-Data  Even-Parity  None-Add)1bit-Stop
-#define SET_UART_Format_D8_PODD_S1()		{ _ucr1 = 0x70; }// 傳輸9bit = (8bit-Data  Odd-Parity   None-Add)1bit-Stop
+//#define SET_UART_Format_D7_PEVEN_S1()		{ _ucr1 = 0x20; }// 傳輸8bit = (7bit-Data  Enen-Parity  None-Add)1bit-Stop
+//#define SET_UART_Format_D7_PODD_S1()		{ _ucr1 = 0x30; }// 傳輸8bit = (7bit-Data  Odd -Parity  None-Add)1bit-Stop
+//#define SET_UART_Format_D9_P0_S1()			{ _ucr1 = 0x40; }// 傳輸9bit = (9bit-Data  None-Parity  None-Add)1bit-Stop
+//#define SET_UART_Format_D8_PEVEN_S1()		{ _ucr1 = 0x60; }// 傳輸9bit = (8bit-Data  Even-Parity  None-Add)1bit-Stop
+//#define SET_UART_Format_D8_PODD_S1()		{ _ucr1 = 0x70; }// 傳輸9bit = (8bit-Data  Odd-Parity   None-Add)1bit-Stop
 
 #define SET_UART_Format_D8_P0_S2()			{ _ucr1 = 0x00; }// 傳輸8bit = (8bit-Data  None-Parity  None-Add)2bit-Stop
 #define SET_UART_Format_D7_PEVEN_S2()		{ _ucr1 = 0x20; }// 傳輸8bit = (7bit-Data  Enen-Parity  None-Add)2bit-Stop
@@ -52,13 +52,13 @@ void fun_UartStartTx( unsigned char TxLength);  // 開始發送
 //#define _HIRC_4_8M_
 #define _HIRC_4_0M_
 #ifdef _HIRC_4_0M_
-    #define SET_UART_BAUTRATE_300()			{ _brgh = 0; _brg = 207;}
-    #define SET_UART_BAUTRATE_1200()		{ _brgh = 0; _brg = 51;}
-    #define SET_UART_BAUTRATE_2400()		{ _brgh = 0; _brg = 25;}
-    #define SET_UART_BAUTRATE_4800()		{ _brgh = 0; _brg =  12;}
+//    #define SET_UART_BAUTRATE_300()			{ _brgh = 0; _brg = 207;}
+//    #define SET_UART_BAUTRATE_1200()		{ _brgh = 0; _brg = 51;}
+//    #define SET_UART_BAUTRATE_2400()		{ _brgh = 0; _brg = 25;}
+//    #define SET_UART_BAUTRATE_4800()		{ _brgh = 0; _brg =  12;}
     #define SET_UART_BAUTRATE_9600()		{ _brgh = 1; _brg =  25;}
-    #define SET_UART_BAUTRATE_19200()		{ _brgh = 1; _brg =  12;}
-    #define SET_UART_BAUTRATE_250000()		{ _brgh = 1; _brg =   0;}
+//    #define SET_UART_BAUTRATE_19200()		{ _brgh = 1; _brg =  12;}
+//    #define SET_UART_BAUTRATE_250000()		{ _brgh = 1; _brg =   0;}
 #endif
 
 #ifdef _HIRC_4_8M_

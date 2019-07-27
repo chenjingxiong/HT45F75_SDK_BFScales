@@ -51,11 +51,17 @@ void fun_Display_PownDown();
 #define LED_CHAR_L					11
 #define LED_CHAR_O					12
 #define LED_CHAR__					13
-#define LED_CHAR_P					14
-#define LED_CHAR_A					15
-#define LED_CHAR_ALL				16
-#define LED_CHAR_OFF				17
+#define LED_CHAR_ALL				14
+#define LED_CHAR_OFF				15
+#define LED_CHAR_P					16
+#define LED_CHAR_A					17
 #define C_LED_CHAR_NUM				18
+
+//#define LED_CHAR_P					14
+//#define LED_CHAR_A					15
+//#define LED_CHAR_ALL				16
+//#define LED_CHAR_OFF				17
+//#define C_LED_CHAR_NUM				18
 
 #define C_LED_BUFF_MAX				4
 

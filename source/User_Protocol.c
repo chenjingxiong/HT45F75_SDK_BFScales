@@ -1,8 +1,26 @@
 #include "common.h"
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 變量定義 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-volatile bit gbv_TxSDKStatus;		// 發送SDK狀態的標誌,在需要發送的地方置位falg即可
+volatile bit gbv_TxSDKWeightStatus;		// 發送SDK狀態的標誌,在需要發送的地方置位falg即可
 volatile bit gbv_TxSDKImpedanceStatus;
-volatile bit gbv_TxSDKADCStatus;
+volatile bit gbv_TxFinishStatus;
+
+//===============================================================
+//function: 异或校验和.
+//input   : *psurce：数据指针；     length:数据指针中的数据个数.
+//output  : 异或校验和:
+//description: 异或校验和:          eg: FD 34 00 00.  则:XOR_checksum= 0xFD ^ 0x34 ^ 0x00 ^ 0x00 = 0xC9
+//===============================================================
+u8 get_XOR_Checksum(volatile u8 * psurce, u8 length)
+{
+
+	u8 XOR_checksum = 0;
+	while(length--){
+		XOR_checksum ^= *psurce;
+		psurce++;
+	}
+
+	return XOR_checksum;
+}
 
 /*
 void fun_TxExample()
@@ -26,14 +44,20 @@ NOTE	:
 ********************************************************************/
 void fun_TxSDKImpedanceStatus()
 {
-	gu8v_UartTxBuf[0] = 0x55;
-	gu8v_UartTxBuf[1] = 0x00;
- 	gu8v_UartTxBuf[4] = 0x00;
- 	gu8v_UartTxBuf[3] = (SDKImpedance.Data & 0xFF00 )>>8;
- 	gu8v_UartTxBuf[2] =  SDKImpedance.Data & 0x00FF;
- 	gu8v_UartTxBuf[5] = gu8v_UartTxBuf[0] + gu8v_UartTxBuf[1] + gu8v_UartTxBuf[2] + gu8v_UartTxBuf[3] + gu8v_UartTxBuf[4];
-	fun_UartStartTx(5);
+	gu8v_UartTxBuf[0] = 0xCF;
+	gu8v_UartTxBuf[1] = gu16v_impedence_data & 0x00FF;
+	gu8v_UartTxBuf[2] = (gu16v_impedence_data & 0xFF00 )>>8;;
+	gu8v_UartTxBuf[3] = gu16_display_weight & 0x00FF;
+	gu8v_UartTxBuf[4] = (gu16_display_weight & 0xFF00 )>>8;
+	gu8v_UartTxBuf[5] = 0x00;
+	gu8v_UartTxBuf[6] = 0x00;
+	gu8v_UartTxBuf[7] = 0x00;
+	gu8v_UartTxBuf[8] = gu8v_weigh_targeunit;
+	gu8v_UartTxBuf[9] = 0x00;//锁定数据.
+	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
+	fun_UartStartTx(11);
 }
+
 /********************************************************************
 Function: 同步時間單位等配置
 INPUT	:
@@ -42,15 +66,18 @@ NOTE	: MCU喚醒后偵測連接服務器后主動索取當前單位及時間
 ********************************************************************/
 void fun_TxSDKWeightStatus()
 {
-	gu8v_UartTxBuf[0] = 0xAA;
-	gu8v_UartTxBuf[1] = 0x02;
-	gu8v_UartTxBuf[2] = BHSDKState;
- 	gu8v_UartTxBuf[3] = (SDKWeight.DataCurrent & 0xFF00 )>>8;
- 	gu8v_UartTxBuf[4] = SDKWeight.DataCurrent & 0x00FF;
- 	gu8v_UartTxBuf[5] = (SDKWeight.DataStable & 0xFF00 )>>8;
- 	gu8v_UartTxBuf[6] = SDKWeight.DataStable & 0x00FF;
- 	gu8v_UartTxBuf[7] = 0x55;
-	fun_UartStartTx(7);
+	gu8v_UartTxBuf[0] = 0xCF;
+	gu8v_UartTxBuf[1] = 0x00;
+	gu8v_UartTxBuf[2] = 0x00;
+ 	gu8v_UartTxBuf[3] = gu16_display_weight & 0x00FF;
+ 	gu8v_UartTxBuf[4] = (gu16_display_weight& 0xFF00 )>>8;
+ 	gu8v_UartTxBuf[5] = 0x00;
+ 	gu8v_UartTxBuf[6] = 0x00;
+ 	gu8v_UartTxBuf[7] = 0x00;
+ 	gu8v_UartTxBuf[8] = gu8v_weigh_targeunit;
+ 	gu8v_UartTxBuf[9] = 0x01;//表示过程数据.
+ 	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
+	fun_UartStartTx(11);
 }
 /********************************************************************
 Function: 同步時間單位等配置
@@ -58,8 +85,9 @@ INPUT	:
 OUTPUT	:
 NOTE	: MCU喚醒后偵測連接服務器后主動索取當前單位及時間
 ********************************************************************/
-void fun_TxSDKADCStatus()
+void fun_TxFinishStatus()
 {
+#if 0
 	gu8v_UartTxBuf[0] = 0x55;
 	gu8v_UartTxBuf[1] = 0x00;
  	//gu8v_UartTxBuf[2] = (SDKADCFilterData.Current & 0xFF000000 )>>24;
@@ -68,8 +96,10 @@ void fun_TxSDKADCStatus()
  	gu8v_UartTxBuf[2] =  SDKADCFilterData.Current & 0x000000FF;
  	gu8v_UartTxBuf[5] = gu8v_UartTxBuf[0] + gu8v_UartTxBuf[1] + gu8v_UartTxBuf[2] + gu8v_UartTxBuf[3] + gu8v_UartTxBuf[4];
 	fun_UartStartTx(5);
+#endif
 }
 
+#if 0
 void UART_SendData(u8* pdata, u8 len)
 {
 	volatile u8 i = 0;
@@ -83,73 +113,52 @@ void UART_SendData(u8* pdata, u8 len)
 		}
 	}
 }
-
-void fun_TxSDKADCSourceData()
-{
-#if 1
-	//CF03000000000
-	gu8v_UartTxBuf[0] = 0xCF;
-	gu8v_UartTxBuf[1] = 0x4E;
- 	gu8v_UartTxBuf[2] = 0x11;//SDKADCSourceData.ByteLow;
- 	gu8v_UartTxBuf[3] = 0x00;//SDKADCSourceData.ByteMid;
- 	gu8v_UartTxBuf[4] = 0x14;//SDKADCSourceData.ByteHigh;
- 	gu8v_UartTxBuf[5] = 0x00;//gu8v_UartTxBuf[0] + gu8v_UartTxBuf[1] + gu8v_UartTxBuf[2] + gu8v_UartTxBuf[3] + gu8v_UartTxBuf[4];
-	gu8v_UartTxBuf[6] = 0x00;
-	gu8v_UartTxBuf[7] = 0x00;
-	gu8v_UartTxBuf[8] = 0x00;
-	gu8v_UartTxBuf[9] = 0x22;
-	gu8v_UartTxBuf[10] = 0xA6;
-//	fun_UartStartTx(5);
-	UART_SendData(gu8v_UartTxBuf,11);
 #endif
 
-//	UART_SendData(gu8v_UartRxBuf,11);
-
-}
 /********************************************************************
 Function: uart 管理
 INPUT	:
 OUTPUT	:
 NOTE	:
 ********************************************************************/
-#define TIMEBASE0_CYCLE8MS 8
 void fun_UserProtocol()
 {
 	// 數據接收 Time Out時間
-	if (gu8v_TBRxTimeOutCnt> 200/TIMEBASE0_CYCLE8MS)
+	if (gu8v_TBRxTimeOutCnt >= C_TIMEING_TIMEOUT)
 	{
 		gu8v_TBRxTimeOutCnt = 0;
 		lu8v_RxBufoffset = 0;
-		lu8v_RxBufLength =0xff;
-		gbv_UartRxSuccess  = 0;
+		lu8v_RxBufLength = 0xff;
+		gbv_UartRxSuccess = 0;
 	}
 	//	UART TX
-	//	if(gu8v_UartTxCycle > (100/TIMEBASE0_CYCLE8MS) && !gbv_IsBusyUartTx)	// 建議加入定時發送，防止數據發送太快
-	if(!gbv_IsBusyUartTx)
+	//	if(!gbv_IsBusyUartTx)
+	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE2MS) && (!gbv_IsBusyUartTx))	// 建議加入定時發送，防止數據發送太快
 	{
-		// gu8v_UartTxCycle = 0;
-//		if (gbv_TxSDKStatus)
-//		{
-//			gbv_TxSDKStatus = 0;
-//			fun_TxSDKWeightStatus();
-//		}
-//		else if (gbv_TxSDKImpedanceStatus)
-//		{
-//			gbv_TxSDKImpedanceStatus = 0;
-//			fun_TxSDKImpedanceStatus();
-//			BHSDKState = ENTER_IMPEDANCE;
-//		}
-//		else if (gbv_TxSDKADCStatus)
-//		{
-//			gbv_TxSDKADCStatus = 0;
-//			fun_TxSDKADCStatus();
-//		}
-        if (SDKADCSourceData.flag.b.IsReady)
+		 gu8v_UartTxCycle = 0;
+		if (gbv_TxSDKWeightStatus)
 		{
-			SDKADCSourceData.flag.b.IsReady = 0;
-			fun_TxSDKADCSourceData();
+			gbv_TxSDKWeightStatus = 0;
+			fun_TxSDKWeightStatus();
 		}
+		else if (gbv_TxSDKImpedanceStatus)
+		{
+			gbv_TxSDKImpedanceStatus = 0;
+			fun_TxSDKImpedanceStatus();
+//			BHSDKState = ENTER_IMPEDANCE;
+		}
+		else if (gbv_TxFinishStatus)
+		{
+			gbv_TxFinishStatus = 0;
+			//fun_TxFinishStatus();
+		}
+//        if (SDKADCSourceData.flag.b.IsReady)
+//		{
+//			SDKADCSourceData.flag.b.IsReady = 0;
+//			fun_TxSDKADCSourceData();
+//		}
 	}
+
 	// UART RX
 	if (gbv_UartRxSuccess)	// UART RX
 	{

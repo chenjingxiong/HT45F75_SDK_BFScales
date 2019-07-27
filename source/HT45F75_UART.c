@@ -34,6 +34,7 @@ void fun_UARTPowerOnInit()
 	// UART0 IO
 
 }
+#if 0
 
 ///********************************************************************
 //Function: Uart數據發送和接收中斷子程序
@@ -41,7 +42,7 @@ void fun_UARTPowerOnInit()
 //OUTPUT:
 //NOTE	:
 //********************************************************************/
-DEFINE_ISR(UART_ISR, 0x028)
+DEFINE_ISR(UART_ISR, MuFunction1_VECTOR)
 {
 	// 奇偶校验出错
 //	if (_perr0)
@@ -107,6 +108,7 @@ DEFINE_ISR(UART_ISR, 0x028)
         }
 	}
 }
+#endif
 
 /********************************************************************
 Function: uart發送開始

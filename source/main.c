@@ -43,7 +43,7 @@ int main(void)
 //		Version[2] = SDKVersion[2];
 		// Ö÷LOOPÑ­­hÕ{ÓÃ fun_BodyFatScalesSDK()
 		fun_BodyFatScalesSDK();
-//		fun_UserProtocol();
+		fun_UserProtocol();
 		test = BHSDKState;
 
 		switch(gu8v_worktasks)
@@ -81,8 +81,6 @@ int main(void)
 
 		if(fg_time_1s){
 			fg_time_1s = 0;
-			gbv_IsBusyUartTx = 0;
-			fun_TxSDKADCSourceData();
 		}
 	}
 }
