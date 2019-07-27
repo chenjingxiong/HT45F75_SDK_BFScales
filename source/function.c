@@ -42,19 +42,19 @@ void fun_Unit_Change(u16 weigh)
 			 		取整数位等于12，代表1.2(lb)
 		*/
 	}
-	else if(UNIT_JIN == gu8v_weigh_targeunit)
-	{
-		fg_led_unit_kg = 0;
-		fg_led_unit_lb = 0;
-		gu16_display_weight = (u32)weigh;///5; 	//JIN  0.1斤  = 5(weigh) ,gu16v_Display_Weigh的个位代表小数点后一位，保留 一位小數點
-		/*说明:
-			eg:
-			   若:weigh = 44
-			   则:weigh=44=440(g) -->因为此合泰库精度为10g，即1代表1*10=10(g);x*10=10x(g)
-			   计算:weigh/5 = 44/5 = 8.8
-					取整数位等于8，代表0.8(斤)
-		*/
-	}
+//	else if(UNIT_JIN == gu8v_weigh_targeunit)
+//	{
+//		fg_led_unit_kg = 0;
+//		fg_led_unit_lb = 0;
+//		gu16_display_weight = (u32)weigh;///5; 	//JIN  0.1斤  = 5(weigh) ,gu16v_Display_Weigh的个位代表小数点后一位，保留 一位小數點
+//		/*说明:
+//			eg:
+//			   若:weigh = 44
+//			   则:weigh=44=440(g) -->因为此合泰库精度为10g，即1代表1*10=10(g);x*10=10x(g)
+//			   计算:weigh/5 = 44/5 = 8.8
+//					取整数位等于8，代表0.8(斤)
+//		*/
+//	}
 }
 
 //===============================================================
@@ -178,7 +178,6 @@ void task_bodyfatscales(void)
 				fun_Unit_Change(SDKWeight.DataStable);
 //				Set_DisplayMode(DISPLAY_LOADDOWN);
 				Set_DisplayMode(DISPLAY_LOADFIX);//test
-
 			}
 			break;
 		case STATE_WEIGHT_OVERLOAD:	// 超重,當前重量大於最大稱重重量
@@ -197,7 +196,7 @@ void task_bodyfatscales(void)
 //			BHSDKState = ENTER_IMPEDANCE;
 			Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
 			gu16v_impedence_data = SDKImpedance.Data;
-			gbv_TxSDKImpedanceStatus = 1;
+//			gbv_TxSDKImpedanceStatus = 1;
 		    break;
 		case STATE_AUTOON_FASTMODE:		// 快速ADC自動上稱判斷
 		case STATE_AUTOON_SLOWMODE:		// 慢速ADC自動上稱判斷
@@ -335,6 +334,7 @@ void fun_DiaplsyMode(void)
 			break;
 
 		case DISPLAY_LOADFIX:
+			gbv_TxSDKWeightStatus = 1;
 			fun_HEX2BCD(gu16_display_weight);
 			if(fg_loadok){
 				set_ledflash(DISPLAY_LOADFIX,C_LED_FLASH_ON,C_LED_FLASH_CNT,C_TIME_05S,C_LED_FLASH_DELAY,C_TIME_10S);
@@ -372,6 +372,7 @@ void fun_DiaplsyMode(void)
 			break;
 
 		case DISPLAY_IMPEDANCE_FINISH:
+			gbv_TxSDKImpedanceStatus = 1;
 			switch(gu16v_impedence_data){
 
 				case IMPEDANCE_ERR_NOTEST:
@@ -446,8 +447,7 @@ void is_timedshutdown(void)
 void task_scales2sleep(void)
 {
 
-	gu8v_worktasks = TASK_SCALES;
-#if 0
+#if 1
 	_t0on  = 0;
 	Set_DisplayMode(DISPLAY_ALLOFF);
 	LED_Init();
@@ -455,19 +455,22 @@ void task_scales2sleep(void)
 	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState ||STATE_AUTOON_FAIL == BHSDKState){
 		_idlen = 0;
 		_emi = 0;
-		_t0on  = 0;
-		_t1on  = 0;
-		_t2on  = 0;
-		_tbon = 0;
-		SETCTMP_ISR_ENABLE();
-		SETTIMEBASE0_ISR_Disable();
-		SETTIMEBASE1_ISR_Disable();
+//		_t0on  = 0;
+//		_t1on  = 0;
+//		_t2on  = 0;
+//		_tbon = 0;
+//		SETCTMP_ISR_ENABLE();
+//		SETTIMEBASE0_ISR_Disable();
+//		SETTIMEBASE1_ISR_Disable();
 		fun_BodyFatScalesSDK_PowerDown();
 		GCC_NOP();
 		GCC_NOP();
 		GCC_NOP();
 		GCC_HALT();
 	}
+#else
+	//for test
+	gu8v_worktasks = TASK_SCALES;
 #endif
 }
 

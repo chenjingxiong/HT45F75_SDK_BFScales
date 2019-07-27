@@ -1,12 +1,14 @@
 #ifndef __FUNCTION_H__
 #define __FUNCTION_H__
+
 extern u16 gu16v_weigh;
-extern u16 display_weight;
+extern u16 gu16_display_weight;
+extern u16 gu16v_impedence_data;
 extern u8 gu8v_weigh_targeunit;
-extern volatile u8  gu8v_05s_count;//ledÉÁË¸Ê±ÁÁÃğÖ®¼äµÄÊ±¼ä¼ä¸ôµÄ¼ÆÊıÖµ.
-extern volatile u8  gu8v_howtimes;//ledÉÁË¸¶àÉÙ´Î£¬¼ÆÊıÒ»ÁÁÒ»ÃğËã2´Î.
-extern volatile u8  gu8v_led_speed;//ledÉÁË¸Ê±ÁÁÃğÖ®¼äµÄÊ±¼ä¼ä¸ô,
-extern volatile u8  gu8v_led_delay;//ÑÓ³Ùx*100MSºó¿ªÊ¼Ö´ĞĞÉÁË¸¹¦ÄÜ.
+extern volatile u8  gu8v_05s_count;//ledé—ªçƒæ—¶äº®ç­ä¹‹é—´çš„æ—¶é—´é—´éš”çš„è®¡æ•°å€¼.
+extern volatile u8  gu8v_howtimes;//ledé—ªçƒå¤šå°‘æ¬¡ï¼Œè®¡æ•°ä¸€äº®ä¸€ç­ç®—2æ¬¡.
+extern volatile u8  gu8v_led_speed;//ledé—ªçƒæ—¶äº®ç­ä¹‹é—´çš„æ—¶é—´é—´éš”,
+extern volatile u8  gu8v_led_delay;//å»¶è¿Ÿx*100MSåå¼€å§‹æ‰§è¡Œé—ªçƒåŠŸèƒ½.
 extern u8  gu8v_timed_shutdown;
 extern u8  gu8v_dismode;
 extern u8 gu8v_worktasks;
