@@ -52,13 +52,13 @@ void fun_UartStartTx( unsigned char TxLength);  // 開始發送
 //#define _HIRC_4_8M_
 #define _HIRC_4_0M_
 #ifdef _HIRC_4_0M_
-//    #define SET_UART_BAUTRATE_300()			{ _brgh = 0; _brg = 207;}
-//    #define SET_UART_BAUTRATE_1200()		{ _brgh = 0; _brg = 51;}
-//    #define SET_UART_BAUTRATE_2400()		{ _brgh = 0; _brg = 25;}
-//    #define SET_UART_BAUTRATE_4800()		{ _brgh = 0; _brg =  12;}
+    #define SET_UART_BAUTRATE_300()			{ _brgh = 0; _brg = 207;}
+    #define SET_UART_BAUTRATE_1200()		{ _brgh = 0; _brg = 51;}
+    #define SET_UART_BAUTRATE_2400()		{ _brgh = 0; _brg = 25;}
+    #define SET_UART_BAUTRATE_4800()		{ _brgh = 0; _brg =  12;}
     #define SET_UART_BAUTRATE_9600()		{ _brgh = 1; _brg =  25;}
-//    #define SET_UART_BAUTRATE_19200()		{ _brgh = 1; _brg =  12;}
-//    #define SET_UART_BAUTRATE_250000()		{ _brgh = 1; _brg =   0;}
+    #define SET_UART_BAUTRATE_19200()		{ _brgh = 1; _brg =  12;}
+    #define SET_UART_BAUTRATE_250000()		{ _brgh = 1; _brg =   0;}
 #endif
 
 #ifdef _HIRC_4_8M_

@@ -47,8 +47,8 @@ void fun_TxSDKImpedanceStatus()
 	gu8v_UartTxBuf[0] = 0xCF;
 	gu8v_UartTxBuf[1] = gu16v_impedence_data & 0x00FF;
 	gu8v_UartTxBuf[2] = (gu16v_impedence_data & 0xFF00 )>>8;;
-	gu8v_UartTxBuf[3] = gu16_display_weight & 0x00FF;
-	gu8v_UartTxBuf[4] = (gu16_display_weight & 0xFF00 )>>8;
+	gu8v_UartTxBuf[3] = ((SDKWeight.DataStable) & 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;
+	gu8v_UartTxBuf[4] = (SDKWeight.DataStable) & 0x00FF;//((SDKWeight.DataStable) & 0xFF00 )>>8;
 	gu8v_UartTxBuf[5] = 0x00;
 	gu8v_UartTxBuf[6] = 0x00;
 	gu8v_UartTxBuf[7] = 0x00;
@@ -66,15 +66,16 @@ NOTE	: MCU喚醒后偵測連接服務器后主動索取當前單位及時間
 ********************************************************************/
 void fun_TxSDKWeightStatus()
 {
+	//FD 34 00 00 00 00 00 00 00 00 C9
 	gu8v_UartTxBuf[0] = 0xCF;
 	gu8v_UartTxBuf[1] = 0x00;
 	gu8v_UartTxBuf[2] = 0x00;
- 	gu8v_UartTxBuf[3] = gu16_display_weight & 0x00FF;
- 	gu8v_UartTxBuf[4] = (gu16_display_weight& 0xFF00 )>>8;
+ 	gu8v_UartTxBuf[3] = (SDKWeight.DataStable) & 0x00FF;//((SDKWeight.DataStable)& 0xFF00 )>>8;//gu16v_weigh & 0x00FF;//0x00;//gu16_display_weight & 0x00FF;
+ 	gu8v_UartTxBuf[4] = ((SDKWeight.DataStable)& 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;//(gu16v_weigh& 0xFF00 )>>8;//0x14;//(gu16_display_weight& 0xFF00 )>>8;
  	gu8v_UartTxBuf[5] = 0x00;
  	gu8v_UartTxBuf[6] = 0x00;
  	gu8v_UartTxBuf[7] = 0x00;
- 	gu8v_UartTxBuf[8] = gu8v_weigh_targeunit;
+ 	gu8v_UartTxBuf[8] = 0x00;//gu8v_weigh_targeunit;
  	gu8v_UartTxBuf[9] = 0x01;//表示过程数据.
  	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
@@ -123,6 +124,7 @@ NOTE	:
 ********************************************************************/
 void fun_UserProtocol()
 {
+#if 1
 	// 數據接收 Time Out時間
 	if (gu8v_TBRxTimeOutCnt >= C_TIMEING_TIMEOUT)
 	{
@@ -207,6 +209,7 @@ void fun_UserProtocol()
 		}
 		*/
 	}
+#endif
 }
 
 

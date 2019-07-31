@@ -194,8 +194,8 @@ void task_bodyfatscales(void)
 		case STATE_IMPEDANCE_FINISH:	// 阻抗量測結束,此時可以讀取gu16v_CurrentImpedance_ohm
 			//fun_DisplayMode_ImpedanceFinish();//
 //			BHSDKState = ENTER_IMPEDANCE;
-			Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
 			gu16v_impedence_data = SDKImpedance.Data;
+			Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
 //			gbv_TxSDKImpedanceStatus = 1;
 		    break;
 		case STATE_AUTOON_FASTMODE:		// 快速ADC自動上稱判斷
@@ -392,7 +392,7 @@ void fun_DiaplsyMode(void)
 			}
 
 			if(0 == fg_led_timing){
-				gu8v_worktasks = TASK_SLEEP;
+//				gu8v_worktasks = TASK_SLEEP;//test
 				set_BHSDKState(ENTER_WEIGHT_NORMAL);
 			}
 			break;
@@ -474,6 +474,7 @@ void task_scales2sleep(void)
 #endif
 }
 
+#if 0
 void task_scaleswakeup(void)
 {
 
@@ -492,6 +493,7 @@ void task_scaleswakeup(void)
 	_emi = 1;
 
 }
+#endif
 
 
 void fun_ble_task(void)

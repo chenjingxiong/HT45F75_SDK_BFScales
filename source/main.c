@@ -1,6 +1,5 @@
 #include "common.h"
 
-//volatile unsigned char Version[3];
 u8 test;
 int main(void)
 {
@@ -38,13 +37,12 @@ int main(void)
 	while(1)
 	{
 		GCC_CLRWDT();
-//		Version[0] = SDKVersion[0];
-//		Version[1] = SDKVersion[1];
-//		Version[2] = SDKVersion[2];
+
 		// ��LOOPѭ�h�{�� fun_BodyFatScalesSDK()
 		fun_BodyFatScalesSDK();
 		fun_UserProtocol();
 		test = BHSDKState;
+
 
 		switch(gu8v_worktasks)
 		{
@@ -65,7 +63,17 @@ int main(void)
 				break;
 
 			case TASK_WEIGHT_AUTOON:
-				task_scaleswakeup();
+				//task_scaleswakeup();//省空间，不用函数直接码上
+				gu8v_worktasks = TASK_SCALES;
+				BHSDKState = ENTER_WEIGHT_NORMAL;
+				// TM0
+				_tm0c0 = 0x20;		// fsys/16 4us
+				_tm0c1 = 0xc1;		// TimeCnt Mode
+				_tm0al = 500%256;	// 500*4us = 2ms;
+				_tm0ah = 500/256;
+				SETCTMA_ISR_ENABLE();
+				_t0on  = 1;
+				_emi = 1;
 				break;
 
 			default:
@@ -79,8 +87,10 @@ int main(void)
 
 		fun_ble_task();
 
+
 		if(fg_time_1s){
 			fg_time_1s = 0;
+//			gbv_TxSDKWeightStatus = 1;
 		}
 	}
 }

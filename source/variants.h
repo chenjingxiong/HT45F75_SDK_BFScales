@@ -3,7 +3,7 @@
 
 extern volatile __byte_type  	flag0_time;//时间标志
 #define flag0_time_Byte			flag0_time.u8
-//#define fg_time_2ms				flag0_time.bits.b0
+#define fg_time_2ms				flag0_time.bits.b0
 //#define fg_time_100ms			flag0_time.bits.b1
 #define fg_time_100ms			flag0_time.bits.b2
 #define fg_time_1s				flag0_time.bits.b3

@@ -119,6 +119,7 @@ static void fun_GPIOInit()
 
 	SETLEDCURRENT_LEVEL3();
 
+	_pac4 = 0;
 
 }
 
@@ -129,15 +130,15 @@ void LED_Init(void)
 	LEDCOM3 = LOW ;
 	LEDCOM4 = LOW ;
 	LEDSEG = LOW;
-	LEDCOMC1 = OUTPUT ;
-	LEDCOMC2 = OUTPUT ;
-	LEDCOMC3 = OUTPUT ;
-	LEDCOMC4 = OUTPUT ;
-	LEDSEGC  = OUTPUT ;
+//	LEDCOMC1 = OUTPUT ;
+//	LEDCOMC2 = OUTPUT ;
+//	LEDCOMC3 = OUTPUT ;
+//	LEDCOMC4 = OUTPUT ;
+//	LEDSEGC  = OUTPUT ;
 	P_LED_BLE = LOW;
-	P_LED_BLE_C = OUTPUT;
+//	P_LED_BLE_C = OUTPUT;
 	P_LED_UNIT_PCT = LOW;
-	P_LED_UNIT_PCT_C = OUTPUT;
+//	P_LED_UNIT_PCT_C = OUTPUT;
 }
 
 /********************************************************************
@@ -281,6 +282,7 @@ void user_init(void)
 }
 
 //@------------�ⲿ�Д�0��ں���--------------@
+#if 0
 DEFINE_ISR(INT0_ISR, INT0_VECTOR)
 {
 
@@ -290,6 +292,7 @@ DEFINE_ISR(INT1_ISR, INT1_VECTOR)
 {
 	//gbv_Data_Recive_flag = 1;
 }
+#endif
 //@-------MuFunction0 �Д���ں���------------@
 //TM0
 DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
@@ -298,6 +301,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 	_t0af=0;
 	_mf0f=0;
 
+	fg_time_2ms = 1;
 
 	if(C_TIME_100MS <= ++gu8v_time_100ms){
 		gu8v_time_100ms = 0;
@@ -353,7 +357,6 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				fg_time_10s = 1;
 			}
 		}
-
 	}
 
 	fun_LEDBufScan();
@@ -365,6 +368,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 //
 //}
 //@----------Timebase0 �Д���ں���-----------@
+#if 0
 DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 {
 //	Timebase_2S_LVD_Check++;
@@ -379,6 +383,7 @@ DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 	_tb1f = 0;
 
 }
+#endif
 //@-------MuFunction1 �Д���ں���-----------@
 // LVD&EEPROM&UART&SIM
 DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
@@ -457,6 +462,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		}
 	}
 }
+#if 0
 //@-------MuFunction2 �Д���ں���-----------@
 // I2C &TM1
 DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
@@ -473,3 +479,8 @@ DEFINE_ISR(MuFunction3_ISP, MuFunction3_VECTOR)
 	_t2af=0;
 	_mf3f=0;
 }
+#endif
+
+
+
+
