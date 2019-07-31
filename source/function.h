@@ -4,14 +4,16 @@
 extern u16 gu16v_weigh;
 extern u16 gu16_display_weight;
 extern u16 gu16v_impedence_data;
+extern u16 gu16v_pct_data;
 extern u8 gu8v_weigh_targeunit;
-extern volatile u8  gu8v_05s_count;//led闪烁时亮灭之间的时间间隔的计数值.
-extern volatile u8  gu8v_howtimes;//led闪烁多少次，计数一亮一灭算2次.
+extern volatile u8  gu8v_05s_count;//led闪烁时亮灭之间的时间间隔的计数�?
+extern volatile u8  gu8v_howtimes;//led闪烁多少次，计数一亮一灭算2�?
 extern volatile u8  gu8v_led_speed;//led闪烁时亮灭之间的时间间隔,
-extern volatile u8  gu8v_led_delay;//延迟x*100MS后开始执行闪烁功能.
+extern volatile u8  gu8v_led_delay;//延迟x*100MS后开始执行闪烁功�?
 extern u8  gu8v_timed_shutdown;
 extern u8  gu8v_dismode;
 extern u8 gu8v_worktasks;
+extern volatile u8  gu8v_led_delay3S;
 
 extern void fun_Unit_Change(u16 weigh);
 extern void set_ledflash(u8 mode, u8 ledflash, u8 count, u8 speed, u8 delay, u8 overtime);

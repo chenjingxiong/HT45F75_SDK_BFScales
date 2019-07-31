@@ -7,10 +7,10 @@ extern volatile __byte_type  	flag0_time;//时间标志
 //#define fg_time_100ms			flag0_time.bits.b1
 #define fg_time_100ms			flag0_time.bits.b2
 #define fg_time_1s				flag0_time.bits.b3
-//#define fg_time_3s				flag0_time.bits.b4
+#define fg_time_3s				flag0_time.bits.b4
 #define fg_time_10s				flag0_time.bits.b5
-//#define fg_time_test			flag0_time.bits.b6//
-//#define fg_time_test2			flag0_time.bits.b7//
+#define fg_time_test			flag0_time.bits.b6//
+#define fg_time_test2			flag0_time.bits.b7//
 
 
 extern volatile __byte_type  	flag1;// 标志
@@ -20,16 +20,16 @@ extern volatile __byte_type  	flag1;// 标志
 #define fg_led_flash			flag1.bits.b2
 #define fg_led_change			flag1.bits.b3
 #define fg_display_updata		flag1.bits.b4
-//#define fg_time_10s			flag1.bits.b5
+//#define fg_sleep    			flag1.bits.b5
 //#define fg_time_test			flag1.bits.b6//
 //#define fg_time_test2			flag1.bits.b7//
 
 extern volatile __byte_type  	flag2;// 标志
 #define flag2_Byte				flag2.u8
 #define fg_loadok				flag2.bits.b0
-//#define fg_led_delay			flag2.bits.b1
-//#define fg_led_flash			flag2.bits.b2
-//#define fg_led_change			flag2.bits.b3
+#define fg_uart_rec_start			flag2.bits.b1
+#define fg_uart_rec_end			flag2.bits.b2
+#define fg_pct_ok      			flag2.bits.b3
 //#define fg_time_3s			flag2.bits.b4
 //#define fg_time_10s			flag2.bits.b5
 //#define fg_time_test			flag2.bits.b6//
@@ -38,5 +38,7 @@ extern volatile __byte_type  	flag2;// 标志
 
 extern u8 gu8v_time_100ms;
 extern u8 gu8v_time_1s;
+extern u8 R_UartData;
+extern u8 gu8v_time_test;
 
 #endif //__VARIANTS_H__

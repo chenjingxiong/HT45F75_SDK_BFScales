@@ -2,7 +2,7 @@
 //___________________________________________________________________
 //  Copyright : 2015 BY HOLTEK SEMICONDUCTOR INC
 //  File Name : Sys_init.c
-// Description: 系統初始化
+// Description: 系統初始�?
 //   Customer : 樂福衡器有限公司
 //Targer Board: CH376BLE
 //   MCU      : HT45F75
@@ -50,9 +50,9 @@ void SysFrequencyInit(void)
 //			_hircc = 0x09;
 //		#endif
 //		_fhs   = 0; // 选择系统时钟来自内部
-//		_hxtc  = 0x00; // 关闭外部时钟源
+//		_hxtc  = 0x00; // 关闭外部时钟�?
 //	#endif
-//	// 系统低速时钟配置
+//	// 系统低速时钟配�?
 //	#if (LXT == ENABLE)
 //		_fss   = 1;
 //		_lxten = 1;
@@ -79,10 +79,10 @@ static void fun_RamInit()
 	}
 }
 /********************************************************************
-Function: GPIO初始化
+Function: GPIO初始�?
 INPUT	: none
 OUTPUT	: none
-NOTE	: 所有IO config為輸入
+NOTE	: 所有IO config為輸�?
 ********************************************************************/
 static void fun_GPIOInit()
 {
@@ -106,7 +106,7 @@ static void fun_GPIOInit()
 
 	 P_LED_BLE = LOW;//蓝牙
 	 P_LED_BLE_C = OUTPUT;
-	 P_LED_UNIT_PCT	= LOW;//百分率:%
+	 P_LED_UNIT_PCT	= LOW;//百分�?%
 	 P_LED_UNIT_PCT_C = OUTPUT;
 
 	/*Bluetooth init */
@@ -114,13 +114,8 @@ static void fun_GPIOInit()
 	 P_BLE_EN_C = OUTPUT;
 	 P_BLE_EN = LOW;
 	 P_BT_Status = LOW;//LOW;
-
 	_ctrl0 = 0x00;
-
 	SETLEDCURRENT_LEVEL3();
-
-	_pac4 = 0;
-
 }
 
 void LED_Init(void)
@@ -142,7 +137,7 @@ void LED_Init(void)
 }
 
 /********************************************************************
-Function: Timer初始化
+Function: Timer初始�?
 INPUT	: none
 OUTPUT	: none
 NOTE	:
@@ -191,7 +186,7 @@ static void fun_TimerInit()
 
 }
 /********************************************************************
-Function: MCU上電初始化
+Function: MCU上電初始�?
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -212,7 +207,7 @@ void fun_PowerOnSysInit()
 	//WDT
 	SETWDTTIME_125MS();
 	//LVR
-	SETLVR_2_1V();//正常执行时 LVR 会于休眠或空闲时自动除能关闭。
+	SETLVR_2_1V();//正常执行�?LVR 会于休眠或空闲时自动除能关闭�?
 	//LVD
 	SETLVD_LVDIN();
 	SETLVD_ENABLE();
@@ -247,7 +242,7 @@ void fun_PrepareToHalt()
 }
 
 /********************************************************************
-Function: 初始化用户设置.
+Function: 初始化用户设�?
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -270,7 +265,7 @@ void user_init(void)
 	Set_DisplayMode(DISPLAY_ALLOFF);
 	gu8v_weigh_targeunit = UNIT_KG;
 	set_overtime2poweroff(C_TIME_10S);
-	//总中断位:=0 关总中断;=1 打开总中断.
+	//总中断位:=0 关总中�?=1 打开总中�?
 
 	_t0on  = 1;
 	SETCTMA_ISR_ENABLE();
@@ -279,21 +274,29 @@ void user_init(void)
 	fg_led_timing = 0;
 	fg_led_flash = 0;
 	fg_time_10s = 0;
+    
+    gu8v_time_test = C_TIME_10S;
+    fg_time_test2 = 0;
+    fg_pct_ok = 0;
+    gbv_UartRxSuccess = 0;
+    gu8v_led_delay3S = 0;
+     fg_time_3s = 0;
+    gu8v_worktasks = TASK_STARTUP;
 }
 
-//@------------�ⲿ�Д�0��ں���--------------@
+//@------------�ⲿ�Д�0��ں���?-------------@
 #if 0
 DEFINE_ISR(INT0_ISR, INT0_VECTOR)
 {
 
 }
-//@------------�ⲿ�Д�0��ں���--------------@
+//@------------�ⲿ�Д�0��ں���?-------------@
 DEFINE_ISR(INT1_ISR, INT1_VECTOR)
 {
 	//gbv_Data_Recive_flag = 1;
 }
 #endif
-//@-------MuFunction0 �Д���ں���------------@
+//@-------MuFunction0 �Д���ں���?-----------@
 //TM0
 DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 {
@@ -307,8 +310,36 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 		gu8v_time_100ms = 0;
 		fg_time_100ms = 1;
 
+        if(fg_time_test2){
+            if(gu8v_time_test){
+                gu8v_time_test--;
+            }else{
+                fg_time_test = 1;                
+                gu8v_time_test = C_TIME_10S;
+            }
+        }
+
+        if(!fg_time_3s){
+            gu8v_led_delay3S++;
+            if(C_TIME_3S <= gu8v_led_delay3S){
+                gu8v_led_delay3S = 0;
+                fg_time_3s = 1;
+            }
+        }
+        
+
+
 		if(C_TIMEING_CYCLE2MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
 		if(C_TIMEING_CYCLE2MS >= gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt++;
+
+        //���ڽ�������byte��ʱ��
+        if(!gbv_UartRxSuccess && fg_uart_rec_start){
+            if(gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt--;
+            if(0 == gu8v_TBRxTimeOutCnt){
+                //gbv_UartRxSuccess = 1;
+                fg_uart_rec_start = 0;
+            }
+        }
 
 		if(C_TIME_1S <= ++gu8v_time_1s){
 			gu8v_time_1s = 0;
@@ -317,22 +348,22 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 
 		/* LED显示闪烁切换定时 */
 		if(fg_led_timing){
-			//先延时 后执行LED闪烁功能
+			//先延�?后执行LED闪烁功能
 			if(!fg_led_delay){
 				if(gu8v_led_delay)
 					gu8v_led_delay--;
 				else
 					fg_led_delay = 1;
 			}
-			// 延时时间到后执行LED显示闪烁切换标志。
+			// 延时时间到后执行LED显示闪烁切换标志�?
 			if(fg_led_delay){
 				gu8v_05s_count++;
 				if(gu8v_led_speed <= gu8v_05s_count){
 					gu8v_05s_count = 0;
 					if(gu8v_howtimes){
-						fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪烁
-						//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁。
-						//注意:最好在fg_led_flash=1时,即LED处于熄灭状态
+						fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪�?
+						//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁�?
+						//注意:最好在fg_led_flash=1�?即LED处于熄灭状�?
 						if(fg_led_flash){
 							fg_led_change = !fg_led_change;
 						}
@@ -346,12 +377,12 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				}
 			}
 		}else{
-			/* 定时休眠关机,延迟时间过后才开始计时. */
+			/* 定时休眠关机,延迟时间过后才开始计�? */
 			if(gu8v_timed_shutdown){
 				gu8v_timed_shutdown--;
 				fg_time_10s = 0;
-				//当定时休眠时间没到，也没执行LED闪烁功能时,
-				//fg_led_flash设为0，进行所有显示LED扫描，防止fg_led_flash=1但还没到定时时间就关闭所有LED了。
+				//当定时休眠时间没到，也没执行LED闪烁功能�?
+				//fg_led_flash设为0，进行所有显示LED扫描，防止fg_led_flash=1但还没到定时时间就关闭所有LED了�?
 				fg_led_flash = 0;//防止显示出现错误关闭LED.
 			}else{
 				fg_time_10s = 1;
@@ -362,12 +393,12 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 	fun_LEDBufScan();
 
 }
-//@------------ADC �Д���ں���---------------@
+//@------------ADC �Д���ں���?--------------@
 //DEFINE_ISR(ADC_ISR, ADC_VECTOR)
 //{
 //
 //}
-//@----------Timebase0 �Д���ں���-----------@
+//@----------Timebase0 �Д���ں���?----------@
 #if 0
 DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 {
@@ -376,7 +407,7 @@ DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 //	gu16v_Test_OutTime++;
 //	gbv_8ms_Using_Key_Scan = 1;
 }
-//@----------Timebase1 �Д���ں���-----------@
+//@----------Timebase1 �Д���ں���?----------@
 DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 {
 /*	gu8v_HaltTime++;*/
@@ -384,12 +415,13 @@ DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 
 }
 #endif
-//@-------MuFunction1 �Д���ں���-----------@
+//@-------MuFunction1 �Д���ں���?----------@
 // LVD&EEPROM&UART&SIM
 DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 {
 
 	_mf1f=0;
+    #if 0
 	// 奇偶校验出错
 //	if (_perr0)
 //	{
@@ -403,7 +435,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// 帧错误
+	// 帧错�?
 	if (_ferr)
 	{
 		_acc = _usr;
@@ -417,7 +449,8 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// 发送数据
+   #endif 
+	// 发送数�?
 	if (_txif && gbv_IsBusyUartTx)
 	{
 		if (lu8v_TxBufoffset < lu8v_TxBufLength /*&& (_tidle)*/)
@@ -443,10 +476,95 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 	{
 		_rxif = 0;
 
+		//_acc = _usr;
+		//gu8v_UartRxBuf[lu8v_RxBufoffset] = _txrrxr;
+		//gu8v_TBRxTimeOutCnt = 0;
+		//lu8v_RxBufoffset++;
+				
+	
 		_acc = _usr;
-		gu8v_UartRxBuf[lu8v_RxBufoffset] = _txrrxr;
-		gu8v_TBRxTimeOutCnt = 0;
-		lu8v_RxBufoffset++;
+		R_UartData = _txrrxr;
+		if(gbv_UartRxSuccess) {
+			fg_uart_rec_start = 0;
+			return;
+		}
+		
+		gu8v_TBRxTimeOutCnt = C_TIMEING_TIMEOUT;
+         
+
+
+		if(!fg_uart_rec_start){
+			switch(R_UartData)
+			{
+				case CMD_HEARD:
+					fg_uart_rec_start = 1;
+					fg_uart_rec_end = 0;
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+				#if 0	
+				case REQ_TIME:
+					fg_uart_rec_start = 1;
+					fg_uart_rec_end = 0;
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+				
+//				case REQ_UNITSYN:
+//					fg_uart_rec_start = 1;
+//					fg_uart_rec_end = 0;
+//					lu8v_RxBufLength = DATA_BUF_LEN;
+//					break;
+				
+				case REQ_HISTORY:
+					fg_uart_rec_start = 1;
+					fg_uart_rec_end = 0;
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+				
+				case REQ_DIS_BT:
+					fg_uart_rec_start = 1;
+					fg_uart_rec_end = 0;				
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+					
+				case REQ_VERTION:
+					fg_uart_rec_start = 1;
+					fg_uart_rec_end = 0;				
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+					#endif
+				default:
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+			}
+			lu8v_RxBufoffset = 0;
+		}
+		
+		//start recive
+		if(fg_uart_rec_start){	
+			
+			if(fg_uart_rec_start && (lu8v_RxBufLength <= lu8v_RxBufoffset)){
+				fg_uart_rec_start = 0;
+				fg_uart_rec_end = 0;
+				lu8v_RxBufoffset = 0;
+			}
+			
+//			R_UartData_Buf[R_Uart_active][R_UartData_Idx++] = R_UartData;
+			gu8v_UartRxBuf[lu8v_RxBufoffset++] = R_UartData;
+			//gu8v_rec_total = R_UartData_Idx;
+			
+			if(lu8v_RxBufLength == lu8v_RxBufoffset)
+				fg_uart_rec_end = 1;
+
+			if(fg_uart_rec_end){
+				lu8v_RxBufoffset = 0;
+				gbv_UartRxSuccess = 1;
+				fg_uart_rec_start = 0;
+				fg_uart_rec_end = 0;
+				//R_Uart_active ^= 0x1;
+			}
+		}
+		R_UartData = 0;
+        #if 0
 		// 用戶需要在此寫Rx數據長度
 		// 1 固定長度,則在初始化的時候初始化話lu8v_RxBufLength
 		// 2 協議自帶長度信息
@@ -460,10 +578,14 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 			lu8v_RxBufLength = 0xff;
 			gbv_UartRxSuccess  = 1;
 		}
+        #endif
 	}
+    
+    _acc = _usr;
+    _acc = _txrrxr;
 }
 #if 0
-//@-------MuFunction2 �Д���ں���-----------@
+//@-------MuFunction2 �Д���ں���?----------@
 // I2C &TM1
 DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
 {
@@ -471,7 +593,7 @@ DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
 	_t1af=0;
 	_mf2f=0;
 }
-//@-------MuFunction3 �Д���ں���-----------@
+//@-------MuFunction3 �Д���ں���?----------@
 // TM2
 DEFINE_ISR(MuFunction3_ISP, MuFunction3_VECTOR)
 {

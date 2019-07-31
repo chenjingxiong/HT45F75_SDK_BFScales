@@ -30,7 +30,7 @@ asm(" message' **************************************************** ' ");
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #include "HT45F75.h"
-#define ImpedanceADCFilterUseBit 20 // 20 or 16 重量 ADC 數據使用的Bit數
+#define ImpedanceADCFilterUseBit 16 // 20 or 16 重量 ADC 數據使用的Bit數
 // 玄波發送器開關
 #define SET_BODYFAT_CIRCUIT_ON()        { _opaen =1; _sgen = 1; _bren = 1; _ftren = 1; _hysen = 1;}
 #define SET_BODYFAT_CIRCUIT_OFF()       { _opaen=0;  _sgc  = 0; _ftrc = 0;}
@@ -67,7 +67,7 @@ void fun_ADCStop();
 void fun_Filtering();
 void fun_FilterInit();
 void fun_LoadImpedanceSetting();
-unsigned long fun_unsigned32BitABS(unsigned long a, unsigned long b); // 取32位無符號差值
+unsigned int fun_unsigned32BitABS(unsigned int a, unsigned int b); // 取32位無符號差值
 extern unsigned char BHSDKState;									  // RW   工作狀態讀取與切換,參考 BodyfatSDKState 枚舉
 extern ADCFilter_t SDKADCFilterData;								  // 濾波ADC數據,詳細參考SDK_typedef.h ADCFilter_t
 
@@ -102,7 +102,7 @@ void fun_Impedance();
 Impedance_t SDKImpedance;
 volatile unsigned int gu16v_LastImpedance_ohm; // 上一筆阻抗值,單位為ohm. 若為0xffff,表示阻抗量測失敗
 volatile bit gbv_GetImpedanceOnce;			   // 得到第一次阻抗值
-volatile unsigned long *ImpedancePointer; // 指針使用特別注意範圍,防止越界更改值！！！
+volatile unsigned int *ImpedancePointer; // 指針使用特別注意範圍,防止越界更改值！！！
 
 /**************************************
 Function: 阻抗測量硬件配置

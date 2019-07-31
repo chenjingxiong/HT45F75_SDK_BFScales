@@ -36,7 +36,7 @@
 //operate : numeric  	fution: ~~
 #define ADCSTABLE_WEIGHT_CNT        10 //  range:  8~20 	數值越大，濾波要求越嚴格
 //operate : numeric  	fution: ~~
-#define ADCSTABLE_WEIGHT_THRESHOLD  700 // range: 1000~3000    數值越大，濾波比較寬松,建議使用1個分辨率對應的ADC值
+#define ADCSTABLE_WEIGHT_THRESHOLD  5 // range: 1000~3000    數值越大，濾波比較寬松,建議使用1個分辨率對應的ADC值
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
 //                                阻抗濾波  設置                                       @
@@ -45,7 +45,7 @@
 //operate : numeric  	fution: ~~
 #define ADCSTABLE_IMPEDANCE_CNT         8     //  range: 4~12  數值越大,穩度越慢,精度越高
 //operate : numeric  	fution: ~~
-#define ADCSTABLE_IMPEDANCE_THRESHOLD   250   // range: 3000~8000  數值越大,穩定越快,精度越差
+#define ADCSTABLE_IMPEDANCE_THRESHOLD   40   // range: 3000~8000  數值越大,穩定越快,精度越差
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
 //                                心率量測  設置                                       @

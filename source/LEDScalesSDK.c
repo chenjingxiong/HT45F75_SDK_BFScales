@@ -27,7 +27,7 @@ const unsigned char lu8v_LED_HEX[C_LED_CHAR_NUM] ={\
     	   //'H', 'L', 'O', '-',  'all on', 'all off',	'P',	'A' ,
     	 };
 
-//由于硬件2COM的LED连接方式与另外三个COM不一样，所以需要再建个不同的显示数字表格.
+//由于硬件2COM的LED连接方式与另外三个COM不一样，所以需要再建个不同的显示数字表�?
 const unsigned char lu8v_2COM_HEX[16] = {\
 			//0,   1,   2,	 3,	  4,   5,   6,   7,   8,   9,   //数组下标
 			 0x6F,0x41,0x76,0x73,0x59,0x3B,0x3F,0x61,0x7F,0x7B, //显示字符
@@ -40,11 +40,11 @@ const unsigned char lu8v_2COM_HEX[16] = {\
 
 #if 0
 /********************************************************************
-Function: HEX 轉換為4位BCD碼顯示
+Function: HEX 轉換�?位BCD碼顯�?
 IO_IS_INPUT	:
-OUTPUT	: gu8v_LED_Buffer[4] High → gu8v_LED_Buffer[4] Low
-NOTE	: 最大顯示9999,超過萬位以上不顯示,比如10000,顯示0000,54321顯示4321
-NOTE	: 此顯示用於LED秤上,通常有一位小數點,所以小於10,比如9顯示09,十位0會顯示
+OUTPUT	: gu8v_LED_Buffer[4] High �?gu8v_LED_Buffer[4] Low
+NOTE	: 最大顯�?999,超過萬位以上不顯�?比如10000,顯示0000,54321顯示4321
+NOTE	: 此顯示用於LED秤上,通常有一位小數點,所以小�?0,比如9顯示09,十位0會顯�?
 ********************************************************************/
 void fun_HEX2BCD4(unsigned int DisplayNum)
 {
@@ -74,10 +74,10 @@ void fun_HEX2BCD4(unsigned int DisplayNum)
 #endif
 
 //===============================================================
-//function: 设置所有显示buffer为1或0.
-//input   : C_SEG_ON_ALL:所有buffer写1；C_SEG_OFF_ALL:所有buffer写0.
+//function: 设置所有显示buffer�?�?.
+//input   : C_SEG_ON_ALL:所有buffer�?；C_SEG_OFF_ALL:所有buffer�?.
 //output  : NULL
-//description: 设置所有显示buffer为1或0.
+//description: 设置所有显示buffer�?�?.
 //===============================================================
 void Set_AllLEDBuffer(u8 OnOff)
 {
@@ -86,7 +86,7 @@ void Set_AllLEDBuffer(u8 OnOff)
 		for(i = 0; i < C_LED_BUFF_MAX; i++){
 			gu8v_LED_Buffer[i] = LED_CHAR_ALL;
 		}
-		fg_led_Byte = 0xFF;
+		fg_led_Byte = 0xFF & 0xB7;//上电全亮3s,蓝牙图标和%号由于太亮
 	}else{
 		for(i = 0; i < C_LED_BUFF_MAX; i++){
 			gu8v_LED_Buffer[i] = LED_CHAR_OFF;
@@ -98,8 +98,8 @@ void Set_AllLEDBuffer(u8 OnOff)
 
 
 /********************************************************************
-Function: HEX 转换为BCD码显示
-INPUT	:显示数据,只能显示最低4位十进制:qian bai shi ge
+Function: HEX 转换为BCD码显�?
+INPUT	:显示数据,只能显示最�?位十进制:qian bai shi ge
 OUTPUT	:
 NOTE	:
 ********************************************************************/
@@ -146,7 +146,7 @@ void fun_HEX2BCD(u16 DisplayNum)
 Function: 掃描顯示
 IO_IS_INPUT	:
 OUTPUT	:
-NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
+NOTE	: 放置在Time中定時掃�?建議掃描週期2ms
 ********************************************************************/
  void fun_LEDBufScan()
 {
@@ -233,7 +233,7 @@ NOTE	: 放置在Time中定時掃描,建議掃描週期2ms
 Function: 單位轉換
 IO_IS_INPUT	:
 OUTPUT	:
-NOTE	: 根據輸入的重量Jin,轉換為輸出對應單位的重量值
+NOTE	: 根據輸入的重量Jin,轉換為輸出對應單位的重量�?
 ********************************************************************/
 #if 0
 unsigned int fun_WeightUnitChange(unsigned int weightJin)

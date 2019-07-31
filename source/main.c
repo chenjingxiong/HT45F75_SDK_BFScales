@@ -18,6 +18,8 @@ int main(void)
 		// 切換為阻抗模式
 /*		BHSDKState = ENTER_IMPEDANCE*/;
 		// 切換為稱重模式
+
+		//gu8v_worktasks = TASK_SCALES;
 		BHSDKState = ENTER_WEIGHT_NORMAL;
 		 SDKWeight.flag.b.IsNeedTare = 1;			// 上電重量默認為0kg
 		// 切換為標定模式
@@ -31,7 +33,10 @@ int main(void)
 		gu8v_worktasks = TASK_SCALES;
 		set_overtime2poweroff(C_TIME_10S);
 		fg_time_10s = 0;
+        _t0on  = 0;
+        _emi = 0;
 	}
+
 
 	//主循環
 	while(1)
@@ -66,6 +71,8 @@ int main(void)
 				//task_scaleswakeup();//鐪佺┖闂达紝涓嶇敤鍑芥暟鐩存帴鐮佷笂
 				gu8v_worktasks = TASK_SCALES;
 				BHSDKState = ENTER_WEIGHT_NORMAL;
+                P_BLE_EN = LOW;
+                P_BT_Status = LOW;
 				// TM0
 				_tm0c0 = 0x20;		// fsys/16 4us
 				_tm0c1 = 0xc1;		// TimeCnt Mode
@@ -90,7 +97,6 @@ int main(void)
 
 		if(fg_time_1s){
 			fg_time_1s = 0;
-//			gbv_TxSDKWeightStatus = 1;
 		}
 	}
 }

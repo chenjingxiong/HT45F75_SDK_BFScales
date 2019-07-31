@@ -45,7 +45,9 @@
 #define DISPLAY_CALPASS				10//鏍″噯鎴愬姛.
 #define DISPLAY_CALFAIL				11
 #define DISPLAY_ALLOFF				12//鍏抽棴鎵�鏈夋樉绀篖ED
-#define DISPLAY_MAX					13
+#define DISPLAY_PCT				13//鍏抽棴鎵�鏈夋樉绀篖ED
+
+#define DISPLAY_MAX					14
 
 
 //闃绘姉娴嬭瘯閿欒
@@ -57,5 +59,16 @@
 
 #define C_TIMEING_CYCLE2MS 			5
 #define C_TIMEING_TIMEOUT 			2
+
+#define CMD_HEARD						0xFD
+#define DATA_BUF_LEN				11
+
+//命令的各个组成所在位置 position
+#define POS_HEARD						0//0xFD//heard:0xFD 包头：FD，表示手机发给秤的数据
+#define POS_CMDTYPE						1//cmd type:=34 标定命令; =35 关机命令； =36 显示低电LO命令； =37 表示为有效用户组信息； =38 表示秤进入抱婴
+#define POS_UNIT						2//unit:单位转换字节	=00:KG ; =01:LB; =02 ST; =03 jin -->由于LED没有ST单位，只有=0x01显示KG，其他值显示LB
+#define POS_USER						3//user: 00~09:P0~P9
+#define POS_CHECKSUM					10//checksum:8.BYTE2-BYTE7 的异或校验和。= (DATA_BUF_LEN - 1)
+
 
 #endif //__MYDEFINE_H__
