@@ -235,6 +235,7 @@ IO_IS_INPUT	:
 OUTPUT	:
 NOTE	: 根據輸入的重量Jin,轉換為輸出對應單位的重量值
 ********************************************************************/
+#if 0
 unsigned int fun_WeightUnitChange(unsigned int weightJin)
 {
 	if (gu8v_Weight_Unit == UNIT_KG)
@@ -247,3 +248,6 @@ unsigned int fun_WeightUnitChange(unsigned int weightJin)
 	}
 	return weightJin;
 }
+#endif
+
+

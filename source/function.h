@@ -31,7 +31,7 @@ extern u8 Get_DisplayMode(void);
 extern void fun_DiaplsyMode(void);
 extern void is_timedshutdown(void);
 extern void task_scales2sleep(void);
-extern void task_scaleswakeup(void);
+//extern void task_scaleswakeup(void);
 extern void fun_ble_task(void);
 extern void task_bodyfatscales(void);
 
