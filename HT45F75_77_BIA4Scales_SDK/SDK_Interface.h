@@ -35,7 +35,7 @@ extern Impedance_t SDKImpedance;             // 阻抗相關數據,詳細參考S
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 void Write_EEPROMByte(unsigned char addr, unsigned char WriteData);   // 寫一個Byte數據
 unsigned char Read_EEPROMByte(unsigned char addr);                    // 讀一個Byte數據
-unsigned long fun_unsigned32BitABS(unsigned long a, unsigned long b); // 取32位無符號差值
+unsigned int fun_unsigned32BitABS(unsigned int a, unsigned int b); // 取32位無符號差值
 
 
 

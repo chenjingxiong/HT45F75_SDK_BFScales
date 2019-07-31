@@ -27,7 +27,7 @@ asm(" message' **************************************************** ' ");
 //                                  封庫設置                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//unsigned char const SDKVersion[] = {'0','0','1'};
+unsigned char const SDKVersion[] = {'0','0','1'};
 #define HEART_FUNCTION 0 // 是否有心率功能
 #define IMPEDANCE_FUNCTION 1 // 是否有阻抗功能
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -70,7 +70,7 @@ unsigned char BHSDKState;
  OUTPUT	:
  NOTE	:
  **********************************************/
-unsigned long fun_unsigned32BitABS(unsigned long a, unsigned long b)
+unsigned int fun_unsigned32BitABS(unsigned int a, unsigned int b)
 {
 	if (a > b)	{ return (a - b); }
 	else		{ return (b - a); }

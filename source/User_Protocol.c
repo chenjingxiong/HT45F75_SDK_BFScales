@@ -1,14 +1,14 @@
 #include "common.h"
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ è®Šé‡å®šç¾© @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-volatile bit gbv_TxSDKWeightStatus;		// ç™¼é€SDKç‹€æ…‹çš„æ¨™èªŒ,åœ¨éœ€è¦ç™¼é€çš„åœ°æ–¹ç½®ä½falgå³å¯
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ×ƒÁ¿¶¨Áx @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+volatile bit gbv_TxSDKWeightStatus;		// °lËÍSDK î‘BµÄ˜ËÕI,ÔÚĞèÒª°lËÍµÄµØ·½ÖÃÎ»falg¼´¿É
 volatile bit gbv_TxSDKImpedanceStatus;
 volatile bit gbv_TxFinishStatus;
 
 //===============================================================
-//function: å¼‚æˆ–æ ¡éªŒå’Œ.
-//input   : *psurceï¼šæ•°æ®æŒ‡é’ˆï¼›     length:æ•°æ®æŒ‡é’ˆä¸­çš„æ•°æ®ä¸ªæ•°.
-//output  : å¼‚æˆ–æ ¡éªŒå’Œ:
-//description: å¼‚æˆ–æ ¡éªŒå’Œ:          eg: FD 34 00 00.  åˆ™:XOR_checksum= 0xFD ^ 0x34 ^ 0x00 ^ 0x00 = 0xC9
+//function: Òì»òĞ£ÑéºÍ.
+//input   : *psurce£ºÊı¾İÖ¸Õë£»     length:Êı¾İÖ¸ÕëÖĞµÄÊı¾İ¸öÊı.
+//output  : Òì»òĞ£ÑéºÍ:
+//description: Òì»òĞ£ÑéºÍ:          eg: FD 34 00 00.  Ôò:XOR_checksum= 0xFD ^ 0x34 ^ 0x00 ^ 0x00 = 0xC9
 //===============================================================
 u8 get_XOR_Checksum(volatile u8 * psurce, u8 length)
 {
@@ -25,7 +25,7 @@ u8 get_XOR_Checksum(volatile u8 * psurce, u8 length)
 /*
 void fun_TxExample()
 {
-	// è¦ç™¼é€çš„æ•¸æ“šå¯«å…¥gu8v_UartTxBuf[x],0 > N
+	// Òª°lËÍµÄ”µ“şŒ‘Èëgu8v_UartTxBuf[x],0 > N
 	gu8v_UartTxBuf[0] = 0x55;
 	gu8v_UartTxBuf[1] = 0x11;
  	gu8v_UartTxBuf[2] = 0x22;
@@ -33,11 +33,11 @@ void fun_TxExample()
  	gu8v_UartTxBuf[4] = 0x44;
 	// -----
  	gu8v_UartTxBuf[N]] = 0xAA;
-	fun_UartStartTx(N);é–‹å§‹ç™¼é€é•·åº¦ç‚ºNçš„æ•¸æ“šå¹€
+	fun_UartStartTx(N);é_Ê¼°lËÍéL¶ÈéNµÄ”µ“ş¬
 }
 */
 /********************************************************************
-Function: ç™¼é€é˜»æŠ—é‡æ¸¬ç‹€æ…‹
+Function: °lËÍ×è¿¹Á¿œy î‘B
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -45,24 +45,24 @@ NOTE	:
 void fun_TxSDKImpedanceStatus()
 {
 	gu8v_UartTxBuf[0] = 0xCF;
-	gu8v_UartTxBuf[1] = gu16v_impedence_data & 0x00FF;
-	gu8v_UartTxBuf[2] = (gu16v_impedence_data & 0xFF00 )>>8;;
-	gu8v_UartTxBuf[3] = ((SDKWeight.DataStable) & 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;
-	gu8v_UartTxBuf[4] = (SDKWeight.DataStable) & 0x00FF;//((SDKWeight.DataStable) & 0xFF00 )>>8;
-	gu8v_UartTxBuf[5] = 0x00;
-	gu8v_UartTxBuf[6] = 0x00;
-	gu8v_UartTxBuf[7] = 0x00;
+	gu8v_UartTxBuf[1] = (gu16v_impedence_data*10) & 0x00FF;//gu16v_impedence_data & 0x00FF;
+	gu8v_UartTxBuf[2] = ((gu16v_impedence_data*10) & 0xFF00 )>>8;//;
+ 	gu8v_UartTxBuf[3] = (gu16_display_weight*10) & 0x00FF;//((SDKWeight.DataStable)& 0xFF00 )>>8;//gu16v_weigh & 0x00FF;//0x00;//gu16_display_weight & 0x00FF;
+ 	gu8v_UartTxBuf[4] = ((gu16_display_weight*10)& 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;//(gu16v_weigh& 0xFF00 )>>8;//0x14;//(gu16_display_weight& 0xFF00 )>>8;
+	gu8v_UartTxBuf[5] = 0x00;//0x00;
+	gu8v_UartTxBuf[6] = 0x50;//0x00;
+	gu8v_UartTxBuf[7] = 0x00;//0x00;
 	gu8v_UartTxBuf[8] = gu8v_weigh_targeunit;
-	gu8v_UartTxBuf[9] = 0x00;//é”å®šæ•°æ®.
+	gu8v_UartTxBuf[9] = 0x00;//Ëø¶¨Êı¾İ.
 	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
 }
 
 /********************************************************************
-Function: åŒæ­¥æ™‚é–“å–®ä½ç­‰é…ç½®
+Function: Í¬²½•rég†ÎÎ»µÈÅäÖÃ
 INPUT	:
 OUTPUT	:
-NOTE	: MCUå–šé†’ååµæ¸¬é€£æ¥æœå‹™å™¨åä¸»å‹•ç´¢å–ç•¶å‰å–®ä½åŠæ™‚é–“
+NOTE	: MCU†¾ĞÑºó‚ÉœyßB½Ó·ş„ÕÆ÷ºóÖ÷„ÓË÷È¡®”Ç°†ÎÎ»¼°•rég
 ********************************************************************/
 void fun_TxSDKWeightStatus()
 {
@@ -70,21 +70,21 @@ void fun_TxSDKWeightStatus()
 	gu8v_UartTxBuf[0] = 0xCF;
 	gu8v_UartTxBuf[1] = 0x00;
 	gu8v_UartTxBuf[2] = 0x00;
- 	gu8v_UartTxBuf[3] = (SDKWeight.DataStable) & 0x00FF;//((SDKWeight.DataStable)& 0xFF00 )>>8;//gu16v_weigh & 0x00FF;//0x00;//gu16_display_weight & 0x00FF;
- 	gu8v_UartTxBuf[4] = ((SDKWeight.DataStable)& 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;//(gu16v_weigh& 0xFF00 )>>8;//0x14;//(gu16_display_weight& 0xFF00 )>>8;
+ 	gu8v_UartTxBuf[3] = (gu16_display_weight*10) & 0x00FF;//((SDKWeight.DataStable)& 0xFF00 )>>8;//gu16v_weigh & 0x00FF;//0x00;//gu16_display_weight & 0x00FF;
+ 	gu8v_UartTxBuf[4] = ((gu16_display_weight*10)& 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;//(gu16v_weigh& 0xFF00 )>>8;//0x14;//(gu16_display_weight& 0xFF00 )>>8;
  	gu8v_UartTxBuf[5] = 0x00;
  	gu8v_UartTxBuf[6] = 0x00;
  	gu8v_UartTxBuf[7] = 0x00;
  	gu8v_UartTxBuf[8] = 0x00;//gu8v_weigh_targeunit;
- 	gu8v_UartTxBuf[9] = 0x01;//è¡¨ç¤ºè¿‡ç¨‹æ•°æ®.
+ 	gu8v_UartTxBuf[9] = 0x01;//±íÊ¾¹ı³ÌÊı¾İ.
  	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
 }
 /********************************************************************
-Function: åŒæ­¥æ™‚é–“å–®ä½ç­‰é…ç½®
+Function: Í¬²½•rég†ÎÎ»µÈÅäÖÃ
 INPUT	:
 OUTPUT	:
-NOTE	: MCUå–šé†’ååµæ¸¬é€£æ¥æœå‹™å™¨åä¸»å‹•ç´¢å–ç•¶å‰å–®ä½åŠæ™‚é–“
+NOTE	: MCU†¾ĞÑºó‚ÉœyßB½Ó·ş„ÕÆ÷ºóÖ÷„ÓË÷È¡®”Ç°†ÎÎ»¼°•rég
 ********************************************************************/
 void fun_TxFinishStatus()
 {
@@ -117,7 +117,7 @@ void UART_SendData(u8* pdata, u8 len)
 #endif
 
 /********************************************************************
-Function: uart ç®¡ç†
+Function: uart ¹ÜÀí
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -125,17 +125,19 @@ NOTE	:
 void fun_UserProtocol()
 {
 #if 1
-	// æ•¸æ“šæ¥æ”¶ Time Outæ™‚é–“
+    #if 0
+	// ”µ“ş½ÓÊÕ Time Out•rég
 	if (gu8v_TBRxTimeOutCnt >= C_TIMEING_TIMEOUT)
 	{
 		gu8v_TBRxTimeOutCnt = 0;
 		lu8v_RxBufoffset = 0;
-		lu8v_RxBufLength = 0xff;
+		lu8v_RxBufLength = 0;
 		gbv_UartRxSuccess = 0;
 	}
+    #endif
 	//	UART TX
 	//	if(!gbv_IsBusyUartTx)
-	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE2MS) && (!gbv_IsBusyUartTx))	// å»ºè­°åŠ å…¥å®šæ™‚ç™¼é€ï¼Œé˜²æ­¢æ•¸æ“šç™¼é€å¤ªå¿«
+	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE2MS) && (!gbv_IsBusyUartTx))	// ½¨×h¼ÓÈë¶¨•r°lËÍ£¬·ÀÖ¹”µ“ş°lËÍÌ«¿ì
 	{
 		 gu8v_UartTxCycle = 0;
 		if (gbv_TxSDKWeightStatus)
@@ -165,20 +167,20 @@ void fun_UserProtocol()
 	if (gbv_UartRxSuccess)	// UART RX
 	{
 		gbv_UartRxSuccess = 0;
-		// æ ¡é©—åˆ¤æ–·,æ˜¯å”è­°ç¢ºèªæ˜¯å¦éœ€è¦
+		// Ğ£òÅĞ”à,ÊÇ…f×h´_ÕJÊÇ·ñĞèÒª
 		// volatile unsigned char i,CheckSum=0;
 		// for(i=0; i<gu8v_UartRxBuf[2]-2;i++)
 		// {
 		// 	CheckSum ^= gu8v_UartRxBuf[i];
 		// }
-		// æ•¸æ“šè§£æ
+		// ”µ“ş½âÎö
 		/*
 		if(gu8v_UartRxBuf[0] == RXFRAME_HEADER && gu8v_UartRxBuf[gu8v_UartRxBuf[2]-1]==RXFRAME_END)
 		// if(gu8v_UartRxBuf[0] == RXFRAME_HEADER)
 		{
 			if(CheckSum ==  gu8v_UartRxBuf[gu8v_UartRxBuf[2]-2] )
 			{
-				// UART RX æ•¸æ“šè§£æ
+				// UART RX ”µ“ş½âÎö
 				// WIFI STATUS
 				if(gu8v_UartRxBuf[1] == CM_WIFI_STATUS  )
 				{
@@ -189,13 +191,13 @@ void fun_UserProtocol()
 					}
 					else if (gu8v_WIFIStatus == WIFI_STATUS_AIRKSS_FAIL)
 					{
-						gbv_TxSDKImpedanceStatus = 1;	// é…ç¶²å¤±æ•—é‡æ–°é€²å…¥é…ç¶²,çŸ¥é“é€™æ¬¡60Sé€±æœŸåˆ°
+						gbv_TxSDKImpedanceStatus = 1;	// Åä¾WÊ§”¡ÖØĞÂßMÈëÅä¾W,ÖªµÀß@´Î60SßLÆÚµ½
 					}
 				}
 				// AIRKISS ACK
 				else if(gu8v_UartRxBuf[1] == CM_WIFI_AIRKISS  )
 				{
-					gbv_TxSDKImpedanceStatus = 0; // æ”¶åˆ°AIRKISSå‘½ä»¤,æ¸…é™¤ä¸å†ç™¼é€
+					gbv_TxSDKImpedanceStatus = 0; // ÊÕµ½AIRKISSÃüÁî,Çå³ı²»ÔÙ°lËÍ
 				}
 			}
 			else
@@ -208,6 +210,40 @@ void fun_UserProtocol()
 			lu8v_RxBufoffset =0;
 		}
 		*/
+		
+       // XOR_checksum = get_XOR_Checksum(&R_UartData_Buf[0],POS_CHECKSUM-1);//×¢Òâ:×îºóÒ»Î»ÎªÒì»òĞ£ÑéºÍ,²»Ğè¼ÆËã.
+        switch(gu8v_UartRxBuf[0])
+        {
+            case CMD_HEARD:
+                switch (gu8v_UartRxBuf[1])
+                {
+                    case 0x00://Í¬²½µ¥Î»
+                            gu8v_weigh_targeunit = gu8v_UartRxBuf[2];
+                            //fun_Unit_Change(gu16v_weigh);               
+                        break;
+                        
+                    case 0x37://´«ËÍÖ¬·¾ĞÅÏ¢¸øÀ¶ÑÀ
+                    
+                        break;
+                        
+                    default:
+                    
+                        break;
+                }
+                gu16v_pct_data = (gu8v_UartRxBuf[4]&0x00FF)+((gu8v_UartRxBuf[5]<<8)&0xFF00);
+                if(gu16v_pct_data != 0){
+                    fg_pct_ok = 1;
+                    gu8v_UartRxBuf[4] = 0;
+                    gu8v_UartRxBuf[5] = 0;
+                }else{
+                    fg_pct_ok = 0;
+                }
+                break;
+
+            default:
+                break;
+        }
+        
 	}
 #endif
 }

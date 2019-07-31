@@ -29,7 +29,7 @@ asm(" message' **************************************************** ' ");
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #define ADCSourceUseBit 20 // 24 or 20  ADC 原始 ADC 數據Bit數,主要為匹配早期20Bit MCU 比如HT45F7x
-#define ADCFilterUseBit 20 // 16 or 20  20精度更高,但ROM & RAM 佔用更大
+#define ADCFilterUseBit 16 // 16 or 20  20精度更高,但ROM & RAM 佔用更大
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
@@ -113,7 +113,7 @@ unsigned long SDKADCSourceData20BitLast;
 void fun_FilterInit()
 {
 	SDKADCFilterData.BufMax = 0;
-	SDKADCFilterData.BufMin = 0xFFFFFFFF;
+	SDKADCFilterData.BufMin = 0xFFFF;
 	SDKADCFilterData.Current = 0;
 	SDKADCFilterData.StableCntCurrent = 0;
 	SDKADCFilterData.flag.b.IsStable = 0;
@@ -148,16 +148,19 @@ void fun_Filtering()
 		temp.byte.byte3 = 0x00;
 		SDKADCSourceData20BitCurrent = temp.u32;
 	#endif
+		u32 SDKADCFilterDataCurrentemp;
+		SDKADCSourceData20BitCurrent=SDKADCSourceData20BitCurrent/16;
 		//快速穩定數據，縮短濾波器滯後的時間參數
 		if (fun_unsigned32BitABS(SDKADCSourceData20BitCurrent, SDKADCFilterData.Current) > SDKADCFilterData.StableThreshold * 8)
 		{
 			fun_FilterInit();
 			SDKADCSourceData20BitLast = SDKADCSourceData20BitCurrent;
-			SDKADCFilterData.Current = SDKADCSourceData20BitCurrent;
+			SDKADCFilterData.Current =  SDKADCSourceData20BitCurrent;
 		}
 		//濾波器的實現 最新濾波數據 = (a*(上一筆原始ADC值+當前筆原始ADC值)+b*上一次濾波數據)/(a*2+b)
-		SDKADCFilterData.Current = 8 * (SDKADCSourceData20BitCurrent + SDKADCSourceData20BitLast) + 112 * SDKADCFilterData.Current;
-		SDKADCFilterData.Current /= 128;
+		SDKADCFilterDataCurrentemp = 8 * (SDKADCSourceData20BitCurrent + SDKADCSourceData20BitLast) +112 * (u32)SDKADCFilterData.Current;
+		SDKADCFilterDataCurrentemp /= 128;
+		SDKADCFilterData.Current=(int)SDKADCFilterDataCurrentemp;
 		SDKADCSourceData20BitLast = SDKADCSourceData20BitCurrent;
 		//取得變化的最大值和最小值
 		if (SDKADCFilterData.Current > SDKADCFilterData.BufMax)
@@ -183,11 +186,11 @@ void fun_Filtering()
 			SDKADCFilterData.flag.b.IsStable = 0;
 			SDKADCFilterData.StableCntCurrent = 0;
 			SDKADCFilterData.BufMax = 0;
-			SDKADCFilterData.BufMin = 0xFFFFFFFF;
+			SDKADCFilterData.BufMin = 0xFFFF;
 		}
-#if ADCFilterUseBit == 16
-		SDKADCFilterData.Current = SDKADCFilterData.Current >> 4; // 20Bit 取16bit
-#endif
+//#if ADCFilterUseBit == 16
+//		SDKADCFilterData.Current = SDKADCFilterData.Current >> 4; // 20Bit 取16bit
+/*#endif*/
 		SDKADCFilterData.flag.b.IsReady = 1;
 	}
 }

@@ -46,16 +46,16 @@ asm (" message' **************************************************** ' ");
 #define WEIGHT_CAL3 (50 * 20)		// 重量校準點3
 #define EEPROM_ADDR_START 0x01		// EEPROM 存儲開始位置
 #define EEPROM_DATA_CALID_CODE 0xAA // 校準成功標誌數據,偵測到此數據,認為校準成功
-#define WeightADCFilterUseBit 20	// 20 or 16 重量 ADC 數據使用的Bit數
-#define ADCSourceUseBit 20//24			// 24 or 20  ADC 原始 ADC 數據Bit數,主要為匹配早期20Bit MCU 比如HT45F7x
+#define WeightADCFilterUseBit 16	// 20 or 16 重量 ADC 數據使用的Bit數
+#define ADCSourceUseBit 20			// 24 or 20  ADC 原始 ADC 數據Bit數,主要為匹配早期20Bit MCU 比如HT45F7x
 
 #if WeightADCFilterUseBit == 16
 	typedef unsigned int typedefWeight;
 	#define EEPROM_ADDR_END (4 * 2 + EEPROM_ADDR_START + 2)
 	#define EEPROM_SPAN_ADDR (4 * 2 + EEPROM_ADDR_START+1 )
-	#define CAL_Diff_ADC_DEFAULT 2500
+	#define CAL_Diff_ADC_DEFAULT 1500
 	//**************量校準參數預設***********
-	#define CAL0DATA_DEFAULT 32768		// 0點默認校準值
+	#define CAL0DATA_DEFAULT 32600		// 0點默認校準值
 	#define CAL1DATA_DEFAULT 5000		// 第1點默認校準值
 	#define CAL2DATA_DEFAULT 5000		// 第2點默認校準值
 	#define CAL3DATA_DEFAULT 5000		// 第3點默認校準值
@@ -86,7 +86,7 @@ void fun_FilterInit();
 void fun_LoadWeightSetting();
 void fun_LoadAutoOnSetting();
 void fun_LoadUserSetting();
-unsigned long fun_unsigned32BitABS(unsigned long a, unsigned long b); // 取32位無符號差值
+unsigned int fun_unsigned32BitABS(unsigned int a, unsigned int b); // 取32位無符號差值
 void Write_EEPROMByte(unsigned char addr, unsigned char WriteData);   // 寫一個Byte數據
 unsigned char Read_EEPROMByte(unsigned char addr);					  // 讀一個Byte數據
 extern unsigned char BHSDKState;     // RW   工作狀態讀取與切換,參考 BodyfatSDKState 枚舉
@@ -200,7 +200,7 @@ volatile unsigned char gu8v_WeighCalStep;
 //                  校準 代碼	    	    @
 // ========================================@
 #define weightCalADCDataLast SDKWeight.CalADCDataTemp.Cal3 // 最後一步才用到buf3,此處共用RAM
-volatile unsigned long *WeightPointer; // 指針使用特別注意範圍,防止越界更改值！！！
+volatile unsigned int *WeightPointer; // 指針使用特別注意範圍,防止越界更改值！！！
 
 /****************************************
  Function: 標定判斷
@@ -452,6 +452,7 @@ INPUT	:
 OUTPUT	:
 NOTE	: 用於快速喚醒
 ***************************************/
+volatile u32 SDKADCFilterDatatemp;
 void fun_Weight_AutoOn()
 {
 	if (SDKADCSourceData.flag.b.IsReady)
@@ -486,19 +487,31 @@ void fun_Weight_AutoOn()
 			temp.u32 = temp.u32 >> 0; // 取20bit
 		#endif
 	#endif
-
 		if (BHSDKState == STATE_AUTOON_SLOWMODE)
 		{
 			SDKADCFilterData.Current = 0;
 		}
 		//自動上秤累加數據4筆求平均
-		SDKADCFilterData.Current = SDKADCFilterData.Current + temp.u32;
+		SDKADCFilterDatatemp = SDKADCFilterDatatemp + temp.u32;
 		if (SDKADCSourceData.SamplingCnt == 7)
 		{
+		
 			if (BHSDKState == STATE_AUTOON_FASTMODE)
 			{
-				SDKADCFilterData.Current = SDKADCFilterData.Current / 4; // 快速頻率,四筆求平均
+				if((SDKADCFilterDatatemp/ 4)<65535)
+				{
+					SDKADCFilterData.Current =(int)(SDKADCFilterDatatemp/ 4); // 快速頻率,四筆求平均
+				}
+				else
+				{
+					SDKADCFilterData.Current =0xffff;
+				}
 			}
+			else
+			{
+				SDKADCFilterData.Current=(int)temp.u32;
+			}
+			SDKADCFilterDatatemp=0;
 			// 是否達到自動上稱重量判斷
 			if (SDKADCFilterData.Current > SDKWeight.CalADCData.Cal0)
 			{
