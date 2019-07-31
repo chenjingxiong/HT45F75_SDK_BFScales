@@ -22,7 +22,7 @@ extern volatile __byte_type 	gu8v_LED_BufferPoint;
 #define fg_led_ble     	    	gu8v_LED_BufferPoint.bits.b6
 #define fg_led_piont2      		gu8v_LED_BufferPoint.bits.b5
 #define fg_led_piont1      		gu8v_LED_BufferPoint.bits.b4
-#define fg_led_unit_pct	     	gu8v_LED_BufferPoint.bits.b3// nosue
+#define fg_led_unit_pct	     	gu8v_LED_BufferPoint.bits.b3
 #define fg_led_unit_jin	     	gu8v_LED_BufferPoint.bits.b2// nosue
 #define fg_led_unit_lb	     	gu8v_LED_BufferPoint.bits.b1
 #define fg_led_unit_kg 	    	gu8v_LED_BufferPoint.bits.b0

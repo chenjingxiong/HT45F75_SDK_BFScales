@@ -45,10 +45,10 @@ NOTE	:
 void fun_TxSDKImpedanceStatus()
 {
 	gu8v_UartTxBuf[0] = 0xCF;
-	gu8v_UartTxBuf[1] = (gu16v_impedence_data*10) & 0x00FF;//gu16v_impedence_data & 0x00FF;
+	gu8v_UartTxBuf[1] = (gu16v_impedence_data*10) & 0x00FF;
 	gu8v_UartTxBuf[2] = ((gu16v_impedence_data*10) & 0xFF00 )>>8;//;
- 	gu8v_UartTxBuf[3] = (gu16_display_weight*10) & 0x00FF;//((SDKWeight.DataStable)& 0xFF00 )>>8;//gu16v_weigh & 0x00FF;//0x00;//gu16_display_weight & 0x00FF;
- 	gu8v_UartTxBuf[4] = ((gu16_display_weight*10)& 0xFF00 )>>8;//(SDKWeight.DataStable) & 0x00FF;//(gu16v_weigh& 0xFF00 )>>8;//0x14;//(gu16_display_weight& 0xFF00 )>>8;
+ 	gu8v_UartTxBuf[3] = (gu16_display_weight*10) & 0x00FF;
+ 	gu8v_UartTxBuf[4] = ((gu16_display_weight*10)& 0xFF00 )>>8;
 	gu8v_UartTxBuf[5] = 0x00;//0x00;
 	gu8v_UartTxBuf[6] = 0x50;//0x00;
 	gu8v_UartTxBuf[7] = 0x00;//0x00;
@@ -210,7 +210,7 @@ void fun_UserProtocol()
 			lu8v_RxBufoffset =0;
 		}
 		*/
-		
+
        // XOR_checksum = get_XOR_Checksum(&R_UartData_Buf[0],POS_CHECKSUM-1);//注意:最后一位为异或校验和,不需计算.
         switch(gu8v_UartRxBuf[0])
         {
@@ -219,15 +219,15 @@ void fun_UserProtocol()
                 {
                     case 0x00://同步单位
                             gu8v_weigh_targeunit = gu8v_UartRxBuf[2];
-                            //fun_Unit_Change(gu16v_weigh);               
+                            //fun_Unit_Change(gu16v_weigh);
                         break;
-                        
+
                     case 0x37://传送脂肪信息给蓝牙
-                    
+
                         break;
-                        
+
                     default:
-                    
+
                         break;
                 }
                 gu16v_pct_data = (gu8v_UartRxBuf[4]&0x00FF)+((gu8v_UartRxBuf[5]<<8)&0xFF00);
@@ -243,7 +243,7 @@ void fun_UserProtocol()
             default:
                 break;
         }
-        
+
 	}
 #endif
 }
