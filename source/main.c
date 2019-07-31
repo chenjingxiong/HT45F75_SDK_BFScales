@@ -12,6 +12,9 @@ int main(void)
 		fun_PowerOnSysInit();
 		//UART配置
 		fun_UARTPowerOnInit();
+
+		user_init();
+
 		//显示
 		// 上電后調用fun_BodyFatScalesSDK_PowerOn()函數
 		fun_BodyFatScalesSDK_PowerOn();
@@ -33,7 +36,7 @@ int main(void)
 		gu8v_worktasks = TASK_SCALES;
 		set_overtime2poweroff(C_TIME_10S);
 		fg_time_10s = 0;
-        _t0on  = 0;
+        _t0on = 0;
         _emi = 0;
 	}
 
@@ -72,7 +75,7 @@ int main(void)
 				gu8v_worktasks = TASK_SCALES;
 				BHSDKState = ENTER_WEIGHT_NORMAL;
                 P_BLE_EN = LOW;
-                P_BT_Status = LOW;
+				SET_UART_ENABLE();
 				// TM0
 				_tm0c0 = 0x20;		// fsys/16 4us
 				_tm0c1 = 0xc1;		// TimeCnt Mode
@@ -91,9 +94,6 @@ int main(void)
 		fun_DiaplsyMode();
 
 		is_timedshutdown();
-
-		fun_ble_task();
-
 
 		if(fg_time_1s){
 			fg_time_1s = 0;

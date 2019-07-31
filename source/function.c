@@ -164,27 +164,44 @@ void task_bodyfatscales(void)
 			break;
 		case STATE_WEIGHT_LOADOK:	// ÕÍ≥…“ª¥Œ∑Q÷ÿúy¡ø
 	        // fun_DisplayMode_LoadOk();¥ÀÃéåëUser UI,±»»ÁÈ_ ºÈW†q∑Ä∂®÷ÿ¡øSDKWeight.DataStateµ»
-			if(is_BHSDKState_change()){
-				fg_loadok = 1;
-				fun_Unit_Change(SDKWeight.DataStable);
-				Set_DisplayMode(DISPLAY_LOADFIX);
+			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
+				fun_Unit_Change(SDKWeight.DataCurrent);
+				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
+			}else{
+				if(is_BHSDKState_change()){
+					fg_loadok = 1;
+					fun_Unit_Change(SDKWeight.DataStable);
+					Set_DisplayMode(DISPLAY_LOADFIX);
+				}
 			}
 			break;
 		case STATE_WEIGHT_LOADFIX:	// ÕÍ≥…“ª¥Œ∑Q÷ÿúy¡ø∫Û÷ÿ¡ø∑Ä∂®õ]”–Ω‚Êi
 			//fun_DisplayMode_LoadFix();//¥ÀÃéåëUser UI,,±»»ÁÈ_ ºÈW†q∑Ä∂®÷ÿ¡øSDKWeight.DataStateµ»
-			if(is_BHSDKState_change()){
-                
-    			gbv_TxSDKWeightStatus = 1;
-				fun_Unit_Change(SDKWeight.DataStable);
-				Set_DisplayMode(DISPLAY_LOADFIX);
+
+			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
+				fun_Unit_Change(SDKWeight.DataCurrent);
+				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
+				GCC_NOP();
+			}else{
+				if(is_BHSDKState_change()){
+					gbv_TxSDKWeightStatus = 1;
+					fun_Unit_Change(SDKWeight.DataStable);
+					Set_DisplayMode(DISPLAY_LOADFIX);
+				}
 			}
+
 			break;
 		case STATE_WEIGHT_LOADDOWN:	// œ¬≥”Ñ”◊˜
 	        //fun_DisplayMode_LoadDown();//¥ÀÃéåëUser UI,,±»»ÁÔ@ æÊi∂®SDKWeight.DataStateµ»
-			if(is_BHSDKState_change()){
-				fun_Unit_Change(SDKWeight.DataStable);
-//				Set_DisplayMode(DISPLAY_LOADDOWN);
-				Set_DisplayMode(DISPLAY_LOADFIX);//test
+			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
+				fun_Unit_Change(SDKWeight.DataCurrent);
+				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
+			}else{
+				if(is_BHSDKState_change()){
+					fun_Unit_Change(SDKWeight.DataStable);
+	//				Set_DisplayMode(DISPLAY_LOADDOWN);
+					Set_DisplayMode(DISPLAY_LOADFIX);//test
+				}
 			}
 			break;
 		case STATE_WEIGHT_OVERLOAD:	// ≥¨÷ÿ,Æî«∞÷ÿ¡ø¥ÛÏ∂◊Ó¥Û∑Q÷ÿ÷ÿ¡ø
@@ -207,6 +224,7 @@ void task_bodyfatscales(void)
 		case STATE_AUTOON_FASTMODE:		// øÏÀŸADC◊‘Ñ”…œ∑Q≈–î‡
 		case STATE_AUTOON_SLOWMODE:		// ¬˝ÀŸADC◊‘Ñ”…œ∑Q≈–î‡
 			// Õ®≥£ﬂ@ÇÄïr∫Úüo»Œ∫ŒUI
+			GCC_NOP();//test
 			break;
 		case STATE_AUTOON_PASS:			// ◊‘Ñ”…œ∑QOK
 			// ¥Àïrø…“‘¸c¡¡Ô@ æ,≤¢«–ìQµΩ∆’Õ®∑Q÷ÿƒ£ ΩﬂM––MCUµƒ’˝≥£π§◊˜
@@ -219,34 +237,28 @@ void task_bodyfatscales(void)
 			break;
 		case STATE_WEIGHT_CAL0:	// ’˝‘⁄òÀ∂®¡„¸c
 			// fun_DisplayMode_CAL0();¥ÀÃéåëUser UI,,±»»ÁÃ· æCAL 0kg
-
-//			if(is_BHSDKState_change()){
-				fun_Unit_Change(0);
-				Set_DisplayMode(DISPLAY_CAL);
-//			}
+//			fun_Unit_Change(0);
+//			Set_DisplayMode(DISPLAY_CAL);
 			break;
 		case STATE_WEIGHT_CAL1:	// ’˝‘⁄òÀ∂®µ⁄1¸c
 			// fun_DisplayMode_CAL1();¥ÀÃéåëUser UI,,±»»ÁÃ· æCAL 50kg
-
-//			if(is_BHSDKState_change()){
-				fun_Unit_Change(1000);
-				Set_DisplayMode(DISPLAY_CAL);
-//			}
+//			fun_Unit_Change(1000);
+//			Set_DisplayMode(DISPLAY_CAL);
 			break;
 		case STATE_WEIGHT_CAL2:	// ’˝‘⁄òÀ∂®µ⁄2¸c
 			// fun_DisplayMode_CAL2();¥ÀÃéåëUser UI,,±»»ÁÃ· æCAL 100kg
 
 //			if(is_BHSDKState_change()){
-				fun_Unit_Change(2000);
-				Set_DisplayMode(DISPLAY_CAL);
+//				fun_Unit_Change(2000);
+//				Set_DisplayMode(DISPLAY_CAL);
 //			}
 			break;
 		case STATE_WEIGHT_CAL3:	// ’˝‘⁄òÀ∂®µ⁄3¸c
 			// fun_DisplayMode_CAL3();¥ÀÃéåëUser UI,,±»»ÁÃ· æCAL 150kg
 
 //			if(is_BHSDKState_change()){
-				fun_Unit_Change(3000);
-				Set_DisplayMode(DISPLAY_CAL);
+//				fun_Unit_Change(3000);
+//				Set_DisplayMode(DISPLAY_CAL);
 //			}
 			break;
 		case STATE_WEIGHT_CALPASS:	// òÀ∂®≥…π¶
@@ -256,7 +268,7 @@ void task_bodyfatscales(void)
 		case STATE_WEIGHT_CALFAIL:	// òÀ∂® ßî°
 			// fun_DisplayMode_CALFAIL();¥ÀÃéåëUser UI,,±»»ÁÃ· æFIAS
 //			if(is_BHSDKState_change()){
-				Set_DisplayMode(DISPLAY_CALFAIL);
+//				Set_DisplayMode(DISPLAY_CALFAIL);
 //			}
 			break;
 		default:
@@ -298,10 +310,10 @@ void Set_DisplayMode(u8 dismode)
 //output  : DISPLAY_POWERON ~ DISPLAY_XXX.
 //description:.
 //===============================================================
-u8 Get_DisplayMode(void)
-{
-	return gu8v_dismode;
-}
+//u8 Get_DisplayMode(void)
+//{
+//	return gu8v_dismode;
+//}
 
 
 //===============================================================
@@ -312,7 +324,7 @@ u8 Get_DisplayMode(void)
 //===============================================================
 void fun_DiaplsyMode(void)
 {
-	switch(Get_DisplayMode())
+	switch(gu8v_dismode)
 	{
 		case DISPLAY_POWERON:
             Set_AllLEDBuffer(1);
@@ -330,7 +342,7 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_O;
 			gu8v_LED_Buffer[2] = LED_CHAR_L;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte = 0x00;
+			fg_led_Byte &= 0x40;
 			break;
 
 		case DISPLAY_NOLOAD:
@@ -341,7 +353,7 @@ void fun_DiaplsyMode(void)
 		case DISPLAY_LOADUP:
 			fun_HEX2BCD(gu16_display_weight);
 			set_ledflash(DISPLAY_LOADUP,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
-			set_overtime2poweroff(C_TIME_10S);//test
+			set_overtime2poweroff(C_TIME_10S);//‰∏çÁ®≥ÂÆöÊó∂‰∏çÂÖ≥Êú∫.
 			break;
 
 		case DISPLAY_LOADFIX:
@@ -365,7 +377,7 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_L;
 			gu8v_LED_Buffer[2] = LED_CHAR_O;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte = 0x00;
+			fg_led_Byte &= 0x40;
 			break;
 
 		case DISPLAY_IMPEDANCEING:
@@ -376,37 +388,36 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR__;
 			gu8v_LED_Buffer[2] = LED_CHAR__;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte = 0x00;
+			fg_led_Byte &= 0x40;
 			set_ledflash(DISPLAY_IMPEDANCEING,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
 			set_overtime2poweroff(C_TIME_10S);
 			break;
 
 		case DISPLAY_IMPEDANCE_FINISH:
-            
-            gbv_TxSDKImpedanceStatus = 1;
+
 			switch(gu16v_impedence_data){
 
 				case IMPEDANCE_ERR_NOTEST:
 				case IMPEDANCE_ERR_ABNORMAL:
 				case IMPEDANCE_ERR_OUTRANGE:
                     gu16v_impedence_data = 0x00;
-                
+
                     if(0 == fg_led_timing){
-                        //gu8v_worktasks = TASK_SLEEP;
                         set_BHSDKState(ENTER_WEIGHT_NORMAL);
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                         fg_pct_ok = 0;
                     }
-                    
+
 					break;
 
 				default:
+					gbv_TxSDKImpedanceStatus = 1;
                     if(fg_pct_ok){
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                         if(fg_led_change)
                         {
-                            //fun_HEX2BCD(gu16v_impedence_data);gu8v_weigh_targeunit
-                            fun_HEX2BCD(gu16v_pct_data);
+                            fun_HEX2BCD(gu16v_impedence_data);//test
+                            //fun_HEX2BCD(gu16v_pct_data);//test
                             //fg_led_piont1 = 0;
                             //fg_led_piont2 = 0;
                             fg_led_unit_pct = 1;
@@ -414,10 +425,9 @@ void fun_DiaplsyMode(void)
                             fun_HEX2BCD(gu16_display_weight);
                             fg_led_unit_pct = 0;
                         }
-                        
+
                         if(0 == fg_led_timing){
-                            gu8v_worktasks = TASK_SLEEP;//test
-                            //set_BHSDKState(ENTER_WEIGHT_NORMAL);
+                            set_BHSDKState(ENTER_WEIGHT_NORMAL);
                             fg_pct_ok = 0;
                         }
                     }else{
@@ -430,8 +440,6 @@ void fun_DiaplsyMode(void)
                             if(fg_time_test){
                                 fg_time_test = 0;
                                 fg_time_test2 = 0;
-                                //set_BHSDKState(ENTER_WEIGHT_NORMAL);
-                                //gu8v_worktasks = TASK_SLEEP;//test
                                 set_BHSDKState(ENTER_WEIGHT_NORMAL);
                                 set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                             }
@@ -443,39 +451,45 @@ void fun_DiaplsyMode(void)
 
 			break;
 
-        case DISPLAY_PCT:
-            break;
-                
-		case DISPLAY_CAL:
+        case DISPLAY_UNLOCK_WEIGHT:
 			fun_HEX2BCD(gu16_display_weight);
-			set_ledflash(DISPLAY_CAL,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
-			set_overtime2poweroff(C_TIME_10S);
-			break;
+			set_ledflash(DISPLAY_LOADUP,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
+            break;
+
+//		case DISPLAY_CAL:
+//			fun_HEX2BCD(gu16_display_weight);
+//			set_ledflash(DISPLAY_CAL,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
+//			set_overtime2poweroff(C_TIME_10S);
+//			break;
 
 		case DISPLAY_CALPASS:
-//			fun_HEX2BCD(gu16_display_weight);
-			set_ledflash(DISPLAY_CALPASS,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
-			if(0 == fg_led_timing){
-				while(1){
-					fg_led_Byte = 0x00;//unit:ble,pct,kg,lb.
-					gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_P;//'P'
-					gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_A;  //'A'
-					gu8v_LED_Buffer[NUM_SHI]= LED_CHAR_5;  //'S'
-					gu8v_LED_Buffer[NUM_GE] = LED_CHAR_5;  //'S'
-					GCC_CLRWDT();
-				}
+			while(1){
+				fg_led_Byte &= 0x40;//unit:ble,pct,kg,lb.
+				gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_P;//'P'
+				gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_A;  //'A'
+				gu8v_LED_Buffer[NUM_SHI]= LED_CHAR_5;  //'S'
+				gu8v_LED_Buffer[NUM_GE] = LED_CHAR_5;  //'S'
+				GCC_CLRWDT();
 			}
 			break;
 
-		case DISPLAY_CALFAIL:
+//		case DISPLAY_CALFAIL:
 
-			break;
+//			break;
 
 		default:
 		case DISPLAY_ALLOFF:
 			Set_AllLEDBuffer(0);
 			set_ledflash(DISPLAY_ALLOFF,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
 			break;
+	}
+
+	if(DISPLAY_POWERON != gu8v_dismode && DISPLAY_ALLOFF != gu8v_dismode){
+		//ËìùÁâôÂõæÊ†áÊòæÁ§∫
+		if(!P_BT_Status & !P_BLE_EN)
+			fg_led_ble = 1;
+		else
+			fg_led_ble = 0;
 	}
 }
 
@@ -499,12 +513,14 @@ void task_scales2sleep(void)
 
 #if 1
     P_BLE_EN = HIGH;
-    P_BT_Status = HIGH;
 	_t0on  = 0;
 	Set_DisplayMode(DISPLAY_ALLOFF);
 	LED_Init();
 	SETWDTTIME_1000MS();
-	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState ||STATE_AUTOON_FAIL == BHSDKState){
+	SET_UART_DISABLE();
+	SETLVD_DISABLE();
+	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState\
+	   ||STATE_AUTOON_FAIL == BHSDKState){
 		_idlen = 0;
 		_emi = 0;
 //		_t0on  = 0;
@@ -548,10 +564,4 @@ void task_scaleswakeup(void)
 }
 #endif
 
-
-void fun_ble_task(void)
-{
-	P_BLE_EN = 0;
-
-}
 

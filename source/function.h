@@ -29,12 +29,11 @@ extern void set_overtime2poweroff(u8 overtime);
 extern void set_BHSDKState(u8 state);
 extern u8 is_BHSDKState_change(void);
 extern void Set_DisplayMode(u8 dismode);
-extern u8 Get_DisplayMode(void);
+//extern u8 Get_DisplayMode(void);
 extern void fun_DiaplsyMode(void);
 extern void is_timedshutdown(void);
 extern void task_scales2sleep(void);
 //extern void task_scaleswakeup(void);
-extern void fun_ble_task(void);
 extern void task_bodyfatscales(void);
 
 #endif //__FUNCTION_H__

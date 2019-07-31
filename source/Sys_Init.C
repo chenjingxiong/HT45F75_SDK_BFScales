@@ -110,10 +110,10 @@ static void fun_GPIOInit()
 	 P_LED_UNIT_PCT_C = OUTPUT;
 
 	/*Bluetooth init */
-	 P_BT_Status_C = OUTPUT;//INPUT;//OUTPUT;
+	 P_BT_Status_C = INPUT;//INPUT;//OUTPUT;//客户蓝牙引脚定义:蓝牙  BLE_EN上拉输入，BLE_ST高电平输出
 	 P_BLE_EN_C = OUTPUT;
 	 P_BLE_EN = LOW;
-	 P_BT_Status = LOW;//LOW;
+//	 P_BT_Status = LOW;//LOW;
 	_ctrl0 = 0x00;
 	SETLEDCURRENT_LEVEL3();
 }
@@ -218,8 +218,6 @@ void fun_PowerOnSysInit()
 	// SIM User Define
 	// UART User Define
 	// ADC User Define
-
-	user_init();
 }
 /********************************************************************
 Function: 關閉各個模塊進入HLAT模式
@@ -249,6 +247,7 @@ NOTE	:
 ********************************************************************/
 void user_init(void)
 {
+#if 0
 	#if(_LVD_LVDEN == ENABLE)
 	if(LVD_LVDO)
 	{
@@ -260,6 +259,7 @@ void user_init(void)
 //		gu8v_worktasks = TASK_STARTUP;
 		gu8v_worktasks = TASK_SCALES;
 	}
+#endif
 
 	Set_AllLEDBuffer(0);
 	Set_DisplayMode(DISPLAY_ALLOFF);
@@ -274,7 +274,7 @@ void user_init(void)
 	fg_led_timing = 0;
 	fg_led_flash = 0;
 	fg_time_10s = 0;
-    
+
     gu8v_time_test = C_TIME_10S;
     fg_time_test2 = 0;
     fg_pct_ok = 0;
@@ -314,7 +314,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
             if(gu8v_time_test){
                 gu8v_time_test--;
             }else{
-                fg_time_test = 1;                
+                fg_time_test = 1;
                 gu8v_time_test = C_TIME_10S;
             }
         }
@@ -326,7 +326,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
                 fg_time_3s = 1;
             }
         }
-        
+
 
 
 		if(C_TIMEING_CYCLE2MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
@@ -449,7 +449,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-   #endif 
+   #endif
 	// 发送数�?
 	if (_txif && gbv_IsBusyUartTx)
 	{
@@ -480,17 +480,17 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		//gu8v_UartRxBuf[lu8v_RxBufoffset] = _txrrxr;
 		//gu8v_TBRxTimeOutCnt = 0;
 		//lu8v_RxBufoffset++;
-				
-	
+
+
 		_acc = _usr;
 		R_UartData = _txrrxr;
 		if(gbv_UartRxSuccess) {
 			fg_uart_rec_start = 0;
 			return;
 		}
-		
+
 		gu8v_TBRxTimeOutCnt = C_TIMEING_TIMEOUT;
-         
+
 
 
 		if(!fg_uart_rec_start){
@@ -501,34 +501,34 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
-				#if 0	
+				#if 0
 				case REQ_TIME:
 					fg_uart_rec_start = 1;
 					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
-				
+
 //				case REQ_UNITSYN:
 //					fg_uart_rec_start = 1;
 //					fg_uart_rec_end = 0;
 //					lu8v_RxBufLength = DATA_BUF_LEN;
 //					break;
-				
+
 				case REQ_HISTORY:
 					fg_uart_rec_start = 1;
 					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
-				
+
 				case REQ_DIS_BT:
 					fg_uart_rec_start = 1;
-					fg_uart_rec_end = 0;				
+					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
-					
+
 				case REQ_VERTION:
 					fg_uart_rec_start = 1;
-					fg_uart_rec_end = 0;				
+					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
 					#endif
@@ -538,20 +538,20 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 			}
 			lu8v_RxBufoffset = 0;
 		}
-		
+
 		//start recive
-		if(fg_uart_rec_start){	
-			
+		if(fg_uart_rec_start){
+
 			if(fg_uart_rec_start && (lu8v_RxBufLength <= lu8v_RxBufoffset)){
 				fg_uart_rec_start = 0;
 				fg_uart_rec_end = 0;
 				lu8v_RxBufoffset = 0;
 			}
-			
+
 //			R_UartData_Buf[R_Uart_active][R_UartData_Idx++] = R_UartData;
 			gu8v_UartRxBuf[lu8v_RxBufoffset++] = R_UartData;
 			//gu8v_rec_total = R_UartData_Idx;
-			
+
 			if(lu8v_RxBufLength == lu8v_RxBufoffset)
 				fg_uart_rec_end = 1;
 
@@ -580,7 +580,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		}
         #endif
 	}
-    
+
     _acc = _usr;
     _acc = _txrrxr;
 }
