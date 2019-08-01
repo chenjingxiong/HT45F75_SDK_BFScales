@@ -13,12 +13,11 @@ volatile u8  gu8v_led_delay3S;
 
 u8  gu8v_timed_shutdown;
 u8  gu8v_dismode;
-u8 gu8v_worktasks;
+u8  gu8v_worktasks;
 
 //¾«¶È:0.1½ï;	eg:weigh  =100,´ú±í 100*0.1½ï=10½ï.
 void fun_Unit_Change(u16 weigh)
 {
-	gu16v_weigh = weigh;
 
 	if(UNIT_KG == gu8v_weigh_targeunit)
 	{
@@ -170,22 +169,37 @@ void task_bodyfatscales(void)
 			}else{
 				if(is_BHSDKState_change()){
 					fg_loadok = 1;
-					fun_Unit_Change(SDKWeight.DataStable);
+//					fun_Unit_Change(SDKWeight.DataStable);
 					Set_DisplayMode(DISPLAY_LOADFIX);
 				}
 			}
 			break;
 		case STATE_WEIGHT_LOADFIX:	// Íê³ÉÒ»´Î·QÖØœyÁ¿ºóÖØÁ¿·€¶¨›]ÓĞ½âæi
 			//fun_DisplayMode_LoadFix();//´ËÌŒ‘User UI,,±ÈÈçé_Ê¼éW q·€¶¨ÖØÁ¿SDKWeight.DataStateµÈ
-
 			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
+				if(SDKWeight.DataCurrent != SDKWeight.DataStable){
+					set_overtime2poweroff(C_TIME_10S);//å¦‚æœé‡é‡æœ‰å˜åŒ–,æ›´æ–°æ—¶é—´ä¸å»ç¡çœ .
+				}
 				fun_Unit_Change(SDKWeight.DataCurrent);
 				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
-				GCC_NOP();
 			}else{
+				gu8v_time_30s = C_TIME_30S;
 				if(is_BHSDKState_change()){
 					gbv_TxSDKWeightStatus = 1;
-					fun_Unit_Change(SDKWeight.DataStable);
+					if(!fg_remeber_200g){
+						fg_remeber_200g = 1;
+						gu16v_weigh = SDKWeight.DataStable;
+//						fun_Unit_Change(gu16v_weigh);
+					}else{
+						if(fun_unsigned32BitABS(gu16v_weigh,SDKWeight.DataStable) <= C_REMEBER_200G){
+//							fun_Unit_Change(gu16v_weigh);
+							GCC_NOP();
+						}else{
+							gu16v_weigh = SDKWeight.DataStable;
+//							fun_Unit_Change(gu16v_weigh);
+						}
+					}
+					fun_Unit_Change(gu16v_weigh);
 					Set_DisplayMode(DISPLAY_LOADFIX);
 				}
 			}
@@ -199,8 +213,8 @@ void task_bodyfatscales(void)
 			}else{
 				if(is_BHSDKState_change()){
 					fun_Unit_Change(SDKWeight.DataStable);
-	//				Set_DisplayMode(DISPLAY_LOADDOWN);
-					Set_DisplayMode(DISPLAY_LOADFIX);//test
+					Set_DisplayMode(DISPLAY_LOADDOWN);
+					//Set_DisplayMode(DISPLAY_LOADFIX);
 				}
 			}
 			break;
@@ -224,7 +238,6 @@ void task_bodyfatscales(void)
 		case STATE_AUTOON_FASTMODE:		// ¿ìËÙADC×Ô„ÓÉÏ·QÅĞ”à
 		case STATE_AUTOON_SLOWMODE:		// ÂıËÙADC×Ô„ÓÉÏ·QÅĞ”à
 			// Í¨³£ß@‚€•rºòŸoÈÎºÎUI
-			GCC_NOP();//test
 			break;
 		case STATE_AUTOON_PASS:			// ×Ô„ÓÉÏ·QOK
 			// ´Ë•r¿ÉÒÔücÁÁï@Ê¾,²¢ÇĞ“Qµ½ÆÕÍ¨·QÖØÄ£Ê½ßMĞĞMCUµÄÕı³£¹¤×÷
@@ -342,7 +355,7 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_O;
 			gu8v_LED_Buffer[2] = LED_CHAR_L;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte &= 0x40;
+			fg_led_Byte &= 0;//0x40;
 			break;
 
 		case DISPLAY_NOLOAD:
@@ -377,7 +390,10 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_L;
 			gu8v_LED_Buffer[2] = LED_CHAR_O;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte &= 0x40;
+			fg_led_Byte &= 0;//0x40;
+			while(1){
+				is_timedshutdown();
+			}
 			break;
 
 		case DISPLAY_IMPEDANCEING:
@@ -403,7 +419,7 @@ void fun_DiaplsyMode(void)
                     gu16v_impedence_data = 0x00;
 
                     if(0 == fg_led_timing){
-                        set_BHSDKState(ENTER_WEIGHT_NORMAL);
+                        set_BHSDKState(ENTER_WEIGHT_NORMAL);//test
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                         fg_pct_ok = 0;
                     }
@@ -416,8 +432,8 @@ void fun_DiaplsyMode(void)
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                         if(fg_led_change)
                         {
-                            fun_HEX2BCD(gu16v_impedence_data);//test
-                            //fun_HEX2BCD(gu16v_pct_data);//test
+                            //fun_HEX2BCD(gu16v_impedence_data);//test
+                            fun_HEX2BCD(gu16v_pct_data);//test
                             //fg_led_piont1 = 0;
                             //fg_led_piont2 = 0;
                             fg_led_unit_pct = 1;
@@ -453,7 +469,7 @@ void fun_DiaplsyMode(void)
 
         case DISPLAY_UNLOCK_WEIGHT:
 			fun_HEX2BCD(gu16_display_weight);
-			set_ledflash(DISPLAY_LOADUP,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
+			set_ledflash(DISPLAY_UNLOCK_WEIGHT,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
             break;
 
 //		case DISPLAY_CAL:
@@ -522,7 +538,12 @@ void task_scales2sleep(void)
 	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState\
 	   ||STATE_AUTOON_FAIL == BHSDKState){
 		_idlen = 0;
-		_emi = 0;
+//		_emi = 0;
+		if(gu8v_time_30s)
+			gu8v_time_30s--;
+		else
+			fg_remeber_200g = 0;
+
 //		_t0on  = 0;
 //		_t1on  = 0;
 //		_t2on  = 0;

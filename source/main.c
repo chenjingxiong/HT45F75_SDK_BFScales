@@ -37,7 +37,7 @@ int main(void)
 		set_overtime2poweroff(C_TIME_10S);
 		fg_time_10s = 0;
         _t0on = 0;
-        _emi = 0;
+//        _emi = 0;
 	}
 
 
@@ -76,6 +76,7 @@ int main(void)
 				BHSDKState = ENTER_WEIGHT_NORMAL;
                 P_BLE_EN = LOW;
 				SET_UART_ENABLE();
+				gu8v_time_30s = C_TIME_30S;
 				// TM0
 				_tm0c0 = 0x20;		// fsys/16 4us
 				_tm0c1 = 0xc1;		// TimeCnt Mode

@@ -564,6 +564,7 @@ void fun_Enter_Weight_AutoOn()
 	BHSDKState = STATE_AUTOON_FASTMODE;
 	fun_WeightHardwareSetting();
 	fun_LoadAutoOnSetting();
+	GCC_DELAY(800);
 	fun_ADCStart();
 	fun_FilterInit();
 }

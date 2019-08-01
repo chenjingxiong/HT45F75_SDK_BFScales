@@ -2,8 +2,8 @@
 //___________________________________________________________________
 //  Copyright : 2015 BY HOLTEK SEMICONDUCTOR INC
 //  File Name : Sys_init.c
-// Description: ç³»çµ±åˆå§‹åŒ?
-//   Customer : æ¨‚ç¦è¡¡å™¨æœ‰é™å…¬å¸
+// Description: Ïµ½y³õÊ¼??
+//   Customer : ˜·¸£ºâÆ÷ÓĞÏŞ¹«Ë¾
 //Targer Board: CH376BLE
 //   MCU      : HT45F75
 //___________________________________________________________________
@@ -11,7 +11,7 @@
 #include "common.h"
 
 //===============================================================
-//function: é…ç½®ç³»ç»Ÿæ—¶é’Ÿ
+//function: ÅäÖÃÏµÍ³Ê±ÖÓ
 //input   : none.
 //output  : none
 //description:
@@ -19,29 +19,29 @@
 void SysFrequencyInit(void)
 {
 	_hlclk = 1;
-//	//é…ç½®ç³»ç»Ÿæ—¶é’Ÿ
+//	//ÅäÖÃÏµÍ³Ê±ÖÓ
 //	#if (HXT == ENABLE)
-//		// ä¿®æ”¹IOä¸ºOSC
+//		// ĞŞ¸ÄIOÎªOSC
 //		_pas07 = 1;
 //		_pas06 = 1;
 //		_pas11 = 1;
 //		_pas10 = 1;
-//		//å¼€å¯å¤–éƒ¨æ—¶é’Ÿæº.
+//		//¿ªÆôÍâ²¿Ê±ÖÓÔ´.
 //		#if (SYS_FREQUENCY_OSC > 10000000)
 //			_hxtm  = 1;
 //		#else
 //			_hxtm  = 0;
 //		#endif
 //		_hxten = 1;
-//		_fhs   = 1; // é€‰æ‹©ç³»ç»Ÿæ—¶é’Ÿæ¥è‡ªå¤–éƒ¨.
-//		_hircc = 0; // å…³é—­å†…éƒ¨æ—¶é’Ÿ.
+//		_fhs   = 1; // Ñ¡ÔñÏµÍ³Ê±ÖÓÀ´×ÔÍâ²¿.
+//		_hircc = 0; // ¹Ø±ÕÄÚ²¿Ê±ÖÓ.
 //	#else
-//		// ä¿®æ”¹IOä¸ºæ™®é€šIO
+//		// ĞŞ¸ÄIOÎªÆÕÍ¨IO
 //		_pas07 = 0;
 //		_pas06 = 0;
 //		_pas11 = 0;
 //		_pas10 = 0;
-//		// å¼€å¯å†…éƒ¨æ—¶é’Ÿæº
+//		// ¿ªÆôÄÚ²¿Ê±ÖÓÔ´
 //		#if   (SYS_FREQUENCY_OSC == SYS_OSC_4MHZ)
 //			_hircc = 0x01;
 //		#elif (SYS_FREQUENCY_OSC == SYS_OSC_8MHZ)
@@ -49,10 +49,10 @@ void SysFrequencyInit(void)
 //		#elif (SYS_FREQUENCY_OSC == SYS_OSC_12MHZ)
 //			_hircc = 0x09;
 //		#endif
-//		_fhs   = 0; // é€‰æ‹©ç³»ç»Ÿæ—¶é’Ÿæ¥è‡ªå†…éƒ¨
-//		_hxtc  = 0x00; // å…³é—­å¤–éƒ¨æ—¶é’Ÿæº?
+//		_fhs   = 0; // Ñ¡ÔñÏµÍ³Ê±ÖÓÀ´×ÔÄÚ²¿
+//		_hxtc  = 0x00; // ¹Ø±ÕÍâ²¿Ê±ÖÓ??
 //	#endif
-//	// ç³»ç»Ÿä½é€Ÿæ—¶é’Ÿé…ç½?
+//	// ÏµÍ³µÍËÙÊ±ÖÓÅä??
 //	#if (LXT == ENABLE)
 //		_fss   = 1;
 //		_lxten = 1;
@@ -79,10 +79,10 @@ static void fun_RamInit()
 	}
 }
 /********************************************************************
-Function: GPIOåˆå§‹åŒ?
+Function: GPIO³õÊ¼??
 INPUT	: none
 OUTPUT	: none
-NOTE	: æ‰€æœ‰IO configç‚ºè¼¸å…?
+NOTE	: ËùÓĞIO configéİ”??
 ********************************************************************/
 static void fun_GPIOInit()
 {
@@ -104,13 +104,13 @@ static void fun_GPIOInit()
 	_pdc = PDC_Default;
 	_pdpu= PDPU_Default;
 
-	 P_LED_BLE = LOW;//è“ç‰™
+	 P_LED_BLE = LOW;//À¶ÑÀ
 	 P_LED_BLE_C = OUTPUT;
-	 P_LED_UNIT_PCT	= LOW;//ç™¾åˆ†ç?%
+	 P_LED_UNIT_PCT	= LOW;//°Ù·Ö??%
 	 P_LED_UNIT_PCT_C = OUTPUT;
 
 	/*Bluetooth init */
-	 P_BT_Status_C = INPUT;//INPUT;//OUTPUT;//å®¢æˆ·è“ç‰™å¼•è„šå®šä¹‰:è“ç‰™  BLE_ENä¸Šæ‹‰è¾“å…¥ï¼ŒBLE_STé«˜ç”µå¹³è¾“å‡º
+	 P_BT_Status_C = INPUT;//INPUT;//OUTPUT;//¿Í»§À¶ÑÀÒı½Å¶¨Òå:À¶ÑÀ  BLE_ENÉÏÀ­ÊäÈë£¬BLE_ST¸ßµçÆ½Êä³ö
 	 P_BLE_EN_C = OUTPUT;
 	 P_BLE_EN = LOW;
 //	 P_BT_Status = LOW;//LOW;
@@ -137,7 +137,7 @@ void LED_Init(void)
 }
 
 /********************************************************************
-Function: Timeråˆå§‹åŒ?
+Function: Timer³õÊ¼??
 INPUT	: none
 OUTPUT	: none
 NOTE	:
@@ -186,7 +186,7 @@ static void fun_TimerInit()
 
 }
 /********************************************************************
-Function: MCUä¸Šé›»åˆå§‹åŒ?
+Function: MCUÉÏëŠ³õÊ¼??
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -207,10 +207,11 @@ void fun_PowerOnSysInit()
 	//WDT
 	SETWDTTIME_125MS();
 	//LVR
-	SETLVR_2_1V();//æ­£å¸¸æ‰§è¡Œæ—?LVR ä¼šäºä¼‘çœ æˆ–ç©ºé—²æ—¶è‡ªåŠ¨é™¤èƒ½å…³é—­ã€?
+	SETLVR_2_1V();//Õı³£Ö´ĞĞ??LVR »áÓÚĞİÃß»ò¿ÕÏĞÊ±×Ô¶¯³ıÄÜ¹Ø±Õ??
 	//LVD
 	SETLVD_LVDIN();
 	SETLVD_ENABLE();
+
 	//GPIO
 	fun_GPIOInit();
 	// TM & TimeBase
@@ -220,7 +221,7 @@ void fun_PowerOnSysInit()
 	// ADC User Define
 }
 /********************************************************************
-Function: é—œé–‰å„å€‹æ¨¡å¡Šé€²å…¥HLATæ¨¡å¼
+Function: êPé]¸÷‚€Ä£‰KßMÈëHLATÄ£Ê½
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -228,19 +229,19 @@ NOTE	:
 void fun_PrepareToHalt()
 {
 
-	//é—œé–‰ timer
+	//êPé] timer
 	_t0on = 0;
 	_t1on = 0;
 	_t2on = 0;
-	// é—œé–‰ä¸­æ–·
+	// êPé]ÖĞ”à
 	_emi = 0;
 	SETTIMEBASE_OFF();
 //	_tbon = 1;
-	SETWDTTIME_1000MS();// 1Så–šé†’
+	SETWDTTIME_1000MS();// 1S†¾ĞÑ
 }
 
 /********************************************************************
-Function: åˆå§‹åŒ–ç”¨æˆ·è®¾ç½?
+Function: ³õÊ¼»¯ÓÃ»§Éè??
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -265,7 +266,7 @@ void user_init(void)
 	Set_DisplayMode(DISPLAY_ALLOFF);
 	gu8v_weigh_targeunit = UNIT_KG;
 	set_overtime2poweroff(C_TIME_10S);
-	//æ€»ä¸­æ–­ä½:=0 å…³æ€»ä¸­æ–?=1 æ‰“å¼€æ€»ä¸­æ–?
+	//×ÜÖĞ¶ÏÎ»:=0 ¹Ø×ÜÖĞ??=1 ´ò¿ª×ÜÖĞ??
 
 	_t0on  = 1;
 	SETCTMA_ISR_ENABLE();
@@ -284,19 +285,19 @@ void user_init(void)
     gu8v_worktasks = TASK_STARTUP;
 }
 
-//@------------ï¿½â²¿ï¿½Ğ”ï¿½0ï¿½ï¿½Úºï¿½ï¿½ï¿?-------------@
+//@------------???§¥?0???????-------------@
 #if 0
 DEFINE_ISR(INT0_ISR, INT0_VECTOR)
 {
 
 }
-//@------------ï¿½â²¿ï¿½Ğ”ï¿½0ï¿½ï¿½Úºï¿½ï¿½ï¿?-------------@
+//@------------???§¥?0???????-------------@
 DEFINE_ISR(INT1_ISR, INT1_VECTOR)
 {
 	//gbv_Data_Recive_flag = 1;
 }
 #endif
-//@-------MuFunction0 ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?-----------@
+//@-------MuFunction0 ?§¥????????-----------@
 //TM0
 DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 {
@@ -330,13 +331,12 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 
 
 		if(C_TIMEING_CYCLE2MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
-		if(C_TIMEING_CYCLE2MS >= gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt++;
 
-        //´®¿Ú½ÓÊÕÊı¾İbyte³¬Ê±¡£
+        //???????????byte?????
         if(!gbv_UartRxSuccess && fg_uart_rec_start){
             if(gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt--;
             if(0 == gu8v_TBRxTimeOutCnt){
-                //gbv_UartRxSuccess = 1;
+                gbv_UartRxSuccess = 1;
                 fg_uart_rec_start = 0;
             }
         }
@@ -346,24 +346,24 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 			fg_time_1s = 1;
 		}
 
-		/* LEDæ˜¾ç¤ºé—ªçƒåˆ‡æ¢å®šæ—¶ */
+		/* LEDÏÔÊ¾ÉÁË¸ÇĞ»»¶¨Ê± */
 		if(fg_led_timing){
-			//å…ˆå»¶æ—?åæ‰§è¡ŒLEDé—ªçƒåŠŸèƒ½
+			//ÏÈÑÓ??ºóÖ´ĞĞLEDÉÁË¸¹¦ÄÜ
 			if(!fg_led_delay){
 				if(gu8v_led_delay)
 					gu8v_led_delay--;
 				else
 					fg_led_delay = 1;
 			}
-			// å»¶æ—¶æ—¶é—´åˆ°åæ‰§è¡ŒLEDæ˜¾ç¤ºé—ªçƒåˆ‡æ¢æ ‡å¿—ã€?
+			// ÑÓÊ±Ê±¼äµ½ºóÖ´ĞĞLEDÏÔÊ¾ÉÁË¸ÇĞ»»±êÖ¾??
 			if(fg_led_delay){
 				gu8v_05s_count++;
 				if(gu8v_led_speed <= gu8v_05s_count){
 					gu8v_05s_count = 0;
 					if(gu8v_howtimes){
-						fg_led_flash = !fg_led_flash;//æ§åˆ¶LEDä¸€äº®ä¸€ç­é—ªçƒ?
-						//fg_led_change:å¯ä»¥ç”¨æ¥æ§åˆ¶é—ªçƒæ—¶ä½“è„‚ä¸ä½“é‡çš„è½®æµé—ªçƒã€?
-						//æ³¨æ„:æœ€å¥½åœ¨fg_led_flash=1æ—?å³LEDå¤„äºç†„ç­çŠ¶æ€?
+						fg_led_flash = !fg_led_flash;//¿ØÖÆLEDÒ»ÁÁÒ»ÃğÉÁ??
+						//fg_led_change:¿ÉÒÔÓÃÀ´¿ØÖÆÉÁË¸Ê±ÌåÖ¬ÓëÌåÖØµÄÂÖÁ÷ÉÁË¸??
+						//×¢Òâ:×îºÃÔÚfg_led_flash=1??¼´LED´¦ÓÚÏ¨Ãğ×´??
 						if(fg_led_flash){
 							fg_led_change = !fg_led_change;
 						}
@@ -377,13 +377,13 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				}
 			}
 		}else{
-			/* å®šæ—¶ä¼‘çœ å…³æœº,å»¶è¿Ÿæ—¶é—´è¿‡åæ‰å¼€å§‹è®¡æ—? */
+			/* ¶¨Ê±ĞİÃß¹Ø»ú,ÑÓ³ÙÊ±¼ä¹ıºó²Å¿ªÊ¼¼Æ?? */
 			if(gu8v_timed_shutdown){
 				gu8v_timed_shutdown--;
 				fg_time_10s = 0;
-				//å½“å®šæ—¶ä¼‘çœ æ—¶é—´æ²¡åˆ°ï¼Œä¹Ÿæ²¡æ‰§è¡ŒLEDé—ªçƒåŠŸèƒ½æ—?
-				//fg_led_flashè®¾ä¸º0ï¼Œè¿›è¡Œæ‰€æœ‰æ˜¾ç¤ºLEDæ‰«æï¼Œé˜²æ­¢fg_led_flash=1ä½†è¿˜æ²¡åˆ°å®šæ—¶æ—¶é—´å°±å…³é—­æ‰€æœ‰LEDäº†ã€?
-				fg_led_flash = 0;//é˜²æ­¢æ˜¾ç¤ºå‡ºç°é”™è¯¯å…³é—­LED.
+				//µ±¶¨Ê±ĞİÃßÊ±¼äÃ»µ½£¬Ò²Ã»Ö´ĞĞLEDÉÁË¸¹¦ÄÜ??
+				//fg_led_flashÉèÎª0£¬½øĞĞËùÓĞÏÔÊ¾LEDÉ¨Ãè£¬·ÀÖ¹fg_led_flash=1µ«»¹Ã»µ½¶¨Ê±Ê±¼ä¾Í¹Ø±ÕËùÓĞLEDÁË??
+				fg_led_flash = 0;//·ÀÖ¹ÏÔÊ¾³öÏÖ´íÎó¹Ø±ÕLED.
 			}else{
 				fg_time_10s = 1;
 			}
@@ -393,12 +393,12 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 	fun_LEDBufScan();
 
 }
-//@------------ADC ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?--------------@
+//@------------ADC ?§¥????????--------------@
 //DEFINE_ISR(ADC_ISR, ADC_VECTOR)
 //{
 //
 //}
-//@----------Timebase0 ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?----------@
+//@----------Timebase0 ?§¥????????----------@
 #if 0
 DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 {
@@ -407,7 +407,7 @@ DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 //	gu16v_Test_OutTime++;
 //	gbv_8ms_Using_Key_Scan = 1;
 }
-//@----------Timebase1 ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?----------@
+//@----------Timebase1 ?§¥????????----------@
 DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 {
 /*	gu8v_HaltTime++;*/
@@ -415,34 +415,34 @@ DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 
 }
 #endif
-//@-------MuFunction1 ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?----------@
+//@-------MuFunction1 ?§¥????????----------@
 // LVD&EEPROM&UART&SIM
 DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 {
 
 	_mf1f=0;
     #if 0
-	// å¥‡å¶æ ¡éªŒå‡ºé”™
+	// ÆæÅ¼Ğ£Ñé³ö´í
 //	if (_perr0)
 //	{
 //		_acc = _usr;
 //		_acc = _txr_rxr;
 //	}
-//	 å™ªå£°å¹²æ‰°é”™è¯¯
+//	 ÔëÉù¸ÉÈÅ´íÎó
 	if (_nf)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// å¸§é”™è¯?
+	// Ö¡´í??
 	if (_ferr)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// æº¢å‡ºé”™è¯¯
+	// Òç³ö´íÎó
 	if (_oerr)
 	{
 		_acc = _usr;
@@ -450,7 +450,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		lu8v_RxBufoffset = 0;
 	}
    #endif
-	// å‘é€æ•°æ?
+	// ·¢ËÍÊı??
 	if (_txif && gbv_IsBusyUartTx)
 	{
 		if (lu8v_TxBufoffset < lu8v_TxBufLength /*&& (_tidle)*/)
@@ -471,16 +471,10 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 	}
 
 	_uif = 0;
-	// æ¥æ”¶æ•°æ®
+	// ½ÓÊÕÊı¾İ
 	if (_rxif)
 	{
 		_rxif = 0;
-
-		//_acc = _usr;
-		//gu8v_UartRxBuf[lu8v_RxBufoffset] = _txrrxr;
-		//gu8v_TBRxTimeOutCnt = 0;
-		//lu8v_RxBufoffset++;
-
 
 		_acc = _usr;
 		R_UartData = _txrrxr;
@@ -491,12 +485,10 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 
 		gu8v_TBRxTimeOutCnt = C_TIMEING_TIMEOUT;
 
-
-
 		if(!fg_uart_rec_start){
 			switch(R_UartData)
 			{
-				case CMD_HEARD:
+				case REQ_UNITSYN:
 					fg_uart_rec_start = 1;
 					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
@@ -565,9 +557,9 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		}
 		R_UartData = 0;
         #if 0
-		// ç”¨æˆ¶éœ€è¦åœ¨æ­¤å¯«Rxæ•¸æ“šé•·åº¦
-		// 1 å›ºå®šé•·åº¦,å‰‡åœ¨åˆå§‹åŒ–çš„æ™‚å€™åˆå§‹åŒ–è©±lu8v_RxBufLength
-		// 2 å”è­°è‡ªå¸¶é•·åº¦ä¿¡æ¯
+		// ÓÃ‘ôĞèÒªÔÚ´ËŒ‘Rx”µ“şéL¶È
+		// 1 ¹Ì¶¨éL¶È,„tÔÚ³õÊ¼»¯µÄ•rºò³õÊ¼»¯Ô’lu8v_RxBufLength
+		// 2 …f×h×Ô§éL¶ÈĞÅÏ¢
 		if (lu8v_RxBufoffset == 3)
 		{
 			lu8v_RxBufLength = gu8v_UartRxBuf[2];
@@ -585,7 +577,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
     _acc = _txrrxr;
 }
 #if 0
-//@-------MuFunction2 ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?----------@
+//@-------MuFunction2 ?§¥????????----------@
 // I2C &TM1
 DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
 {
@@ -593,7 +585,7 @@ DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
 	_t1af=0;
 	_mf2f=0;
 }
-//@-------MuFunction3 ï¿½Ğ”ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿?----------@
+//@-------MuFunction3 ?§¥????????----------@
 // TM2
 DEFINE_ISR(MuFunction3_ISP, MuFunction3_VECTOR)
 {
