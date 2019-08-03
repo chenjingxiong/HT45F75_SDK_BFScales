@@ -140,7 +140,7 @@ void fun_UserProtocol()
     #endif
 	//	UART TX
 	//	if(!gbv_IsBusyUartTx)
-	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE2MS) && (!gbv_IsBusyUartTx))	// 建議加入定時發送，防止數據發送太快
+	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE100MS) && (!gbv_IsBusyUartTx))	// 建議加入定時發送，防止數據發送太快
 	{
 		 gu8v_UartTxCycle = 0;
 		if (gbv_TxSDKWeightStatus)
@@ -153,6 +153,7 @@ void fun_UserProtocol()
 		{
 			gbv_TxSDKImpedanceStatus = 0;
 			fun_TxSDKImpedanceStatus();
+            gu16v_impedence_data = 0;
 //			BHSDKState = ENTER_IMPEDANCE;
 		}
 		else if (gbv_TxFinishStatus)
@@ -219,7 +220,7 @@ void fun_UserProtocol()
 							break;
 
 						case CMDTYPE_LO:
-//							gu8v_worktasks = TASK_LOWBATTERY;
+							gu8v_worktasks = TASK_LOWBATTERY;
 							break;
 
 						case CMDTYPE_USEROK:
@@ -255,7 +256,10 @@ void fun_UserProtocol()
             default:
                 break;
         }
-
+        u8 i = 0;
+        for(i = 0; i < UART_LENGTH_RX; i++){
+            gu8v_UartRxBuf[i] = 0;
+        }
 	}
 #endif
 }

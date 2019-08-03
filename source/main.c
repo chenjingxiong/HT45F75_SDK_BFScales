@@ -21,8 +21,6 @@ int main(void)
 		// 切換為阻抗模式
 /*		BHSDKState = ENTER_IMPEDANCE*/;
 		// 切換為稱重模式
-
-		//gu8v_worktasks = TASK_SCALES;
 		BHSDKState = ENTER_WEIGHT_NORMAL;
 		 SDKWeight.flag.b.IsNeedTare = 1;			// 上電重量默認為0kg
 		// 切換為標定模式
@@ -32,12 +30,10 @@ int main(void)
 	{
 		// WDT溢出復位初始化
 		GCC_CLRWDT();
-		_lvf = 0;
 		gu8v_worktasks = TASK_SCALES;
 		set_overtime2poweroff(C_TIME_10S);
 		fg_time_10s = 0;
         _t0on = 0;
-//        _emi = 0;
 	}
 
 
@@ -74,9 +70,14 @@ int main(void)
 				//task_scaleswakeup();//鐪佺┖闂达紝涓嶇敤鍑芥暟鐩存帴鐮佷笂
 				gu8v_worktasks = TASK_SCALES;
 				BHSDKState = ENTER_WEIGHT_NORMAL;
-                P_BLE_EN = LOW;
+
+                P_BLE_EN = LOW;//鎵撳紑钃濈墮.
+
+				gbv_IsBusyUartTx = 0;
 				SET_UART_ENABLE();
+
 				gu8v_time_30s = C_TIME_30S;
+
 				// TM0
 				_tm0c0 = 0x20;		// fsys/16 4us
 				_tm0c1 = 0xc1;		// TimeCnt Mode

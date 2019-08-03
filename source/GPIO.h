@@ -1,9 +1,9 @@
 //___________________________________________________________________
 //___________________________________________________________________
-//  Copyright : 2015 BY HOLTEK SEMICONDUCTOR INC
+//  Copyright : 2019.08 BY NHD SEMICONDUCTOR INC
 //  File Name : GPIO.h
 // Description: IO相關設定
-//   Customer : 樂福衡器有限公司
+//   Customer :
 //Targer Board: CH376BLE
 //   MCU      : HT45F75
 //___________________________________________________________________
@@ -11,9 +11,6 @@
 #ifndef _GPIO_H_
 #define _GPIO_H_
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Userdefine @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//*****************************************    按鍵    ********************************************
-#define KEY_CAL			_pa4
-#define KEY_CAL_IO		_pac4
 //*****************************************   數碼管  **********************************************
 /*#define  LEDCOM5 	_pd3*/
 #define  LEDCOM4 				_pa7
@@ -34,14 +31,11 @@
 #define P_LED_UNIT_PCT_C	_pbc0
 
 //********************************************  藍牙  **********************************************
-#define BT_Power        _pa6
-#define BT_Power_IO     _pac6
-
+//客户蓝牙引脚定义:蓝牙  BLE_EN上拉输入，BLE_ST高电平输出
 #define P_BT_Status		_pd0
 #define P_BT_Status_C	_pdc0 //Status状态
-
 #define P_BLE_EN		_pd1
-#define P_BLE_EN_C		_pdc1//客户蓝牙引脚定义:蓝牙  BLE_EN上拉输入，BLE_ST高电平输出
+#define P_BLE_EN_C		_pdc1
 //***************************************** IO Config  **********************************************
 #define PA_Default		0B00000000
 #define PAC_Default		0B01011111//0B00111000

@@ -62,7 +62,7 @@
 #define IMPEDANCE_ERR_OUTRANGE					0xFFF2//(0xFFF2-阻抗超出範圍)
 
 
-#define C_TIMEING_CYCLE2MS 			5
+#define C_TIMEING_CYCLE100MS 		2
 #define C_TIMEING_TIMEOUT 			2
 
 
