@@ -77,10 +77,10 @@ static void fun_RamInit()
 		_mp1l = 0x80;
 		_mp1h++;
 	}
-	
+
 	_mp1h = 3;
 	_mp1l = 0x80;
-	
+
 		for(_tblp = 0x00;_tblp < 128;_tblp++)
 		{
 			 _iar1 = 0;
@@ -264,20 +264,17 @@ void user_init(void)
 	gu8v_weigh_targeunit = UNIT_KG;
 	set_overtime2poweroff(C_TIME_10S);
 
-	fg_led_timing = 0;
-	fg_led_flash = 0;
-	fg_time_10s = 0;
+	fg_led_Byte = 0x00;
+	flag0_time_Byte = 0x00;
+	flag1_Byte = 0x00;
+	flag2_Byte = 0x00;
 
-    gu8v_time_test = C_TIME_10S;
-    fg_time_test2 = 0;
-    fg_pct_ok = 0;
 
     gbv_IsBusyUartTx = 0;
     gbv_UartRxSuccess = 0;
 
 	//寮�鏈哄叏鏄?S.
     gu8v_led_delay3S = 0;
-    fg_time_3s = 0;
     gu8v_worktasks = TASK_STARTUP;
 
 
@@ -312,88 +309,87 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 	if(C_TIME_100MS <= ++gu8v_time_100ms){
 		gu8v_time_100ms = 0;
 		fg_time_100ms = 1;
-
-        if(fg_time_test2){
-            if(gu8v_time_test){
-                gu8v_time_test--;
-            }else{
-                fg_time_test = 1;
-                gu8v_time_test = C_TIME_10S;
-            }
-        }
-
-        if(!fg_time_3s){
-            gu8v_led_delay3S++;
-            if(C_TIME_3S <= gu8v_led_delay3S){
-                gu8v_led_delay3S = 0;
-                fg_time_3s = 1;
-            }
-        }
-
-
-
-		if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
-
-        //???????????byte?????
-        if(!gbv_UartRxSuccess && fg_uart_rec_start){
-            if(gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt--;
-            if(0 == gu8v_TBRxTimeOutCnt){
-                gbv_UartRxSuccess = 1;
-                fg_uart_rec_start = 0;
-            }
-        }
-
-		if(C_TIME_1S <= ++gu8v_time_1s){
-			gu8v_time_1s = 0;
-			fg_time_1s = 1;
-		}
-
-		/* LED显示闪烁切换定时 */
-		if(fg_led_timing){
-			//先延??后执行LED闪烁功能
-			if(!fg_led_delay){
-				if(gu8v_led_delay)
-					gu8v_led_delay--;
-				else
-					fg_led_delay = 1;
-			}
-			// 延时时间到后执行LED显示闪烁切换标志??
-			if(fg_led_delay){
-				gu8v_05s_count++;
-				if(gu8v_led_speed <= gu8v_05s_count){
-					gu8v_05s_count = 0;
-					if(gu8v_howtimes){
-						fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪??
-						//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁??
-						//注意:最好在fg_led_flash=1??即LED处于熄灭状??
-						if(fg_led_flash){
-							fg_led_change = !fg_led_change;
-						}
-						gu8v_howtimes--;
-					}else{
-						fg_led_delay = 0;
-						fg_led_timing = 0;
-						fg_led_flash = 0;
-						fg_led_change = 0;
-					}
-				}
-			}
-		}else{
-			/* 定时休眠关机,延迟时间过后才开始计?? */
-			if(gu8v_timed_shutdown){
-				gu8v_timed_shutdown--;
-				fg_time_10s = 0;
-				//当定时休眠时间没到，也没执行LED闪烁功能??
-				//fg_led_flash设为0，进行所有显示LED扫描，防止fg_led_flash=1但还没到定时时间就关闭所有LED了??
-				fg_led_flash = 0;//防止显示出现错误关闭LED.
-			}else{
-				fg_time_10s = 1;
-			}
-		}
 	}
 
-	fun_LEDBufScan();
+	//*********** LED *************//
+	//fun_LEDBufScan();
+	LEDCOM1 = LOW ;
+	LEDCOM2 = LOW ;
+	LEDCOM3 = LOW ;
+	LEDCOM4 = LOW ;
+	LEDCOMC1 = OUTPUT ;
+	LEDCOMC2 = OUTPUT ;
+	LEDCOMC3 = OUTPUT ;
+	LEDCOMC4 = OUTPUT ;
+	LEDSEGC  = OUTPUT ;
+	if(!fg_led_flash){
+		switch (LEDScan_Cnt)
+		{
+			case 0:
+				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_GE]];
+				if(fg_led_unit_kg)
+				{
+					LEDSEG_UNIT_PIONT=HIGH;
+				}
+				LEDCOM1 = HIGH;
+				LEDScan_Cnt = 1;
+				break;
 
+			case 1:
+				LEDSEG = lu8v_2COM_HEX[gu8v_LED_Buffer[NUM_SHI]];
+				if(fg_led_unit_lb)
+				{
+					LEDSEG_UNIT_PIONT=HIGH;
+				}
+				LEDCOM2 = HIGH;
+				LEDScan_Cnt = 2;
+				break;
+
+			case 2:
+				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_BAI]];
+				if(fg_led_piont1)
+				{
+					LEDSEG_UNIT_PIONT = HIGH;
+				}
+				LEDCOM3 = HIGH;
+				LEDScan_Cnt = 3;
+				break;
+
+			case 3:
+				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_QIAN]];
+				if(fg_led_piont2)
+				{
+					LEDSEG_UNIT_PIONT=HIGH;
+				}
+				LEDCOM4 = HIGH;
+				LEDScan_Cnt = 0;
+				break;
+
+		default:
+			LEDScan_Cnt = 0;
+			break;
+		}
+
+		if(fg_led_ble)//钃濈墮
+		{
+			P_LED_BLE = HIGH;
+		}else{
+			P_LED_BLE = LOW;
+		}
+
+		if(fg_led_unit_pct)//%
+		{
+			P_LED_UNIT_PCT = HIGH;
+		}else{
+			P_LED_UNIT_PCT = LOW;
+		}
+	}else{
+		//LED鍏ㄩ儴鍏抽棴
+		P_LED_UNIT_PCT = LOW;
+		P_LED_BLE = LOW;
+		LEDSEG_UNIT_PIONT = LOW;
+		LEDSEG = LOW;
+	}
 }
 //@------------ADC ?Д????????--------------@
 //DEFINE_ISR(ADC_ISR, ADC_VECTOR)
@@ -484,37 +480,6 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 					fg_uart_rec_end = 0;
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
-				#if 0
-				case REQ_TIME:
-					fg_uart_rec_start = 1;
-					fg_uart_rec_end = 0;
-					lu8v_RxBufLength = DATA_BUF_LEN;
-					break;
-
-//				case REQ_UNITSYN:
-//					fg_uart_rec_start = 1;
-//					fg_uart_rec_end = 0;
-//					lu8v_RxBufLength = DATA_BUF_LEN;
-//					break;
-
-				case REQ_HISTORY:
-					fg_uart_rec_start = 1;
-					fg_uart_rec_end = 0;
-					lu8v_RxBufLength = DATA_BUF_LEN;
-					break;
-
-				case REQ_DIS_BT:
-					fg_uart_rec_start = 1;
-					fg_uart_rec_end = 0;
-					lu8v_RxBufLength = DATA_BUF_LEN;
-					break;
-
-				case REQ_VERTION:
-					fg_uart_rec_start = 1;
-					fg_uart_rec_end = 0;
-					lu8v_RxBufLength = DATA_BUF_LEN;
-					break;
-					#endif
 				default:
 					lu8v_RxBufLength = DATA_BUF_LEN;
 					break;
@@ -531,11 +496,9 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 				lu8v_RxBufoffset = 0;
 			}
 
-//			R_UartData_Buf[R_Uart_active][R_UartData_Idx++] = R_UartData;
 			gu8v_UartRxBuf[lu8v_RxBufoffset++] = R_UartData;
-			//gu8v_rec_total = R_UartData_Idx;
 
-			if(lu8v_RxBufLength == lu8v_RxBufoffset)
+			if(lu8v_RxBufLength <= lu8v_RxBufoffset)
 				fg_uart_rec_end = 1;
 
 			if(fg_uart_rec_end){
@@ -543,25 +506,8 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 				gbv_UartRxSuccess = 1;
 				fg_uart_rec_start = 0;
 				fg_uart_rec_end = 0;
-				//R_Uart_active ^= 0x1;
 			}
 		}
-		R_UartData = 0;
-        #if 0
-		// 用戶需要在此寫Rx數據長度
-		// 1 固定長度,則在初始化的時候初始化話lu8v_RxBufLength
-		// 2 協議自帶長度信息
-		if (lu8v_RxBufoffset == 3)
-		{
-			lu8v_RxBufLength = gu8v_UartRxBuf[2];
-		}
-		if (lu8v_RxBufoffset >= lu8v_RxBufLength)
-		{
-			lu8v_RxBufoffset = 0;
-			lu8v_RxBufLength = 0xff;
-			gbv_UartRxSuccess  = 1;
-		}
-        #endif
 	}
 
     _acc = _usr;

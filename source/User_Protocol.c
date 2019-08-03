@@ -128,25 +128,13 @@ NOTE	:
 void fun_UserProtocol()
 {
 #if 1
-    #if 0
-	// îµì˛Ω” ’ Time OutïrÈg
-	if (gu8v_TBRxTimeOutCnt >= C_TIMEING_TIMEOUT)
-	{
-		gu8v_TBRxTimeOutCnt = 0;
-		lu8v_RxBufoffset = 0;
-		lu8v_RxBufLength = 0;
-		gbv_UartRxSuccess = 0;
-	}
-    #endif
 	//	UART TX
-	//	if(!gbv_IsBusyUartTx)
 	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE100MS) && (!gbv_IsBusyUartTx))	// Ω®◊hº”»Î∂®ïr∞lÀÕ£¨∑¿÷πîµì˛∞lÀÕÃ´øÏ
 	{
 		 gu8v_UartTxCycle = 0;
 		if (gbv_TxSDKWeightStatus)
 		{
 			gbv_TxSDKWeightStatus = 0;
-//			fun_TxSDKWeightStatus();
 			fun_TxSDKImpedanceStatus();
 		}
 		else if (gbv_TxSDKImpedanceStatus)
@@ -154,12 +142,10 @@ void fun_UserProtocol()
 			gbv_TxSDKImpedanceStatus = 0;
 			fun_TxSDKImpedanceStatus();
             gu16v_impedence_data = 0;
-//			BHSDKState = ENTER_IMPEDANCE;
 		}
 		else if (gbv_TxFinishStatus)
 		{
 			gbv_TxFinishStatus = 0;
-			//fun_TxFinishStatus();
 		}
 	}
 
@@ -168,94 +154,56 @@ void fun_UserProtocol()
 	{
 		gbv_UartRxSuccess = 0;
 
-        //u8 XOR_checksum = get_XOR_Checksum(&gu8v_UartRxBuf[0],POS_CHECKSUM-1);//◊¢“‚:◊Ó∫Û“ªŒªŒ™“ÏªÚ–£—È∫Õ,≤ª–Ëº∆À„.
-        switch(gu8v_UartRxBuf[0])
-        {
-			case REQ_TIME:
+		if(REQ_UNITSYN == gu8v_UartRxBuf[POS_HEARD]){
+			u8 XOR_checksum = get_XOR_Checksum(&gu8v_UartRxBuf[0],POS_CHECKSUM-1);
+//			if(XOR_checksum == gu8v_UartRxBuf[POS_CHECKSUM]){
+			if(1){
 
-				break;
+				switch(gu8v_UartRxBuf[POS_CMDTYPE])
+				{
+					case CMDTYPE_CALIBRATION:
 
-			case REQ_HISTORY:
-
-				break;
-
-			case REQ_DIS_BT:
-
-				break;
-
-			case REQ_VERTION:
-
-				break;
-
-            case REQ_UNITSYN:
-                switch (gu8v_UartRxBuf[1])
-                {
-					case 0x00://ÂêåÊ≠•Âçï‰Ωç
-						//Byte2:Âçï‰ΩçËΩ¨Êç¢Â≠óËäÇ
-//						gu8v_weigh_targeunit = gu8v_UartRxBuf[2];
-//						fun_Unit_Change(gu16v_weigh);
 						break;
 
-					case 0x37://‰º†ÈÄÅËÑÇËÇ™‰ø°ÊÅØÁªôËìùÁâô
+					case CMDTYPE_SHUTDOWN:
+//						gu8v_worktasks = TASK_SLEEP;
+//						set_BHSDKState(ENTER_WEIGHT_NORMAL);
+						break;
 
+					case CMDTYPE_LO:
+//						gu8v_worktasks = TASK_LOWBATTERY;
+						break;
+
+					case CMDTYPE_USEROK:
+
+						break;
+
+					case CMDTYPE_MOMBABY:
 						break;
 
 					default:
-
 						break;
 				}
 
-				//XOR_checksum = get_XOR_Checksum(&gu8v_UartRxBuf[0],POS_CHECKSUM-1);//Ê≥®ÊÑè:ÊúÄÂêé‰∏Ä‰Ωç‰∏∫ÂºÇÊàñÊ†°È™åÂí?‰∏çÈúÄËÆ°ÁÆó.
-				//if(XOR_checksum == R_UartData_Buf[POS_CHECKSUM]){
-					//Byte1:ÂëΩ‰ª§Â≠?
-					switch(gu8v_UartRxBuf[POS_CMDTYPE])
-					{
-						case CMDTYPE_CALIBRATION:
+				//Âçï‰ΩçËΩ¨Êç¢.
+				if( UNIT_KG == gu8v_UartRxBuf[POS_UNIT])
+					gu8v_weigh_targeunit = UNIT_KG;
+				else if( UNIT_LB == gu8v_UartRxBuf[POS_UNIT])
+					gu8v_weigh_targeunit = UNIT_LB;
+				fun_Unit_Change(gu16v_weigh);
 
-							break;
+				//‰ΩìËÑÇÁéá.
+				gu16v_pct_data = (gu8v_UartRxBuf[4]&0x00FF)+((gu8v_UartRxBuf[5]<<8)&0xFF00);
+				if((gu16v_pct_data != 0) && (C_BODYFAT_PERCENTAGE >= gu16v_pct_data)){
+					fg_pct_ok = 1;
+					gu8v_UartRxBuf[4] = 0;
+					gu8v_UartRxBuf[5] = 0;
+				}else{
+					fg_pct_ok = 0;
+				}
+			}
+		}
 
-						case CMDTYPE_SHUTDOWN:
-							gu8v_worktasks = TASK_SLEEP;
-							set_BHSDKState(ENTER_WEIGHT_NORMAL);
-							break;
-
-						case CMDTYPE_LO:
-							gu8v_worktasks = TASK_LOWBATTERY;
-							break;
-
-						case CMDTYPE_USEROK:
-
-							break;
-
-						case CMDTYPE_MOMBABY:
-
-							break;
-
-						default:
-							break;
-					}
-
-
-					//Byte3:Áî®Êà∑ÁªÑÊòæÁ§?
-					//if(gu8v_UartRxBuf[POS_USER] <= USER_P9){
-					//	gu8v_user = gu8v_UartRxBuf[POS_USER];
-					//}
-	//			}
-
-
-                gu16v_pct_data = (gu8v_UartRxBuf[4]&0x00FF)+((gu8v_UartRxBuf[5]<<8)&0xFF00);
-                if(gu16v_pct_data != 0){
-                    fg_pct_ok = 1;
-                    gu8v_UartRxBuf[4] = 0;
-                    gu8v_UartRxBuf[5] = 0;
-                }else{
-                    fg_pct_ok = 0;
-                }
-                break;
-
-            default:
-                break;
-        }
         u8 i = 0;
         for(i = 0; i < UART_LENGTH_RX; i++){
             gu8v_UartRxBuf[i] = 0;

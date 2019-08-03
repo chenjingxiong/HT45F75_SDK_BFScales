@@ -1,5 +1,6 @@
 #include "common.h"
 u16 gu16v_weigh;
+u16 gu16v_lockweigh;
 u16 gu16_display_weight;
 u16 gu16v_impedence_data;
 u16 gu16v_pct_data;
@@ -18,7 +19,7 @@ u8  gu8v_worktasks;
 //精度:0.1斤;	eg:weigh  =100,代表 100*0.1斤=10斤.
 void fun_Unit_Change(u16 weigh)
 {
-
+	gu16v_weigh = weigh;
 	if(UNIT_KG == gu8v_weigh_targeunit)
 	{
 		fg_led_unit_kg = 1;
@@ -169,7 +170,7 @@ void task_bodyfatscales(void)
 			}else{
 				if(is_BHSDKState_change()){
 					fg_loadok = 1;
-//					fun_Unit_Change(SDKWeight.DataStable);
+					fun_Unit_Change(SDKWeight.DataStable);
 					Set_DisplayMode(DISPLAY_LOADFIX);
 				}
 			}
@@ -188,18 +189,15 @@ void task_bodyfatscales(void)
 					gbv_TxSDKWeightStatus = 1;
 					if(!fg_remeber_200g){
 						fg_remeber_200g = 1;
-						gu16v_weigh = SDKWeight.DataStable;
-//						fun_Unit_Change(gu16v_weigh);
+						gu16v_lockweigh = SDKWeight.DataStable;
 					}else{
-						if(fun_unsigned32BitABS(gu16v_weigh,SDKWeight.DataStable) <= C_REMEBER_200G){
-//							fun_Unit_Change(gu16v_weigh);
+						if(fun_unsigned32BitABS(gu16v_lockweigh,SDKWeight.DataStable) <= C_REMEBER_200G){
 							GCC_NOP();
 						}else{
-							gu16v_weigh = SDKWeight.DataStable;
-//							fun_Unit_Change(gu16v_weigh);
+							gu16v_lockweigh = SDKWeight.DataStable;
 						}
 					}
-					fun_Unit_Change(gu16v_weigh);
+					fun_Unit_Change(gu16v_lockweigh);
 					Set_DisplayMode(DISPLAY_LOADFIX);
 				}
 			}
@@ -229,6 +227,7 @@ void task_bodyfatscales(void)
 			//fun_DisplayMode_Impedanceing();// 此處寫User UI,,比如跑----/oooo提示阻抗測量中
 			Set_DisplayMode(DISPLAY_IMPEDANCEING);
             gu16v_impedence_data= 0;
+			fg_pct_ok = 0;
 			break;
 		case STATE_IMPEDANCE_FINISH:	// 阻抗量測結束,此時可以讀取gu16v_CurrentImpedance_ohm
 			//fun_DisplayMode_ImpedanceFinish();//
@@ -413,19 +412,18 @@ void fun_DiaplsyMode(void)
 
 		case DISPLAY_IMPEDANCE_FINISH:
 
-			switch(gu16v_impedence_data){
-
+			switch(gu16v_impedence_data)
+			{
 				case IMPEDANCE_ERR_NOTEST:
 				case IMPEDANCE_ERR_ABNORMAL:
 				case IMPEDANCE_ERR_OUTRANGE:
                     gu16v_impedence_data = 0x00;
-
+					fg_pct_ok = 0;
+					fg_led_unit_pct = 0;
                     if(0 == fg_led_timing){
                         set_BHSDKState(ENTER_WEIGHT_NORMAL);//test
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
-                        fg_pct_ok = 0;
                     }
-
 					break;
 
 				default:
@@ -434,22 +432,38 @@ void fun_DiaplsyMode(void)
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                         if(fg_led_change)
                         {
-                            //fun_HEX2BCD(gu16v_impedence_data);//test
-                            fun_HEX2BCD(gu16v_pct_data);//test
-                            //fg_led_piont1 = 0;
-                            //fg_led_piont2 = 0;
+                            fun_HEX2BCD(gu16v_pct_data);
                             fg_led_unit_pct = 1;
+							fg_led_unit_kg = 0;
+							fg_led_unit_lb = 0;
                         }else{
                             fun_HEX2BCD(gu16_display_weight);
                             fg_led_unit_pct = 0;
+							if(UNIT_KG == gu8v_weigh_targeunit){
+								fg_led_unit_kg = 1;
+								fg_led_unit_lb = 0;
+							}else if(UNIT_LB == gu8v_weigh_targeunit){
+								fg_led_unit_kg = 0;
+								fg_led_unit_lb = 1;
+							}
                         }
 
                         if(0 == fg_led_timing){
                             set_BHSDKState(ENTER_WEIGHT_NORMAL);
                             fg_pct_ok = 0;
+							fg_led_unit_pct = 0;
                         }
                     }else{
+                    	 fg_led_unit_pct = 0;
+						 if(UNIT_KG == gu8v_weigh_targeunit){
+							 fg_led_unit_kg = 1;
+							 fg_led_unit_lb = 0;
+						 }else if(UNIT_LB == gu8v_weigh_targeunit){
+							 fg_led_unit_kg = 0;
+							 fg_led_unit_lb = 1;
+						 }
                          fun_HEX2BCD(gu16_display_weight);
+#if 0
                         if(!fg_time_test2){
                             fg_time_test2 = 1;
                             fg_time_test = 0;
@@ -462,11 +476,10 @@ void fun_DiaplsyMode(void)
                                 set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                             }
                         }
+#endif
                     }
-
 					break;
 			}
-
 			break;
 
         case DISPLAY_UNLOCK_WEIGHT:
@@ -522,58 +535,53 @@ void is_timedshutdown(void)
 	if(fg_time_10s){
 		fg_time_10s = 0;
 		gu8v_worktasks = TASK_SLEEP;
-        set_BHSDKState(ENTER_WEIGHT_NORMAL);
 	}
 }
 
 void task_scales2sleep(void)
 {
-
-#if 1
     P_BLE_EN = HIGH;
 	_t0on  = 0;
 	Set_DisplayMode(DISPLAY_ALLOFF);
 	LED_Init();
 	SETWDTTIME_1000MS();
 	SET_UART_DISABLE();
-//	SETLVD_DISABLE();
-	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState\
-	   ||STATE_AUTOON_FAIL == BHSDKState){
-		_idlen = 0;
-//		_emi = 0;
-		if(gu8v_time_30s)
-			gu8v_time_30s--;
-		else
-			fg_remeber_200g = 0;
+	fg_led_Byte = 0x00;
+	flag0_time_Byte = 0x00;
+	flag1_Byte = 0x00;
+	flag2_Byte = 0x00;
+//	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState\
+//	   ||STATE_AUTOON_FAIL == BHSDKState){
 
-//		_t0on  = 0;
-//		_t1on  = 0;
-//		_t2on  = 0;
-//		_tbon = 0;
-//		SETCTMP_ISR_ENABLE();
-//		SETTIMEBASE0_ISR_Disable();
-//		SETTIMEBASE1_ISR_Disable();
+		if(gu8v_time_30s){
+			gu8v_time_30s--;
+		}else{
+			fg_remeber_200g = 0;
+		}
+		_t0on  = 0;
+		_t1on  = 0;
+		_t2on  = 0;
+		_tbon = 0;
 		fun_BodyFatScalesSDK_PowerDown();
+		_idlen = 0;
 		GCC_NOP();
 		GCC_NOP();
 		GCC_NOP();
 		GCC_HALT();
-	}
-#else
-	//for test
-    gu8v_worktasks = TASK_SCALES;
-    BHSDKState = ENTER_WEIGHT_NORMAL;
-#endif
+//	}
 }
 
-#if 0
 void task_scaleswakeup(void)
 {
-
-//	Set_DisplayMode(DISPLAY_POWERON);
-
 	gu8v_worktasks = TASK_SCALES;
 	BHSDKState = ENTER_WEIGHT_NORMAL;
+
+	P_BLE_EN = LOW;//鎵撳紑钃濈墮.
+
+	gbv_IsBusyUartTx = 0;
+	SET_UART_ENABLE();
+
+	gu8v_time_30s = C_TIME_30S;
 
 	// TM0
 	_tm0c0 = 0x20;		// fsys/16 4us
@@ -583,8 +591,76 @@ void task_scaleswakeup(void)
 	SETCTMA_ISR_ENABLE();
 	_t0on  = 1;
 	_emi = 1;
-
 }
-#endif
+
+void fun_timing(void)
+{
+	if(!fg_time_3s){
+		gu8v_led_delay3S++;
+		if(C_TIME_3S <= gu8v_led_delay3S){
+			gu8v_led_delay3S = 0;
+			fg_time_3s = 1;
+		}
+	}
 
 
+
+	if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
+
+	//???????????byte?????
+	if(!gbv_UartRxSuccess && fg_uart_rec_start){
+		if(gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt--;
+		if(0 == gu8v_TBRxTimeOutCnt){
+//				  gbv_UartRxSuccess = 1;
+			fg_uart_rec_start = 0;
+		}
+	}
+
+	if(C_TIME_1S <= ++gu8v_time_1s){
+		gu8v_time_1s = 0;
+		fg_time_1s = 1;
+	}
+
+	/* LED显示闪烁切换定时 */
+	if(fg_led_timing){
+		//先延??后执行LED闪烁功能
+		if(!fg_led_delay){
+			if(gu8v_led_delay)
+				gu8v_led_delay--;
+			else
+				fg_led_delay = 1;
+		}
+		// 延时时间到后执行LED显示闪烁切换标志??
+		if(fg_led_delay){
+			gu8v_05s_count++;
+			if(gu8v_led_speed <= gu8v_05s_count){
+				gu8v_05s_count = 0;
+				if(gu8v_howtimes){
+					fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪??
+					//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁??
+					//注意:最好在fg_led_flash=1??即LED处于熄灭状??
+					if(fg_led_flash){
+						fg_led_change = !fg_led_change;
+					}
+					gu8v_howtimes--;
+				}else{
+					fg_led_delay = 0;
+					fg_led_timing = 0;
+					fg_led_flash = 0;
+					fg_led_change = 0;
+				}
+			}
+		}
+	}else{
+		/* 定时休眠关机,延迟时间过后才开始计?? */
+		if(gu8v_timed_shutdown){
+			gu8v_timed_shutdown--;
+			fg_time_10s = 0;
+			//当定时休眠时间没到，也没执行LED闪烁功能??
+			//fg_led_flash设为0，进行所有显示LED扫描，防止fg_led_flash=1但还没到定时时间就关闭所有LED了??
+			fg_led_flash = 0;//防止显示出现错误关闭LED.
+		}else{
+			fg_time_10s = 1;
+		}
+	}
+}

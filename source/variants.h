@@ -9,8 +9,8 @@ extern volatile __byte_type  	flag0_time;//时间标志
 #define fg_time_1s				flag0_time.bits.b3
 #define fg_time_3s				flag0_time.bits.b4
 #define fg_time_10s				flag0_time.bits.b5
-#define fg_time_test			flag0_time.bits.b6//
-#define fg_time_test2			flag0_time.bits.b7//
+//#define fg_time_test			flag0_time.bits.b6//
+//#define fg_time_test2			flag0_time.bits.b7//
 
 
 extern volatile __byte_type  	flag1;// 标志
@@ -39,7 +39,12 @@ extern volatile __byte_type  	flag2;// 标志
 extern u8 gu8v_time_100ms;
 extern u8 gu8v_time_1s;
 extern u8 R_UartData;
-extern u8 gu8v_time_test;
 extern u8 gu8v_time_30s;
+
+
+extern const unsigned char lu8v_LED_HEX[C_LED_CHAR_NUM];
+
+//由于硬件2COM的LED连接方式与另外三个COM不一样，所以需要再建个不同的显示数字表�?
+extern const unsigned char lu8v_2COM_HEX[16];
 
 #endif //__VARIANTS_H__

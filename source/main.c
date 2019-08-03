@@ -44,9 +44,7 @@ int main(void)
 
 		// ��LOOPѭ�h�{�� fun_BodyFatScalesSDK()
 		fun_BodyFatScalesSDK();
-		fun_UserProtocol();
 		test = BHSDKState;
-
 
 		switch(gu8v_worktasks)
 		{
@@ -60,6 +58,7 @@ int main(void)
 
 			case TASK_SCALES:
 				task_bodyfatscales();
+				fun_UserProtocol();
 				break;
 
 			case TASK_SLEEP:
@@ -67,25 +66,7 @@ int main(void)
 				break;
 
 			case TASK_WEIGHT_AUTOON:
-				//task_scaleswakeup();//省空间，不用函数直接码上
-				gu8v_worktasks = TASK_SCALES;
-				BHSDKState = ENTER_WEIGHT_NORMAL;
-
-                P_BLE_EN = LOW;//打开蓝牙.
-
-				gbv_IsBusyUartTx = 0;
-				SET_UART_ENABLE();
-
-				gu8v_time_30s = C_TIME_30S;
-
-				// TM0
-				_tm0c0 = 0x20;		// fsys/16 4us
-				_tm0c1 = 0xc1;		// TimeCnt Mode
-				_tm0al = 500%256;	// 500*4us = 2ms;
-				_tm0ah = 500/256;
-				SETCTMA_ISR_ENABLE();
-				_t0on  = 1;
-				_emi = 1;
+				task_scaleswakeup();
 				break;
 
 			default:
@@ -95,10 +76,11 @@ int main(void)
 
 		fun_DiaplsyMode();
 
-		is_timedshutdown();
-
-		if(fg_time_1s){
-			fg_time_1s = 0;
+		if(fg_time_100ms){
+			fg_time_100ms = 0;
+			fun_timing();
 		}
+
+		is_timedshutdown();
 	}
 }

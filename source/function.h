@@ -2,6 +2,7 @@
 #define __FUNCTION_H__
 
 extern u16 gu16v_weigh;
+extern u16 gu16v_lockweigh;
 extern u16 gu16_display_weight;
 extern u16 gu16v_impedence_data;
 extern u16 gu16v_pct_data;
@@ -33,7 +34,8 @@ extern void Set_DisplayMode(u8 dismode);
 extern void fun_DiaplsyMode(void);
 extern void is_timedshutdown(void);
 extern void task_scales2sleep(void);
-//extern void task_scaleswakeup(void);
+extern void task_scaleswakeup(void);
 extern void task_bodyfatscales(void);
+extern void fun_timing(void);
 
 #endif //__FUNCTION_H__
