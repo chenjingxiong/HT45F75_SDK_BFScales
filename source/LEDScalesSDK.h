@@ -72,9 +72,11 @@ void fun_Display_PownDown();
 #define NUM_QIAN					3
 
 //********************************重量单位预定义*******************************************************
-#define UNIT_JIN    0x00
-#define UNIT_KG     0x01
-#define UNIT_LB 	0x02
+#define UNIT_KG     0x00
+#define UNIT_LB 	0x01
+//#define UNIT_JIN    0x00
+
+#define C_BODYFAT_PERCENTAGE	1000//体脂率扩大10倍.
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ User Define @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #define CurrentPB_PA_SLEDMAX() 	{_sledc0 = 0xff;}
 #define CurrentPB_PA_SLEDL3() 	{_sledc0 = 0xaa;}

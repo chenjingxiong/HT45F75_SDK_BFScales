@@ -9,6 +9,5 @@ u8 gu8v_time_100ms;
 
 u8 gu8v_time_1s;
 u8 R_UartData;
-u8 gu8v_time_test;
 u8 gu8v_time_30s;//记忆200g,休眠30s后清除记忆.
 
