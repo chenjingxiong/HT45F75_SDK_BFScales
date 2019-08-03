@@ -77,6 +77,16 @@ static void fun_RamInit()
 		_mp1l = 0x80;
 		_mp1h++;
 	}
+	
+	_mp1h = 3;
+	_mp1l = 0x80;
+	
+		for(_tblp = 0x00;_tblp < 128;_tblp++)
+		{
+			 _iar1 = 0;
+			  _mp1l++;
+		}
+
 }
 /********************************************************************
 Function: GPIO初始??
@@ -209,8 +219,9 @@ void fun_PowerOnSysInit()
 	//LVR
 	SETLVR_2_1V();//正常执行??LVR 会于休眠或空闲时自动除能关闭??
 	//LVD
-	SETLVD_LVDIN();
-	SETLVD_ENABLE();
+//	SETLVD_LVDIN();
+//	SETLVD_ENABLE();
+	SETLVD_DISABLE();
 
 	//GPIO
 	fun_GPIOInit();
@@ -248,29 +259,10 @@ NOTE	:
 ********************************************************************/
 void user_init(void)
 {
-#if 0
-	#if(_LVD_LVDEN == ENABLE)
-	if(LVD_LVDO)
-	{
-//		gu8v_worktasks = TASK_LOWBATTERY;
-	}
-	else
-	#endif
-	{
-//		gu8v_worktasks = TASK_STARTUP;
-		gu8v_worktasks = TASK_SCALES;
-	}
-#endif
-
 	Set_AllLEDBuffer(0);
 	Set_DisplayMode(DISPLAY_ALLOFF);
 	gu8v_weigh_targeunit = UNIT_KG;
 	set_overtime2poweroff(C_TIME_10S);
-	//总中断位:=0 关总中??=1 打开总中??
-
-	_t0on  = 1;
-	SETCTMA_ISR_ENABLE();
-	_emi = 1;
 
 	fg_led_timing = 0;
 	fg_led_flash = 0;
@@ -279,10 +271,20 @@ void user_init(void)
     gu8v_time_test = C_TIME_10S;
     fg_time_test2 = 0;
     fg_pct_ok = 0;
+
+    gbv_IsBusyUartTx = 0;
     gbv_UartRxSuccess = 0;
+
+	//寮�鏈哄叏鏄?S.
     gu8v_led_delay3S = 0;
-     fg_time_3s = 0;
+    fg_time_3s = 0;
     gu8v_worktasks = TASK_STARTUP;
+
+
+	//涓柇:瀹氭椂鍜屾樉绀烘壂鎻?
+	_t0on  = 1;
+	SETCTMA_ISR_ENABLE();
+	_emi = 1;
 }
 
 //@------------???Д?0???????-------------@
@@ -330,7 +332,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 
 
 
-		if(C_TIMEING_CYCLE2MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
+		if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
 
         //???????????byte?????
         if(!gbv_UartRxSuccess && fg_uart_rec_start){
@@ -421,54 +423,43 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 {
 
 	_mf1f=0;
-    #if 0
-	// 奇偶校验出错
-//	if (_perr0)
-//	{
-//		_acc = _usr;
-//		_acc = _txr_rxr;
-//	}
-//	 噪声干扰错误
 	if (_nf)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// 帧错??
+	// 甯ч敊璇?
 	if (_ferr)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// 溢出错误
+	// 婧㈠嚭閿欒
 	if (_oerr)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-   #endif
-	// 发送数??
+	// 鍙戦�佹暟鎹?
 	if (_txif && gbv_IsBusyUartTx)
 	{
-		if (lu8v_TxBufoffset < lu8v_TxBufLength /*&& (_tidle)*/)
+		if (lu8v_TxBufoffset < lu8v_TxBufLength)
 		{
-
-//			_acc = _usr;
 			_txrrxr = gu8v_UartTxBuf[lu8v_TxBufoffset];
-			lu8v_TxBufoffset++;
 		}
 		else
 		{
-			if (_tidle)
-			{
-				gbv_IsBusyUartTx = 0;
-				lu8v_TxBufoffset = 0;
-			}
+            if (_tidle)
+            {
+                gbv_IsBusyUartTx = 0;
+            }
 		}
+		lu8v_TxBufoffset++;
 	}
+
 
 	_uif = 0;
 	// 接收数据

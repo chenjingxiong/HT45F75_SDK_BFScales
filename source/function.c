@@ -178,7 +178,7 @@ void task_bodyfatscales(void)
 			//fun_DisplayMode_LoadFix();//´ËÌŒ‘User UI,,±ÈÈçé_Ê¼éW q·€¶¨ÖØÁ¿SDKWeight.DataStateµÈ
 			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
 				if(SDKWeight.DataCurrent != SDKWeight.DataStable){
-					set_overtime2poweroff(C_TIME_10S);//å¦‚æœé‡é‡æœ‰å˜åŒ–,æ›´æ–°æ—¶é—´ä¸å»ç¡çœ .
+					set_overtime2poweroff(C_TIME_10S);//å¦‚æœé‡é‡æœ‰å˜åŒ?æ›´æ–°æ—¶é—´ä¸å»ç¡çœ .
 				}
 				fun_Unit_Change(SDKWeight.DataCurrent);
 				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
@@ -228,6 +228,7 @@ void task_bodyfatscales(void)
 		case STATE_IMPEDANCE_RX:		// ÕıÔÚÁ¿œy´ıœy×è¿¹
 			//fun_DisplayMode_Impedanceing();// ´ËÌŒ‘User UI,,±ÈÈçÅÜ----/ooooÌáÊ¾×è¿¹œyÁ¿ÖĞ
 			Set_DisplayMode(DISPLAY_IMPEDANCEING);
+            gu16v_impedence_data= 0;
 			break;
 		case STATE_IMPEDANCE_FINISH:	// ×è¿¹Á¿œy½YÊø,´Ë•r¿ÉÒÔ×xÈ¡gu16v_CurrentImpedance_ohm
 			//fun_DisplayMode_ImpedanceFinish();//
@@ -366,7 +367,7 @@ void fun_DiaplsyMode(void)
 		case DISPLAY_LOADUP:
 			fun_HEX2BCD(gu16_display_weight);
 			set_ledflash(DISPLAY_LOADUP,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
-			set_overtime2poweroff(C_TIME_10S);//ä¸ç¨³å®šæ—¶ä¸å…³æœº.
+			set_overtime2poweroff(C_TIME_10S);//ä¸ç¨³å®šæ—¶ä¸å…³æœ?
 			break;
 
 		case DISPLAY_LOADFIX:
@@ -391,9 +392,10 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[2] = LED_CHAR_O;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
 			fg_led_Byte &= 0;//0x40;
-			while(1){
-				is_timedshutdown();
-			}
+			do{
+                gu8v_worktasks = TASK_SLEEP;
+                GCC_CLRWDT();
+            }while(!fg_time_10s);
 			break;
 
 		case DISPLAY_IMPEDANCEING:
@@ -534,7 +536,7 @@ void task_scales2sleep(void)
 	LED_Init();
 	SETWDTTIME_1000MS();
 	SET_UART_DISABLE();
-	SETLVD_DISABLE();
+//	SETLVD_DISABLE();
 	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState\
 	   ||STATE_AUTOON_FAIL == BHSDKState){
 		_idlen = 0;
