@@ -36,17 +36,17 @@ extern volatile __byte_type  	flag2;// 标志
 //#define 						flag2.bits.b7
 
 
-/*flag3_remenber 睡眠时不能清除,需要记忆.*/
-extern volatile __byte_type  	flag3_remenber;// 标志
-#define flag3_remenber_Byte		flag3_remenber.u8
-#define fg_remember_200g		flag3_remenber.bits.b0////30s中内两次称重相差200g,显示上一次的值.
-//#define 			flag3_remenber.bits.b1
-//#define 			flag3_remenber.bits.b2
-//#define       	flag3_remenber.bits.b3
-//#define 			flag3_remenber.bits.b4
-//#define 			flag3_remenber.bits.b5
-//#define 			flag3_remenber.bits.b6
-//#define 			flag3_remenber.bits.b7
+/*flag3_remember 睡眠时不能清除,需要记忆.*/
+extern volatile __byte_type  	flag3_remember;// 标志
+#define flag3_remenber_Byte		flag3_remember.u8
+#define fg_remember_200g		flag3_remember.bits.b0////30s中内两次称重相差200g,显示上一次的值.
+//#define 			flag3_remember.bits.b1
+//#define 			flag3_remember.bits.b2
+//#define       	flag3_remember.bits.b3
+//#define 			flag3_remember.bits.b4
+//#define 			flag3_remember.bits.b5
+//#define 			flag3_remember.bits.b6
+//#define 			flag3_remember.bits.b7
 
 
 extern u8 gu8v_time_100ms;
