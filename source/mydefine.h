@@ -44,11 +44,9 @@
 #define DISPLAY_IMPEDANCE_FINISH	8//测试阻抗
 #define DISPLAY_CAL					9//校准
 #define DISPLAY_CALPASS				10//校准成功.
-#define DISPLAY_CALFAIL				11
-#define DISPLAY_ALLOFF				12//关闭所有显示LED
-#define DISPLAY_UNLOCK_WEIGHT		13//关闭所有显示LED
-
-#define DISPLAY_MAX					14
+#define DISPLAY_ALLOFF				11//关闭所有显示LED
+#define DISPLAY_UNLOCK_WEIGHT		12//关闭所有显示LED
+#define DISPLAY_MAX					13
 
 //2.5KG~5KG之间不锁定重量，只显示当前�?
 #define C_UNLOCK_WEIGHT				100//精度:0.1�?

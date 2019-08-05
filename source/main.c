@@ -1,6 +1,5 @@
 #include "common.h"
 
-u8 test;
 int main(void)
 {
 	// 判斷是否為上電復位或者非正常情況下的復位
@@ -10,30 +9,30 @@ int main(void)
 
 		//初始化//
 		fun_PowerOnSysInit();
+
 		//UART配置
 		fun_UARTPowerOnInit();
 
+		/* 用户初始化变量 */
 		user_init();
 
 		//显示
-		// 上電后調用fun_BodyFatScalesSDK_PowerOn()函數
+		//上電后調用fun_BodyFatScalesSDK_PowerOn()函數
 		fun_BodyFatScalesSDK_PowerOn();
 		// 切換為阻抗模式
-/*		BHSDKState = ENTER_IMPEDANCE*/;
+		/*BHSDKState = ENTER_IMPEDANCE;*/
 		// 切換為稱重模式
 		BHSDKState = ENTER_WEIGHT_NORMAL;
-		 SDKWeight.flag.b.IsNeedTare = 1;			// 上電重量默認為0kg
+		SDKWeight.flag.b.IsNeedTare = 1; //上電重量默認為0kg
 		// 切換為標定模式
-	/*	 BHSDKState = ENTER_WEIGHT_CAL;	*/
+		/*BHSDKState = ENTER_WEIGHT_CAL;	*/
 	}
 	else
 	{
 		// WDT溢出復位初始化
 		GCC_CLRWDT();
-		gu8v_worktasks = TASK_SCALES;
-		set_overtime2poweroff(C_TIME_10S);
-		fg_time_10s = 0;
-        _t0on = 0;
+		/* 睡眠唤醒后进入TASK_SCALES模式检测上称状态 */
+		gu8_worktasks = TASK_SCALES;
 	}
 
 
@@ -44,16 +43,15 @@ int main(void)
 
 		// 主LOOP循環調用 fun_BodyFatScalesSDK()
 		fun_BodyFatScalesSDK();
-		test = BHSDKState;
 
-		switch(gu8v_worktasks)
+		switch(gu8_worktasks)
 		{
 			case TASK_STARTUP:
-				Set_DisplayMode(DISPLAY_POWERON);
+				task_scalesstartup();
 				break;
 
 			case TASK_LOWBATTERY:
-				Set_DisplayMode(DISPLAY_LOWBATTERY);
+				task_scaleslowbattry();
 				break;
 
 			case TASK_SCALES:
@@ -70,17 +68,28 @@ int main(void)
 				break;
 
 			default:
-				gu8v_worktasks = TASK_SCALES;
+				gu8_worktasks = TASK_SCALES;
 				break;
 		}
 
-		fun_DiaplsyMode();
+		/* LED显示内容buffer填充 */
+		fun_diaplay_mode();
 
-		if(fg_time_100ms){
-			fg_time_100ms = 0;
-			fun_timing();
-		}
+		/* 时间定时每次进入为100MS */
+		//fun_timing();
 
+		/* 判断定时关机 */
 		is_timedshutdown();
+
+		/* For Debug */
+       #if 0
+       	{
+			extern void UART_SendData(u8* pdata, u8 len);
+			if(fg_time_test){
+				fg_time_test = 0;
+				UART_SendData(&gu8v_UartRxBuf[0],UART_LENGTH_RX);//test
+			}
+	   }
+       #endif
 	}
 }

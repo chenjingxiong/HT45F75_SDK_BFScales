@@ -1,17 +1,8 @@
-//___________________________________________________________________
-//___________________________________________________________________
-//  Copyright : 2015 BY HOLTEK SEMICONDUCTOR INC
-//  File Name : Sys_init.c
-// Description: ϵ�y��ʼ??
-//   Customer : �����������޹�˾
-//Targer Board: CH376BLE
-//   MCU      : HT45F75
-//___________________________________________________________________
-//___________________________________________________________________
+
 #include "common.h"
 
 //===============================================================
-//function: ����ϵͳʱ��
+//function: 时钟初始化,在编译器中配置选项设定
 //input   : none.
 //output  : none
 //description:
@@ -19,51 +10,15 @@
 void SysFrequencyInit(void)
 {
 	_hlclk = 1;
-//	//����ϵͳʱ��
-//	#if (HXT == ENABLE)
-//		// �޸�IOΪOSC
-//		_pas07 = 1;
-//		_pas06 = 1;
-//		_pas11 = 1;
-//		_pas10 = 1;
-//		//�����ⲿʱ��Դ.
-//		#if (SYS_FREQUENCY_OSC > 10000000)
-//			_hxtm  = 1;
-//		#else
-//			_hxtm  = 0;
-//		#endif
-//		_hxten = 1;
-//		_fhs   = 1; // ѡ��ϵͳʱ�������ⲿ.
-//		_hircc = 0; // �ر��ڲ�ʱ��.
-//	#else
-//		// �޸�IOΪ��ͨIO
-//		_pas07 = 0;
-//		_pas06 = 0;
-//		_pas11 = 0;
-//		_pas10 = 0;
-//		// �����ڲ�ʱ��Դ
-//		#if   (SYS_FREQUENCY_OSC == SYS_OSC_4MHZ)
-//			_hircc = 0x01;
-//		#elif (SYS_FREQUENCY_OSC == SYS_OSC_8MHZ)
-//			_hircc = 0x05;
-//		#elif (SYS_FREQUENCY_OSC == SYS_OSC_12MHZ)
-//			_hircc = 0x09;
-//		#endif
-//		_fhs   = 0; // ѡ��ϵͳʱ�������ڲ�
-//		_hxtc  = 0x00; // �ر��ⲿʱ��??
-//	#endif
-//	// ϵͳ����ʱ����??
-//	#if (LXT == ENABLE)
-//		_fss   = 1;
-//		_lxten = 1;
-//	#else
-//		_fss  = 0;
-//		_lxtc = 0;
-//	#endif
 }
 
-
-static void fun_RamInit()
+//===============================================================
+//function: 清除RAM:Sector0,Sector3:0x80~0xFF.
+//input   : none.
+//output  : none
+//description:
+//===============================================================
+void fun_RamInit(void)
 {
 	_mp1h = 0;
 	_mp1l = 0x80;
@@ -80,21 +35,20 @@ static void fun_RamInit()
 
 	_mp1h = 3;
 	_mp1l = 0x80;
-
-		for(_tblp = 0x00;_tblp < 128;_tblp++)
-		{
-			 _iar1 = 0;
-			  _mp1l++;
-		}
+	for(_tblp = 0x00;_tblp < 128;_tblp++)
+	{
+		_iar1 = 0;
+		_mp1l++;
+	}
 
 }
 /********************************************************************
-Function: GPIO��ʼ??
+Function: GPIO初始化
 INPUT	: none
 OUTPUT	: none
-NOTE	: ����IO config��ݔ??
+NOTE	: 配置所有IO口初始状态.
 ********************************************************************/
-static void fun_GPIOInit()
+void fun_GPIOInit(void)
 {
 	//IO
 	_pa  = PA_Default;		//PA PORT
@@ -128,6 +82,13 @@ static void fun_GPIOInit()
 	SETLEDCURRENT_LEVEL3();
 }
 
+
+//===============================================================
+//function: LED 所有IO口初始化为关闭LED状态.
+//input   : none.
+//output  : none
+//description:
+//===============================================================
 void LED_Init(void)
 {
 	LEDCOM1 = LOW ;
@@ -135,24 +96,24 @@ void LED_Init(void)
 	LEDCOM3 = LOW ;
 	LEDCOM4 = LOW ;
 	LEDSEG = LOW;
-//	LEDCOMC1 = OUTPUT ;
-//	LEDCOMC2 = OUTPUT ;
-//	LEDCOMC3 = OUTPUT ;
-//	LEDCOMC4 = OUTPUT ;
-//	LEDSEGC  = OUTPUT ;
+	LEDCOMC1 = OUTPUT ;
+	LEDCOMC2 = OUTPUT ;
+	LEDCOMC3 = OUTPUT ;
+	LEDCOMC4 = OUTPUT ;
+	LEDSEGC  = OUTPUT ;
 	P_LED_BLE = LOW;
-//	P_LED_BLE_C = OUTPUT;
+	P_LED_BLE_C = OUTPUT;
 	P_LED_UNIT_PCT = LOW;
-//	P_LED_UNIT_PCT_C = OUTPUT;
+	P_LED_UNIT_PCT_C = OUTPUT;
 }
 
 /********************************************************************
-Function: Timer��ʼ??
+Function: Timer初始化
 INPUT	: none
 OUTPUT	: none
 NOTE	:
 ********************************************************************/
-static void fun_TimerInit()
+void fun_TimerInit(void)
 {
 	// TM0
 	_tm0c0 = 0x20;		// fsys/16 4us
@@ -195,13 +156,14 @@ static void fun_TimerInit()
 	SETTIMEBASE_OFF();
 
 }
+
 /********************************************************************
-Function: MCU��늳�ʼ??
+Function: MCU上電初始化
 INPUT	:
 OUTPUT	:
 NOTE	:
 ********************************************************************/
-void fun_PowerOnSysInit()
+void fun_PowerOnSysInit(void)
 {
 	//IAP not need	to init
 	//EEPROM not need to init
@@ -231,12 +193,14 @@ void fun_PowerOnSysInit()
 	// UART User Define
 	// ADC User Define
 }
+
 /********************************************************************
-Function: �P�]����ģ�K�M��HLATģʽ
+Function: 關閉各個模塊進入HLAT模式
 INPUT	:
 OUTPUT	:
 NOTE	:
 ********************************************************************/
+
 void fun_PrepareToHalt()
 {
 
@@ -252,33 +216,34 @@ void fun_PrepareToHalt()
 }
 
 /********************************************************************
-Function: ��ʼ���û���??
+Function: 用户设定初始化.
 INPUT	:
 OUTPUT	:
-NOTE	:
+NOTE	:初始化一些变量,打开中断等.
 ********************************************************************/
 void user_init(void)
 {
 	Set_AllLEDBuffer(0);
 	Set_DisplayMode(DISPLAY_ALLOFF);
-	gu8v_weigh_targeunit = UNIT_KG;
+	gu8_weigh_targeunit = UNIT_KG;
 	set_overtime2poweroff(C_TIME_10S);
 
-	fg_led_Byte = 0x00;
+	flag_led_Byte = 0x00;
 	flag0_time_Byte = 0x00;
 	flag1_Byte = 0x00;
 	flag2_Byte = 0x00;
+	flag3_remenber_Byte = 0x00;
 
 
     gbv_IsBusyUartTx = 0;
     gbv_UartRxSuccess = 0;
 
-	//开机全�?S.
+	//上电开机LED全显3S
     gu8v_led_delay3S = 0;
-    gu8v_worktasks = TASK_STARTUP;
+    gu8_worktasks = TASK_STARTUP;
 
 
-	//中断:定时和显示扫�?
+	//中断:定时和显示扫描.
 	_t0on  = 1;
 	SETCTMA_ISR_ENABLE();
 	_emi = 1;
@@ -306,9 +271,75 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 
 	fg_time_2ms = 1;
 
+	/* 定时时间 */
 	if(C_TIME_100MS <= ++gu8v_time_100ms){
 		gu8v_time_100ms = 0;
 		fg_time_100ms = 1;
+
+		//timing
+		{
+			if(!fg_time_3s){
+				gu8v_led_delay3S++;
+				if(C_TIME_3S <= gu8v_led_delay3S){
+					gu8v_led_delay3S = 0;
+					fg_time_3s = 1;
+				}
+			}
+
+			/* 串口发送周期计数 */
+			if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
+
+			/* 串口接收超时检测 */
+			if(!gbv_UartRxSuccess && fg_uart_rec_start){
+				if(gu8v_TBRxTimeOutCnt){
+					gu8v_TBRxTimeOutCnt--;
+				}else{
+					//gbv_UartRxSuccess = 1;
+					fg_uart_rec_start = 0;
+				}
+			}
+
+			/* LED显示闪烁定时 */
+			if(fg_led_timing){
+				//先延后执行LED闪烁功能.
+				if(!fg_led_delay){
+					if(gu8v_led_delay)
+						gu8v_led_delay--;
+					else
+						fg_led_delay = 1;
+				}
+				//延时时间到后执行LED显示闪烁切换标志
+				if(fg_led_delay){
+					gu8v_time_dalay++;
+					if(gu8v_led_speed <= gu8v_time_dalay){
+						gu8v_time_dalay = 0;
+						if(gu8v_howtimes){
+							fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪.
+							//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁
+							//注意:最好在fg_led_flash=1即LED处于熄灭状态下切换.
+							if(fg_led_flash){
+								fg_led_change = !fg_led_change;
+							}
+							gu8v_howtimes--;
+						}else{
+							fg_led_delay = 0;
+							fg_led_timing = 0;
+							fg_led_flash = 0;
+							fg_led_change = 0;
+						}
+					}
+				}
+			}else{
+				/*执行闪烁完成后开始计时定时关机*/
+				if(gu8v_timed_shutdown){
+					gu8v_timed_shutdown--;
+					fg_time_10s = 0;
+					fg_led_flash = 0;
+				}else{
+					fg_time_10s = 1;
+				}
+			}
+		}
 	}
 
 	//*********** LED *************//
@@ -370,14 +401,14 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 			break;
 		}
 
-		if(fg_led_ble)//蓝牙
+		if(fg_led_ble)//图标:"蓝牙"
 		{
 			P_LED_BLE = HIGH;
 		}else{
 			P_LED_BLE = LOW;
 		}
 
-		if(fg_led_unit_pct)//%
+		if(fg_led_unit_pct)//图标:"%"
 		{
 			P_LED_UNIT_PCT = HIGH;
 		}else{
@@ -415,6 +446,7 @@ DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 #endif
 //@-------MuFunction1 ?��????????----------@
 // LVD&EEPROM&UART&SIM
+#if 0
 DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 {
 
@@ -513,6 +545,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
     _acc = _usr;
     _acc = _txrrxr;
 }
+#endif
 #if 0
 //@-------MuFunction2 ?��????????----------@
 // I2C &TM1

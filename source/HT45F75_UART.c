@@ -4,17 +4,17 @@
 
 volatile unsigned char 	gu8v_UartTxBuf[UART_LENGTH_TX];
 volatile unsigned char 	gu8v_UartRxBuf[UART_LENGTH_RX];
-volatile unsigned char  lu8v_TxBufoffset;   // TX åç§»é‡
-volatile unsigned char  lu8v_TxBufLength;   // TX å¹€é•·åº¦
-volatile unsigned char  gu8v_UartTxCycle;   // TX ç™¼é€é€±æœŸ
+volatile unsigned char  lu8v_TxBufoffset;   // TX Æ«ÒÆÁ¿
+volatile unsigned char  lu8v_TxBufLength;   // TX ¬éL¶È
+volatile unsigned char  gu8v_UartTxCycle;   // TX °lËÍßLÆÚ
 volatile bit gbv_IsBusyUartTx;              // TX is busy
 
-volatile unsigned char  lu8v_RxBufoffset;   // RX åç§»é‡
-volatile unsigned char  lu8v_RxBufLength;   // RX å¹€é•·åº¦
-volatile unsigned char  gu8v_TBRxTimeOutCnt;// RX å¹€timeout
+volatile unsigned char  lu8v_RxBufoffset;   // RX Æ«ÒÆÁ¿
+volatile unsigned char  lu8v_RxBufLength;   // RX ¬éL¶È
+volatile unsigned char  gu8v_TBRxTimeOutCnt;// RX ¬timeout
 volatile bit gbv_UartRxSuccess;             // Rx is ok,user can process the rx buf data
 /********************************************************************
-Function: Uartåˆå§‹åŒ–ç¨‹åº
+Function: Uart³õÊ¼»¯
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -23,7 +23,7 @@ void fun_UARTPowerOnInit()
 {
     // æ•¸æ“šå‚³è¼¸æ ¼å¼è¨­å®š
 	SET_UART_Format_D8_P0_S1();
-    // æ³¢ç‰¹ç‡è¨­å®š
+    // æ³¢ç‰¹ç‡è¨­å®?
 	SET_UART_BAUTRATE_9600();
 	SET_UART_ADDRESS_DISABLE();
 	SET_UART_RECEIVER_IE_ENABLE();
@@ -34,84 +34,112 @@ void fun_UARTPowerOnInit()
 	// UART0 IO
 
 }
-#if 0
 
 ///********************************************************************
-//Function: Uartæ•¸æ“šç™¼é€å’Œæ¥æ”¶ä¸­æ–·å­ç¨‹åº
+//Function: Uartæ•¸æ“šç™¼é€å’Œæ¥æ”¶ä¸­æ–·å­ç¨‹åº?
 //INPUT	:
 //OUTPUT:
 //NOTE	:
 //********************************************************************/
 DEFINE_ISR(UART_ISR, MuFunction1_VECTOR)
 {
-	// å¥‡å¶æ ¡éªŒå‡ºé”™
-//	if (_perr0)
-//	{
-//		_acc = _usr;
-//		_acc = _txr_rxr;
-//	}
-//	 å™ªå£°å¹²æ‰°é”™è¯¯
+
+	_mf1f=0;
+	// ÔëÉù¸ÉÈÅ´íÎó
 	if (_nf)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// å¸§é”™è¯¯
+	// Ö¡´íÎó
 	if (_ferr)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// æº¢å‡ºé”™è¯¯
+	// Òç³ö´íÎó
 	if (_oerr)
 	{
 		_acc = _usr;
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// å‘é€æ•°æ®
+	// ·¢ËÍÊı¾İ
 	if (_txif && gbv_IsBusyUartTx)
 	{
-		if (lu8v_TxBufoffset <= lu8v_TxBufLength)
+		if (lu8v_TxBufoffset < lu8v_TxBufLength)
 		{
 			_txrrxr = gu8v_UartTxBuf[lu8v_TxBufoffset];
 		}
 		else
 		{
-            if (_tidle)
-            {
-                gbv_IsBusyUartTx = 0;
-            }
+			if (_tidle)
+			{
+				gbv_IsBusyUartTx = 0;
+			}
 		}
 		lu8v_TxBufoffset++;
 	}
-	// æ¥æ”¶æ•°æ®
+
+
+	_uif = 0;
+	// ½ÓÊÕÊı¾İ
 	if (_rxif)
 	{
-        gu8v_UartRxBuf[lu8v_RxBufoffset] = _txrrxr;
-		gu8v_TBRxTimeOutCnt = 0;
-        lu8v_RxBufoffset++;
-        // ç”¨æˆ¶éœ€è¦åœ¨æ­¤å¯«Rxæ•¸æ“šé•·åº¦
-        // 1 å›ºå®šé•·åº¦,å‰‡åœ¨åˆå§‹åŒ–çš„æ™‚å€™åˆå§‹åŒ–è©±lu8v_RxBufLength
-        // 2 å”è­°è‡ªå¸¶é•·åº¦ä¿¡æ¯
-        if (lu8v_RxBufoffset == 3)
-        {
-        	lu8v_RxBufLength = gu8v_UartRxBuf[2];
-        }
-        if (lu8v_RxBufoffset >= lu8v_RxBufLength)
-        {
-            lu8v_RxBufoffset = 0;
-            lu8v_RxBufLength = 0xff;
-            gbv_UartRxSuccess  = 1;
-        }
+		_rxif = 0;
+
+		_acc = _usr;
+		R_UartData = _txrrxr;
+		if(gbv_UartRxSuccess) {
+			fg_uart_rec_start = 0;
+			return;
+		}
+
+		gu8v_TBRxTimeOutCnt = C_TIMEING_TIMEOUT;
+
+		if(!fg_uart_rec_start){
+			switch(R_UartData)
+			{
+				case REQ_UNITSYN:
+					fg_uart_rec_start = 1;
+					fg_uart_rec_end = 0;
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+				default:
+					lu8v_RxBufLength = DATA_BUF_LEN;
+					break;
+			}
+			lu8v_RxBufoffset = 0;
+		}
+
+		//start recive
+		if(fg_uart_rec_start){
+
+			if(fg_uart_rec_start && (lu8v_RxBufLength <= lu8v_RxBufoffset)){
+				fg_uart_rec_start = 0;
+				fg_uart_rec_end = 0;
+				lu8v_RxBufoffset = 0;
+			}
+
+			gu8v_UartRxBuf[lu8v_RxBufoffset++] = R_UartData;
+
+			if(lu8v_RxBufLength <= lu8v_RxBufoffset)
+				fg_uart_rec_end = 1;
+
+			if(fg_uart_rec_end){
+				lu8v_RxBufoffset = 0;
+				gbv_UartRxSuccess = 1;
+				fg_uart_rec_start = 0;
+				fg_uart_rec_end = 0;
+			}
+		}
 	}
 }
-#endif
 
 /********************************************************************
-Function: uartç™¼é€é–‹å§‹
+Function: Uart¿ªÊ¼·¢ËÍ.
 INPUT	:
 OUTPUT	:
 NOTE	:

@@ -10,9 +10,8 @@
 #include "Sys_Init.h"
 #include "LEDScalesSDK.h"
 #include "GPIO.h"
-#include "function.h"
 #include "variants.h"
 #include "mydefine.h"
-
-/*#include "HT45F75_Sys.h"*/
+#include "bodyfatscales_task.h"
+#include "function.h"
 #endif
