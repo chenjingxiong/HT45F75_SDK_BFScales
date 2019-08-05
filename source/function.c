@@ -1,77 +1,48 @@
 #include "common.h"
-u16 gu16v_weigh;
-u16 gu16v_lockweigh;
-u16 gu16_display_weight;
-u16 gu16v_impedence_data;
-u16 gu16v_pct_data;
 
-u8 gu8v_weigh_targeunit;
-volatile u8  gu8v_05s_count;//ledÉÁË¸Ê±ÁÁÃğÖ®¼äµÄÊ±¼ä¼ä¸ôµÄ¼ÆÊıÖµ.
-volatile u8  gu8v_howtimes;//ledÉÁË¸¶àÉÙ´Î£¬¼ÆÊıÒ»ÁÁÒ»ÃğËã2´Î.
-volatile u8  gu8v_led_speed;//ledÉÁË¸Ê±ÁÁÃğÖ®¼äµÄÊ±¼ä¼ä¸ô,
-volatile u8  gu8v_led_delay;//ÑÓ³Ùx*100MSºó¿ªÊ¼Ö´ĞĞÉÁË¸¹¦ÄÜ.
-volatile u8  gu8v_led_delay3S;
+u8  gu8_dismode;//LEDæ˜¾ç¤ºæ¨¡å¼.
+u16 gu16_display_weight;//å·²ç»è½¬æ¢å•ä½åçš„æ˜¾ç¤ºä½“é‡æ•°æ®.
+u8 gu8_weigh_targeunit;//ç›®æ ‡ä½“é‡å•ä½.
 
-u8  gu8v_timed_shutdown;
-u8  gu8v_dismode;
-u8  gu8v_worktasks;
+/* LED é—ªçƒï¼Œæ˜¾ç¤ºï¼Œå®šæ—¶ç­‰å˜é‡*/
+volatile u8  gu8v_time_dalay; //å»¶æ—¶gu8v_time_dalay*100Msåå¼€å§‹æ‰§è¡Œé—ªçƒ.
+volatile u8  gu8v_howtimes;  //LEDé—ªçƒæ¬¡æ•°.
+volatile u8  gu8v_led_speed; //é—ªçƒçš„å¿«æ…¢.
+volatile u8  gu8v_led_delay; //å»¶æ—¶delayæ—¶é—´åæ‰æ‰§è¡Œé—ªçƒ.
+volatile u8  gu8v_led_delay3S;//å¼€æœºLEDå…¨æ˜¾3sè®¡æ—¶.
+volatile u8  gu8v_timed_shutdown;//å®šæ—¶å…³æœºè®¡æ—¶.
 
-//¾«¶È:0.1½ï;	eg:weigh  =100,´ú±í 100*0.1½ï=10½ï.
+
+//ç²¾åº¦:0.1jin;	eg:weigh  =100,è®¡ç®—:100*0.1jin=10jin.
 void fun_Unit_Change(u16 weigh)
 {
-	gu16v_weigh = weigh;
-	if(UNIT_KG == gu8v_weigh_targeunit)
+	gu16_weigh = weigh;
+	if(UNIT_KG == gu8_weigh_targeunit)
 	{
 		fg_led_unit_kg = 1;
 		fg_led_unit_lb = 0;
-
-		#if 1//(_UART_DEBUG == ENABLE)
-			gu16_display_weight = (u32)weigh/2;///10; //KG“QËã ·ûºÅÇ¿ÖÆ×ª»»£¬·ÀÖ¹Òç³ö
-		#else
-			gu16v_Display_Weigh = weigh;
-		#endif
+		gu16_display_weight = (u32)weigh/2;
 	}
-	else if(UNIT_LB == gu8v_weigh_targeunit)
+	else if(UNIT_LB == gu8_weigh_targeunit)
 	{
 		fg_led_unit_kg = 0;
 		fg_led_unit_lb = 1;
-		gu16_display_weight = ((u32)weigh/2*(u32)22046/1000+5)/10 & 0xfffe; //LB“QËã
-		/*ËµÃ÷:
-			10(g) = 0.0220462(lb),0.1(lb) = 45.359237(g)
-
-			 eg:
-			 	Èô:weigh = 55
-			 	Ôò:weigh=55=550(g) -->ÒòÎª´ËºÏÌ©¿â¾«¶ÈÎª10g£¬¼´1´ú±í1*10=10(g);x*10=10x(g)
-			 	¼ÆËã:weigh*10000/45359=55*10000/45359
-			 		È¡ÕûÊıÎ»µÈÓÚ12£¬´ú±í1.2(lb)
-		*/
+		gu16_display_weight = ((u32)weigh/2*(u32)22046/1000+5)/10 & 0xfffe;
 	}
-//	else if(UNIT_JIN == gu8v_weigh_targeunit)
-//	{
-//		fg_led_unit_kg = 0;
-//		fg_led_unit_lb = 0;
-//		gu16_display_weight = (u32)weigh;///5; 	//JIN  0.1½ï  = 5(weigh) ,gu16v_Display_WeighµÄ¸öÎ»´ú±íĞ¡ÊıµãºóÒ»Î»£¬±£Áô Ò»Î»Ğ¡”µüc
-//		/*ËµÃ÷:
-//			eg:
-//			   Èô:weigh = 44
-//			   Ôò:weigh=44=440(g) -->ÒòÎª´ËºÏÌ©¿â¾«¶ÈÎª10g£¬¼´1´ú±í1*10=10(g);x*10=10x(g)
-//			   ¼ÆËã:weigh/5 = 44/5 = 8.8
-//					È¡ÕûÊıÎ»µÈÓÚ8£¬´ú±í0.8(½ï)
-//		*/
-//	}
 }
 
 //===============================================================
-//function: ÉèÖÃLEDÉÁË¸.
+//function: LEDæ˜¾ç¤ºé—ªçƒå’Œå®šæ—¶æ—¶é—´æ›´æ–°.
 //input   :
-//			mode: LEDÏÔÊ¾µÄÄ£Ê½
-//			ledflash: =0 ¹Ø±ÕÉÁË¸; =1 ¿ªÆôÉÁË¸
-//			count: ÉÁË¸´ÎÊı: =0 ²»ÉÁË¸, =x ÉÁË¸x´Î.
-//			speed: ÉÁË¸µÄ¿ìÂı,È¡Öµ·¶Î§0~255,Ê±¼äµÈÓÚx100MS.
-//			delay: ÑÓ³Ù delay*100MS Ê±¼äºó²Å¿ªÊ¼Ö´ĞĞÉÁË¸¹¦ÄÜ
-//			overtime:ÉèÖÃ¶¨Ê±ĞİÃßÊ±¼ä,Ê±¼ä= 100ms*(overtime+delay)
+//			mode: LEDæ˜¾ç¤ºæ¨¡å¼
+//			ledflash: =0 ä¸é—ªçƒ; =1 é—ªçƒ.
+//			count: é—ªçƒæ¬¡æ•°Ë¸=0 ä¸é—ªçƒË¸ =x é—ªçƒxæ¬¡.ä¸€äº®ä¸€ç­countä¸º2.
+//			speed: é—ªçƒäº®ç­çš„é€Ÿåº¦,=X*100MS.
+//			delay: å»¶æ—¶delay*100MSæ‰å¼€å§‹åæ‰§è¡Œé—ªçƒ.
+//			overtime:= LEDæ˜¾ç¤ºæ—¶é—´(å®šæ—¶å…³æœºæ—¶é—´). =100ms*(overtime+delay)
 //output  : NULL
-//description: ½øÈëĞİÃßÇ°µÄÉèÖÃ£¬ºÍ»½ĞÑºóµÄ³õÊ¼»¯.
+//description:å¯ä»¥è®¾ç½®ï¼š1.LEDæ˜¯å¦é—ªçƒ; 2.LEDé—ªçƒæ¬¡æ•°; 3.é—ªçƒçš„å¿«æ…¢;
+//						4.å»¶æ—¶delay*100MSæ—¶é—´åå¼€å§‹æ‰§è¡Œé—ªçƒ; 5.æ›´æ–°å®šæ—¶å…³æœºæ—¶é—´.
 //===============================================================
 void set_ledflash(u8 mode, u8 ledflash, u8 count, u8 speed, u8 delay, u8 overtime)
 {
@@ -82,7 +53,7 @@ void set_ledflash(u8 mode, u8 ledflash, u8 count, u8 speed, u8 delay, u8 overtim
 		if(C_LED_FLASH_ON == ledflash){
 			fg_led_delay = 0;
 			fg_led_timing = 1;
-			gu8v_05s_count = 0;
+			gu8v_time_dalay = 0;
 			gu8v_howtimes = count;
 			gu8v_led_speed = speed;
 			gu8v_led_delay = delay;
@@ -91,262 +62,54 @@ void set_ledflash(u8 mode, u8 ledflash, u8 count, u8 speed, u8 delay, u8 overtim
 			if(overtime)fg_led_flash = 0;
 		}
 		fg_led_change = 0;
-//		overtime = overtime + delay;
 		set_overtime2poweroff(overtime);
 	}
 }
 
-#if 0
 u8 get_ledflash_status(void)
 {
 	return fg_led_timing;
 }
-#endif
+
 
 //===============================================================
-//function: ÉèÖÃ³¬Ê±¹Ø»úÊ±¼ä.
-//input   : overtime:µ¥Î»Îª100ms;	eg:overtime=10,Ôò´ú±í1s,¼´10*100ms=1S.
-//output  : NULL
-//description: Ê±¼ä: 100MS*overtime.
-//===============================================================
-void set_overtime2poweroff(u8 overtime)
-{
-	gu8v_timed_shutdown = overtime;
-}
-
-//void fun_DisplayMode_LoadFix(void)
-//{
-//	if(is_BHSDKState_change()){
-//		fun_Unit_Change(SDKWeight.DataStable);
-//		Set_DisplayMode(DISPLAY_LOADFIX);
-//	}
-//}
-
-
-//void fun_DisplayMode_LoadDown(void)
-//{
-//	fun_Unit_Change(SDKWeight.DataStable);
-//	Set_DisplayMode(DISPLAY_LOADDOWN);
-//}
-
-//void fun_DisplayMode_OverLoad(void)
-//{
-//	Set_DisplayMode(DISPLAY_OVERLOAD);
-//}
-
-//void fun_DisplayMode_ImpedanceFinish(void)
-//{
-//	Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
-//	gu16v_impedence_data = SDKImpedance.Data;
-//}
-
-
-void task_bodyfatscales(void)
-{
-	// ÒÀ“şgu8v_BodyfatSDKState Íê³ÉUI»òÕßÆäËû„Ó×÷
-	switch (BHSDKState)
-	{
-		case STATE_WEIGHT_PREPARE:	// ·QÖØœÊ‚äÖĞ
-			// ÇĞ“QéENTER_WEIGHT_NORMALºó,Í¨³£ÓĞ300ms×óÓÒ·QÖØœÊ‚ä•rég
-			break;
-		case STATE_WEIGHT_NOLOAD:	// ¿Õİd/®”Ç°ÖØÁ¿Ğ¡ì¶×îĞ¡·QÖØÖØÁ¿
-			//fun_DisplayMode_NoLoad();//´ËÌŒ‘User UI,±ÈÈçï@Ê¾ÅR•rÖØÁ¿SDKWeight.DataCurrent
-            if(is_BHSDKState_change()){
-                fun_Unit_Change(SDKWeight.DataCurrent);
-                Set_DisplayMode(DISPLAY_NOLOAD);
-            }
-			break;
-		case STATE_WEIGHT_LOADUP:	// ÓĞÉÏ·Q„Ó×÷/æi¶¨ î‘BÏÂ¼Óİd½âæiÖØÁ¿,ÖØÁ¿ÓÉ0üc×ƒ³É>×îĞ¡·QÖØÖØÁ¿
-			//fun_DisplayMode_LoadUp();//´ËÌŒ‘User UI,±ÈÈçï@Ê¾ÅR•rÖØÁ¿SDKWeight.DataCurrent
-			fun_Unit_Change(SDKWeight.DataCurrent);
-			Set_DisplayMode(DISPLAY_LOADUP);
-			gbv_TxSDKWeightStatus = 1;
-			break;
-		case STATE_WEIGHT_LOADOK:	// Íê³ÉÒ»´Î·QÖØœyÁ¿
-	        // fun_DisplayMode_LoadOk();´ËÌŒ‘User UI,±ÈÈçé_Ê¼éW q·€¶¨ÖØÁ¿SDKWeight.DataStateµÈ
-			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
-				fun_Unit_Change(SDKWeight.DataCurrent);
-				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
-			}else{
-				if(is_BHSDKState_change()){
-					fg_loadok = 1;
-					fun_Unit_Change(SDKWeight.DataStable);
-					Set_DisplayMode(DISPLAY_LOADFIX);
-				}
-			}
-			break;
-		case STATE_WEIGHT_LOADFIX:	// Íê³ÉÒ»´Î·QÖØœyÁ¿ºóÖØÁ¿·€¶¨›]ÓĞ½âæi
-			//fun_DisplayMode_LoadFix();//´ËÌŒ‘User UI,,±ÈÈçé_Ê¼éW q·€¶¨ÖØÁ¿SDKWeight.DataStateµÈ
-			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
-				if(SDKWeight.DataCurrent != SDKWeight.DataStable){
-					set_overtime2poweroff(C_TIME_10S);//å¦‚æœé‡é‡æœ‰å˜åŒ?æ›´æ–°æ—¶é—´ä¸å»ç¡çœ .
-				}
-				fun_Unit_Change(SDKWeight.DataCurrent);
-				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
-			}else{
-				gu8v_time_30s = C_TIME_30S;
-				if(is_BHSDKState_change()){
-					gbv_TxSDKWeightStatus = 1;
-					if(!fg_remeber_200g){
-						fg_remeber_200g = 1;
-						gu16v_lockweigh = SDKWeight.DataStable;
-					}else{
-						if(fun_unsigned32BitABS(gu16v_lockweigh,SDKWeight.DataStable) <= C_REMEBER_200G){
-							GCC_NOP();
-						}else{
-							gu16v_lockweigh = SDKWeight.DataStable;
-						}
-					}
-					fun_Unit_Change(gu16v_lockweigh);
-					Set_DisplayMode(DISPLAY_LOADFIX);
-				}
-			}
-
-			break;
-		case STATE_WEIGHT_LOADDOWN:	// ÏÂ³Ó„Ó×÷
-	        //fun_DisplayMode_LoadDown();//´ËÌŒ‘User UI,,±ÈÈçï@Ê¾æi¶¨SDKWeight.DataStateµÈ
-			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
-				fun_Unit_Change(SDKWeight.DataCurrent);
-				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
-			}else{
-				if(is_BHSDKState_change()){
-					fun_Unit_Change(SDKWeight.DataStable);
-					Set_DisplayMode(DISPLAY_LOADDOWN);
-					//Set_DisplayMode(DISPLAY_LOADFIX);
-				}
-			}
-			break;
-		case STATE_WEIGHT_OVERLOAD:	// ³¬ÖØ,®”Ç°ÖØÁ¿´óì¶×î´ó·QÖØÖØÁ¿
-			//fun_DisplayMode_OverLoad();//´ËÌŒ‘User UI,,±ÈÈçï@Ê¾-OL-µÈ
-			Set_DisplayMode(DISPLAY_OVERLOAD);
-			break;
-		case STATE_IMPEDANCE_REFERENCE1:// ÕıÔÚÁ¿œy…¢¿¼ëŠ×è1
-		case STATE_IMPEDANCE_REFERENCE2:// ÕıÔÚÁ¿œy…¢¿¼ëŠ×è2
-		case STATE_IMPEDANCE_CHECKBODY: // ÅĞ”àÊÇ·ñÓĞÈËów
-		case STATE_IMPEDANCE_RX:		// ÕıÔÚÁ¿œy´ıœy×è¿¹
-			//fun_DisplayMode_Impedanceing();// ´ËÌŒ‘User UI,,±ÈÈçÅÜ----/ooooÌáÊ¾×è¿¹œyÁ¿ÖĞ
-			Set_DisplayMode(DISPLAY_IMPEDANCEING);
-            gu16v_impedence_data= 0;
-			fg_pct_ok = 0;
-			break;
-		case STATE_IMPEDANCE_FINISH:	// ×è¿¹Á¿œy½YÊø,´Ë•r¿ÉÒÔ×xÈ¡gu16v_CurrentImpedance_ohm
-			//fun_DisplayMode_ImpedanceFinish();//
-//			BHSDKState = ENTER_IMPEDANCE;
-			gu16v_impedence_data = SDKImpedance.Data;
-			Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
-		    break;
-		case STATE_AUTOON_FASTMODE:		// ¿ìËÙADC×Ô„ÓÉÏ·QÅĞ”à
-		case STATE_AUTOON_SLOWMODE:		// ÂıËÙADC×Ô„ÓÉÏ·QÅĞ”à
-			// Í¨³£ß@‚€•rºòŸoÈÎºÎUI
-			break;
-		case STATE_AUTOON_PASS:			// ×Ô„ÓÉÏ·QOK
-			// ´Ë•r¿ÉÒÔücÁÁï@Ê¾,²¢ÇĞ“Qµ½ÆÕÍ¨·QÖØÄ£Ê½ßMĞĞMCUµÄÕı³£¹¤×÷
-			gu8v_worktasks = TASK_WEIGHT_AUTOON;
-			break;
-		case STATE_AUTOON_FAIL:			// ×Ô„ÓÉÏ³ÓÊ§”¡,´Ë•rÕˆÀ^Àm×Œ MCU ßMÈëHALT î‘B
-//			fun_BodyFatScalesSDK_PowerDown();
-//			GCC_HALT();
-			gu8v_worktasks = TASK_SLEEP;
-			break;
-		case STATE_WEIGHT_CAL0:	// ÕıÔÚ˜Ë¶¨Áãüc
-			// fun_DisplayMode_CAL0();´ËÌŒ‘User UI,,±ÈÈçÌáÊ¾CAL 0kg
-//			fun_Unit_Change(0);
-//			Set_DisplayMode(DISPLAY_CAL);
-			break;
-		case STATE_WEIGHT_CAL1:	// ÕıÔÚ˜Ë¶¨µÚ1üc
-			// fun_DisplayMode_CAL1();´ËÌŒ‘User UI,,±ÈÈçÌáÊ¾CAL 50kg
-//			fun_Unit_Change(1000);
-//			Set_DisplayMode(DISPLAY_CAL);
-			break;
-		case STATE_WEIGHT_CAL2:	// ÕıÔÚ˜Ë¶¨µÚ2üc
-			// fun_DisplayMode_CAL2();´ËÌŒ‘User UI,,±ÈÈçÌáÊ¾CAL 100kg
-
-//			if(is_BHSDKState_change()){
-//				fun_Unit_Change(2000);
-//				Set_DisplayMode(DISPLAY_CAL);
-//			}
-			break;
-		case STATE_WEIGHT_CAL3:	// ÕıÔÚ˜Ë¶¨µÚ3üc
-			// fun_DisplayMode_CAL3();´ËÌŒ‘User UI,,±ÈÈçÌáÊ¾CAL 150kg
-
-//			if(is_BHSDKState_change()){
-//				fun_Unit_Change(3000);
-//				Set_DisplayMode(DISPLAY_CAL);
-//			}
-			break;
-		case STATE_WEIGHT_CALPASS:	// ˜Ë¶¨³É¹¦
-			//fun_DisplayMode_CALPASS();//´ËÌŒ‘User UI,,±ÈÈçÌáÊ¾PASS
-			Set_DisplayMode(DISPLAY_CALPASS);
-			break;
-		case STATE_WEIGHT_CALFAIL:	// ˜Ë¶¨Ê§”¡
-			// fun_DisplayMode_CALFAIL();´ËÌŒ‘User UI,,±ÈÈçÌáÊ¾FIAS
-//			if(is_BHSDKState_change()){
-//				Set_DisplayMode(DISPLAY_CALFAIL);
-//			}
-			break;
-		default:
-			break;
-	}
-
-	is_BHSDKState_change();
-}
-
-void set_BHSDKState(u8 state)
-{
-	BHSDKState = state;
-}
-
-u8 is_BHSDKState_change(void)
-{
-	static u8 BHSDKState_old = ENTER_SDK_NONE;
-	if(BHSDKState_old != BHSDKState){
-		BHSDKState_old = BHSDKState;
-		return 1;
-	}
-	return 0;
-}
-
-//===============================================================
-//function: ÉèÖÃÏÔÊ¾Ä£Ê½.
+//function: è®¾ç½®æ˜¾ç¤ºæ¨¡å¼
 //input   : DISPLAY_POWERON ~ DISPLAY_XXX.
 //output  : NULL
 //description:.
 //===============================================================
 void Set_DisplayMode(u8 dismode)
 {
-	gu8v_dismode = dismode;
+	gu8_dismode = dismode;
 }
 
 //===============================================================
-//function: »ñÈ¡ÏÔÊ¾Ä£Ê½.
+//function: è·å–æ˜¾ç¤ºæ¨¡å¼.
 //input   : NULL.
 //output  : DISPLAY_POWERON ~ DISPLAY_XXX.
 //description:.
 //===============================================================
 //u8 Get_DisplayMode(void)
 //{
-//	return gu8v_dismode;
+//	return gu8_dismode;
 //}
 
 
-//===============================================================
-//function: LED ÏÔÊ¾Ä£Ê½ÉèÖÃ.
-//input   : NULL.
-//output  : NULL
-//description: ¸ù¾İÉèÖÃµÄÏÔÊ¾Ä£Ê½À´¸üĞÂĞèÒªÏÔÊ¾µÄÊı¾İµÈ.
-//===============================================================
-void fun_DiaplsyMode(void)
+/********************************************************************
+Function: LEDéœ€è¦æ˜¾ç¤ºçŠ¶æ€ï¼Œæ˜¾ç¤ºå†…å®¹bufferå¡«å…….
+INPUT	:
+OUTPUT	:
+NOTE	:LEDæ˜¾ç¤ºå’Œæ˜¾ç¤ºæ—¶é—´å®šæ—¶è®¾ç½®.
+********************************************************************/
+void fun_diaplay_mode(void)
 {
-	switch(gu8v_dismode)
+	switch(gu8_dismode)
 	{
 		case DISPLAY_POWERON:
             Set_AllLEDBuffer(1);
-            if(fg_time_3s){
-                Set_AllLEDBuffer(0);
-                gu8v_worktasks = TASK_SCALES;
-                BHSDKState = ENTER_WEIGHT_NORMAL;
-                set_ledflash(DISPLAY_POWERON,C_LED_FLASH_OFF,0,0,C_TIME_3S,C_TIME_10S);
-            }
+			//æ›´æ–°10sæ—¶é—´ï¼ŒTASK_STARTUPçŠ¶æ€å½“3sæ—¶é—´åˆ°ä½†ç§¤å½’é›¶æ²¡å®Œæˆå°±ä¸è®©scaleè¿›å…¥ç¡çœ .
+			set_overtime2poweroff(C_TIME_10S);
+			set_ledflash(DISPLAY_POWERON,C_LED_FLASH_OFF,0,0,C_TIME_3S,C_TIME_10S);
 			break;
 
 		case DISPLAY_LOWBATTERY:
@@ -355,7 +118,7 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_O;
 			gu8v_LED_Buffer[2] = LED_CHAR_L;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte &= 0;//0x40;
+			flag_led_Byte &= 0;//0x40;
 			break;
 
 		case DISPLAY_NOLOAD:
@@ -373,7 +136,7 @@ void fun_DiaplsyMode(void)
 			fun_HEX2BCD(gu16_display_weight);
 			if(fg_loadok){
 				set_ledflash(DISPLAY_LOADFIX,C_LED_FLASH_ON,C_LED_FLASH_CNT,C_TIME_05S,C_LED_FLASH_DELAY,C_TIME_10S);
-				if(0 == fg_led_timing){
+				if(0 == get_ledflash_status()){
 					fg_loadok = 0;
 					set_BHSDKState(ENTER_IMPEDANCE);
 				}
@@ -390,11 +153,11 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_L;
 			gu8v_LED_Buffer[2] = LED_CHAR_O;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte &= 0;//0x40;
-			do{
-                gu8v_worktasks = TASK_SLEEP;
+			flag_led_Byte &= 0;//0x40;
+			while(!fg_time_10s){
+                gu8_worktasks = TASK_SLEEP;
                 GCC_CLRWDT();
-            }while(!fg_time_10s);
+            }
 			break;
 
 		case DISPLAY_IMPEDANCEING:
@@ -405,22 +168,22 @@ void fun_DiaplsyMode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR__;
 			gu8v_LED_Buffer[2] = LED_CHAR__;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			fg_led_Byte &= 0x40;
+			flag_led_Byte &= 0x40;
 			set_ledflash(DISPLAY_IMPEDANCEING,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
 			set_overtime2poweroff(C_TIME_10S);
 			break;
 
 		case DISPLAY_IMPEDANCE_FINISH:
 
-			switch(gu16v_impedence_data)
+			switch(gu16_impedence_data)
 			{
 				case IMPEDANCE_ERR_NOTEST:
 				case IMPEDANCE_ERR_ABNORMAL:
 				case IMPEDANCE_ERR_OUTRANGE:
-                    gu16v_impedence_data = 0x00;
-					fg_pct_ok = 0;
+                    gu16_impedence_data = 0x00;
+					fg_bodyfatrate_rec_ok = 0;
 					fg_led_unit_pct = 0;
-                    if(0 == fg_led_timing){
+                    if(0 == get_ledflash_status()){
                         set_BHSDKState(ENTER_WEIGHT_NORMAL);//test
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                     }
@@ -428,37 +191,37 @@ void fun_DiaplsyMode(void)
 
 				default:
 					gbv_TxSDKImpedanceStatus = 1;
-                    if(fg_pct_ok){
+                    if(fg_bodyfatrate_rec_ok){
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                         if(fg_led_change)
                         {
-                            fun_HEX2BCD(gu16v_pct_data);
+                            fun_HEX2BCD(gu16_BodyFatRate);
                             fg_led_unit_pct = 1;
 							fg_led_unit_kg = 0;
 							fg_led_unit_lb = 0;
                         }else{
                             fun_HEX2BCD(gu16_display_weight);
                             fg_led_unit_pct = 0;
-							if(UNIT_KG == gu8v_weigh_targeunit){
+							if(UNIT_KG == gu8_weigh_targeunit){
 								fg_led_unit_kg = 1;
 								fg_led_unit_lb = 0;
-							}else if(UNIT_LB == gu8v_weigh_targeunit){
+							}else if(UNIT_LB == gu8_weigh_targeunit){
 								fg_led_unit_kg = 0;
 								fg_led_unit_lb = 1;
 							}
                         }
 
-                        if(0 == fg_led_timing){
+                        if(0 == get_ledflash_status()){
                             set_BHSDKState(ENTER_WEIGHT_NORMAL);
-                            fg_pct_ok = 0;
+                            fg_bodyfatrate_rec_ok = 0;
 							fg_led_unit_pct = 0;
                         }
                     }else{
                     	 fg_led_unit_pct = 0;
-						 if(UNIT_KG == gu8v_weigh_targeunit){
+						 if(UNIT_KG == gu8_weigh_targeunit){
 							 fg_led_unit_kg = 1;
 							 fg_led_unit_lb = 0;
-						 }else if(UNIT_LB == gu8v_weigh_targeunit){
+						 }else if(UNIT_LB == gu8_weigh_targeunit){
 							 fg_led_unit_kg = 0;
 							 fg_led_unit_lb = 1;
 						 }
@@ -495,7 +258,7 @@ void fun_DiaplsyMode(void)
 
 		case DISPLAY_CALPASS:
 			while(1){
-				fg_led_Byte &= 0x40;//unit:ble,pct,kg,lb.
+				flag_led_Byte &= 0x40;//unit:ble,pct,kg,lb.
 				gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_P;//'P'
 				gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_A;  //'A'
 				gu8v_LED_Buffer[NUM_SHI]= LED_CHAR_5;  //'S'
@@ -504,10 +267,6 @@ void fun_DiaplsyMode(void)
 			}
 			break;
 
-//		case DISPLAY_CALFAIL:
-
-//			break;
-
 		default:
 		case DISPLAY_ALLOFF:
 			Set_AllLEDBuffer(0);
@@ -515,7 +274,7 @@ void fun_DiaplsyMode(void)
 			break;
 	}
 
-	if(DISPLAY_POWERON != gu8v_dismode && DISPLAY_ALLOFF != gu8v_dismode){
+	if((DISPLAY_POWERON != gu8_dismode) && (DISPLAY_ALLOFF != gu8_dismode)){
 		//è“ç‰™å›¾æ ‡æ˜¾ç¤º
 		if(!P_BT_Status & !P_BLE_EN)
 			fg_led_ble = 1;
@@ -525,142 +284,104 @@ void fun_DiaplsyMode(void)
 }
 
 //===============================================================
-//function: ÊÇ·ñÖ´ĞĞĞİÃß.
+//function: å®šæ—¶å…³æœº.
+//input   : overtime:overtime*100Ms
+//output  : NULL
+//description: timing: 100MS*overtime.
+//===============================================================
+void set_overtime2poweroff(u8 overtime)
+{
+	gu8v_timed_shutdown = overtime;
+}
+
+//===============================================================
+//function: æ˜¯å¦æ‰§è¡Œä¼‘çœ .
 //input   : NULL.
 //output  : NULL
-//description:¶¨Ê±Ê±¼äµ½ÔòÖ´ĞĞĞİÃß.
+//description:å®šæ—¶æ—¶é—´åˆ°åˆ™æ‰§è¡Œä¼‘çœ .
 //===============================================================
 void is_timedshutdown(void)
 {
 	if(fg_time_10s){
 		fg_time_10s = 0;
-		gu8v_worktasks = TASK_SLEEP;
+		gu8_worktasks = TASK_SLEEP;
 	}
 }
 
-void task_scales2sleep(void)
-{
-    P_BLE_EN = HIGH;
-	_t0on  = 0;
-	Set_DisplayMode(DISPLAY_ALLOFF);
-	LED_Init();
-	SETWDTTIME_1000MS();
-	SET_UART_DISABLE();
-	fg_led_Byte = 0x00;
-	flag0_time_Byte = 0x00;
-	flag1_Byte = 0x00;
-	flag2_Byte = 0x00;
-//	if(STATE_WEIGHT_NOLOAD == BHSDKState || STATE_WEIGHT_LOADDOWN == BHSDKState\
-//	   ||STATE_AUTOON_FAIL == BHSDKState){
 
-		if(gu8v_time_30s){
-			gu8v_time_30s--;
-		}else{
-			fg_remeber_200g = 0;
-		}
-		_t0on  = 0;
-		_t1on  = 0;
-		_t2on  = 0;
-		_tbon = 0;
-		fun_BodyFatScalesSDK_PowerDown();
-		_idlen = 0;
-		GCC_NOP();
-		GCC_NOP();
-		GCC_NOP();
-		GCC_HALT();
-//	}
-}
-
-void task_scaleswakeup(void)
-{
-	gu8v_worktasks = TASK_SCALES;
-	BHSDKState = ENTER_WEIGHT_NORMAL;
-
-	P_BLE_EN = LOW;//æ‰“å¼€è“ç‰™.
-
-	gbv_IsBusyUartTx = 0;
-	SET_UART_ENABLE();
-
-	gu8v_time_30s = C_TIME_30S;
-
-	// TM0
-	_tm0c0 = 0x20;		// fsys/16 4us
-	_tm0c1 = 0xc1;		// TimeCnt Mode
-	_tm0al = 500%256;	// 500*4us = 2ms;
-	_tm0ah = 500/256;
-	SETCTMA_ISR_ENABLE();
-	_t0on  = 1;
-	_emi = 1;
-}
-
+/********************************************************************
+Function: å®šæ—¶æ—¶é—´è®¡æ•°.
+INPUT	:
+OUTPUT	:
+NOTE	:æ¯100MSè¿›å…¥ä¸€æ¬¡.
+********************************************************************/
 void fun_timing(void)
 {
-	if(!fg_time_3s){
-		gu8v_led_delay3S++;
-		if(C_TIME_3S <= gu8v_led_delay3S){
-			gu8v_led_delay3S = 0;
-			fg_time_3s = 1;
-		}
-	}
+#if 0
+	if(fg_time_100ms){
+		fg_time_100ms = 0;
 
-
-
-	if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
-
-	//???????????byte?????
-	if(!gbv_UartRxSuccess && fg_uart_rec_start){
-		if(gu8v_TBRxTimeOutCnt) gu8v_TBRxTimeOutCnt--;
-		if(0 == gu8v_TBRxTimeOutCnt){
-//				  gbv_UartRxSuccess = 1;
-			fg_uart_rec_start = 0;
-		}
-	}
-
-	if(C_TIME_1S <= ++gu8v_time_1s){
-		gu8v_time_1s = 0;
-		fg_time_1s = 1;
-	}
-
-	/* LEDÏÔÊ¾ÉÁË¸ÇĞ»»¶¨Ê± */
-	if(fg_led_timing){
-		//ÏÈÑÓ??ºóÖ´ĞĞLEDÉÁË¸¹¦ÄÜ
-		if(!fg_led_delay){
-			if(gu8v_led_delay)
-				gu8v_led_delay--;
-			else
-				fg_led_delay = 1;
-		}
-		// ÑÓÊ±Ê±¼äµ½ºóÖ´ĞĞLEDÏÔÊ¾ÉÁË¸ÇĞ»»±êÖ¾??
-		if(fg_led_delay){
-			gu8v_05s_count++;
-			if(gu8v_led_speed <= gu8v_05s_count){
-				gu8v_05s_count = 0;
-				if(gu8v_howtimes){
-					fg_led_flash = !fg_led_flash;//¿ØÖÆLEDÒ»ÁÁÒ»ÃğÉÁ??
-					//fg_led_change:¿ÉÒÔÓÃÀ´¿ØÖÆÉÁË¸Ê±ÌåÖ¬ÓëÌåÖØµÄÂÖÁ÷ÉÁË¸??
-					//×¢Òâ:×îºÃÔÚfg_led_flash=1??¼´LED´¦ÓÚÏ¨Ãğ×´??
-					if(fg_led_flash){
-						fg_led_change = !fg_led_change;
-					}
-					gu8v_howtimes--;
-				}else{
-					fg_led_delay = 0;
-					fg_led_timing = 0;
-					fg_led_flash = 0;
-					fg_led_change = 0;
-				}
+		if(!fg_time_3s){
+			gu8v_led_delay3S++;
+			if(C_TIME_3S <= gu8v_led_delay3S){
+				gu8v_led_delay3S = 0;
+				fg_time_3s = 1;
 			}
 		}
-	}else{
-		/* ¶¨Ê±ĞİÃß¹Ø»ú,ÑÓ³ÙÊ±¼ä¹ıºó²Å¿ªÊ¼¼Æ?? */
-		if(gu8v_timed_shutdown){
-			gu8v_timed_shutdown--;
-			fg_time_10s = 0;
-			//µ±¶¨Ê±ĞİÃßÊ±¼äÃ»µ½£¬Ò²Ã»Ö´ĞĞLEDÉÁË¸¹¦ÄÜ??
-			//fg_led_flashÉèÎª0£¬½øĞĞËùÓĞÏÔÊ¾LEDÉ¨Ãè£¬·ÀÖ¹fg_led_flash=1µ«»¹Ã»µ½¶¨Ê±Ê±¼ä¾Í¹Ø±ÕËùÓĞLEDÁË??
-			fg_led_flash = 0;//·ÀÖ¹ÏÔÊ¾³öÏÖ´íÎó¹Ø±ÕLED.
+
+		/* ä¸²å£å‘é€å‘¨æœŸè®¡æ•° */
+		if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
+
+		/* ä¸²å£æ¥æ”¶è¶…æ—¶æ£€æµ‹ */
+		if(!gbv_UartRxSuccess && fg_uart_rec_start){
+			if(gu8v_TBRxTimeOutCnt){
+				gu8v_TBRxTimeOutCnt--;
+			}else{
+			  	//gbv_UartRxSuccess = 1;
+				fg_uart_rec_start = 0;
+			}
+		}
+
+		/* LEDæ˜¾ç¤ºé—ªçƒå®šæ—¶ */
+		if(fg_led_timing){
+			//å…ˆå»¶åæ‰§è¡ŒLEDé—ªçƒåŠŸèƒ½.
+			if(!fg_led_delay){
+				if(gu8v_led_delay)
+					gu8v_led_delay--;
+				else
+					fg_led_delay = 1;
+			}
+			//å»¶æ—¶æ—¶é—´åˆ°åæ‰§è¡ŒLEDæ˜¾ç¤ºé—ªçƒåˆ‡æ¢æ ‡å¿—
+			if(fg_led_delay){
+				gu8v_time_dalay++;
+				if(gu8v_led_speed <= gu8v_time_dalay){
+					gu8v_time_dalay = 0;
+					if(gu8v_howtimes){
+						fg_led_flash = !fg_led_flash;//æ§åˆ¶LEDä¸€äº®ä¸€ç­é—ª.
+						//fg_led_change:å¯ä»¥ç”¨æ¥æ§åˆ¶é—ªçƒæ—¶ä½“è„‚ä¸ä½“é‡çš„è½®æµé—ªçƒ
+						//æ³¨æ„:æœ€å¥½åœ¨fg_led_flash=1å³LEDå¤„äºç†„ç­çŠ¶æ€ä¸‹åˆ‡æ¢.
+						if(fg_led_flash){
+							fg_led_change = !fg_led_change;
+						}
+						gu8v_howtimes--;
+					}else{
+						fg_led_delay = 0;
+						fg_led_timing = 0;
+						fg_led_flash = 0;
+						fg_led_change = 0;
+					}
+				}
+			}
 		}else{
-			fg_time_10s = 1;
+			/*æ‰§è¡Œé—ªçƒå®Œæˆåå¼€å§‹è®¡æ—¶å®šæ—¶å…³æœº*/
+			if(gu8v_timed_shutdown){
+				gu8v_timed_shutdown--;
+				fg_time_10s = 0;
+				fg_led_flash = 0;
+			}else{
+				fg_time_10s = 1;
+			}
 		}
 	}
+#endif
 }

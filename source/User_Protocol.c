@@ -45,14 +45,14 @@ NOTE	:
 void fun_TxSDKImpedanceStatus()
 {
 	gu8v_UartTxBuf[0] = 0xCF;
-	gu8v_UartTxBuf[1] = (gu16v_impedence_data*10) & 0x00FF;
-	gu8v_UartTxBuf[2] = ((gu16v_impedence_data*10) & 0xFF00 )>>8;//;
+	gu8v_UartTxBuf[1] = (gu16_impedence_data*10) & 0x00FF;
+	gu8v_UartTxBuf[2] = ((gu16_impedence_data*10) & 0xFF00 )>>8;//;
  	gu8v_UartTxBuf[3] = (gu16_display_weight*10) & 0x00FF;
  	gu8v_UartTxBuf[4] = ((gu16_display_weight*10)& 0xFF00 )>>8;
 	gu8v_UartTxBuf[5] = 0x00;//0x00;
-	gu8v_UartTxBuf[6] = 0x50;//0x00;
+	gu8v_UartTxBuf[6] = 0x00;//0x00;
 	gu8v_UartTxBuf[7] = 0x00;//0x00;
-	gu8v_UartTxBuf[8] = gu8v_weigh_targeunit;
+	gu8v_UartTxBuf[8] = gu8_weigh_targeunit;
 	gu8v_UartTxBuf[9] = 0x00;//À¯∂® ˝æ›.
 	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
@@ -76,7 +76,7 @@ void fun_TxSDKWeightStatus()
  	gu8v_UartTxBuf[5] = 0x00;
  	gu8v_UartTxBuf[6] = 0x00;
  	gu8v_UartTxBuf[7] = 0x00;
- 	gu8v_UartTxBuf[8] = 0x00;//gu8v_weigh_targeunit;
+ 	gu8v_UartTxBuf[8] = 0x00;//gu8_weigh_targeunit;
  	gu8v_UartTxBuf[9] = 0x01;//±Ì æπ˝≥Ã ˝æ›.
  	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
@@ -103,7 +103,6 @@ void fun_TxFinishStatus()
 #endif
 }
 
-#if 0
 void UART_SendData(u8* pdata, u8 len)
 {
 	volatile u8 i = 0;
@@ -117,17 +116,15 @@ void UART_SendData(u8* pdata, u8 len)
 		}
 	}
 }
-#endif
 
 /********************************************************************
-Function: uart π‹¿Ì
+Function: uartÂèëÈÄÅÊï∞ÊçÆÂíåÊé•Êî∂Âà∞ÁöÑÊï∞ÊçÆÂ§ÑÁêÜ.
 INPUT	:
 OUTPUT	:
 NOTE	:
 ********************************************************************/
 void fun_UserProtocol()
 {
-#if 1
 	//	UART TX
 	if((gu8v_UartTxCycle >= C_TIMEING_CYCLE100MS) && (!gbv_IsBusyUartTx))	// Ω®◊hº”»Î∂®ïr∞lÀÕ£¨∑¿÷πîµì˛∞lÀÕÃ´øÏ
 	{
@@ -141,7 +138,7 @@ void fun_UserProtocol()
 		{
 			gbv_TxSDKImpedanceStatus = 0;
 			fun_TxSDKImpedanceStatus();
-            gu16v_impedence_data = 0;
+            gu16_impedence_data = 0;
 		}
 		else if (gbv_TxFinishStatus)
 		{
@@ -156,8 +153,7 @@ void fun_UserProtocol()
 
 		if(REQ_UNITSYN == gu8v_UartRxBuf[POS_HEARD]){
 			u8 XOR_checksum = get_XOR_Checksum(&gu8v_UartRxBuf[0],POS_CHECKSUM-1);
-//			if(XOR_checksum == gu8v_UartRxBuf[POS_CHECKSUM]){
-			if(1){
+			if(XOR_checksum == gu8v_UartRxBuf[POS_CHECKSUM]){
 
 				switch(gu8v_UartRxBuf[POS_CMDTYPE])
 				{
@@ -166,12 +162,12 @@ void fun_UserProtocol()
 						break;
 
 					case CMDTYPE_SHUTDOWN:
-//						gu8v_worktasks = TASK_SLEEP;
+//						gu8_worktasks = TASK_SLEEP;
 //						set_BHSDKState(ENTER_WEIGHT_NORMAL);
 						break;
 
 					case CMDTYPE_LO:
-//						gu8v_worktasks = TASK_LOWBATTERY;
+						gu8_worktasks = TASK_LOWBATTERY;
 						break;
 
 					case CMDTYPE_USEROK:
@@ -187,19 +183,19 @@ void fun_UserProtocol()
 
 				//Âçï‰ΩçËΩ¨Êç¢.
 				if( UNIT_KG == gu8v_UartRxBuf[POS_UNIT])
-					gu8v_weigh_targeunit = UNIT_KG;
+					gu8_weigh_targeunit = UNIT_KG;
 				else if( UNIT_LB == gu8v_UartRxBuf[POS_UNIT])
-					gu8v_weigh_targeunit = UNIT_LB;
-				fun_Unit_Change(gu16v_weigh);
+					gu8_weigh_targeunit = UNIT_LB;
+				fun_Unit_Change(gu16_weigh);
 
 				//‰ΩìËÑÇÁéá.
-				gu16v_pct_data = (gu8v_UartRxBuf[4]&0x00FF)+((gu8v_UartRxBuf[5]<<8)&0xFF00);
-				if((gu16v_pct_data != 0) && (C_BODYFAT_PERCENTAGE >= gu16v_pct_data)){
-					fg_pct_ok = 1;
+				gu16_BodyFatRate = (gu8v_UartRxBuf[4]&0x00FF)+((gu8v_UartRxBuf[5]<<8)&0xFF00);
+				if((gu16_BodyFatRate != 0) && (C_BODYFAT_PERCENTAGE >= gu16_BodyFatRate)){
+					fg_bodyfatrate_rec_ok = 1;
 					gu8v_UartRxBuf[4] = 0;
 					gu8v_UartRxBuf[5] = 0;
 				}else{
-					fg_pct_ok = 0;
+					fg_bodyfatrate_rec_ok = 0;
 				}
 			}
 		}
@@ -209,7 +205,6 @@ void fun_UserProtocol()
             gu8v_UartRxBuf[i] = 0;
         }
 	}
-#endif
 }
 
 

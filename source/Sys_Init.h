@@ -11,12 +11,14 @@
 #define SYS_INIT_H_
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 共用函數 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-void fun_PowerOnSysInit();
+void SysFrequencyInit(void);
+void fun_RamInit(void);
+void fun_GPIOInit(void);
+void LED_Init(void);
+void fun_TimerInit(void);
+void fun_PowerOnSysInit(void);
 void fun_PrepareToHalt();
 void user_init(void);
-void fun_ResumeWork();
-void fun_ResumeWakeup();
-extern void LED_Init(void);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Userdefine @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //					@---------------LVD config---------------@

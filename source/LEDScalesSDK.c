@@ -86,12 +86,12 @@ void Set_AllLEDBuffer(u8 OnOff)
 		for(i = 0; i < C_LED_BUFF_MAX; i++){
 			gu8v_LED_Buffer[i] = LED_CHAR_ALL;
 		}
-		fg_led_Byte = 0xFF & 0xB7;//上电全亮3s,蓝牙图标和%号由于太亮
+		flag_led_Byte = 0xFF & 0xB7;//上电全亮3s,蓝牙图标和%号由于太亮
 	}else{
 		for(i = 0; i < C_LED_BUFF_MAX; i++){
 			gu8v_LED_Buffer[i] = LED_CHAR_OFF;
 		}
-		fg_led_Byte = 0x00;
+		flag_led_Byte = 0x00;
 	}
 }
 
@@ -150,6 +150,7 @@ NOTE	: 放置在Time中定時掃�?建議掃描週期2ms
 ********************************************************************/
  void fun_LEDBufScan()
 {
+#if 0
 	LEDCOM1 = LOW ;
 	LEDCOM2 = LOW ;
 	LEDCOM3 = LOW ;
@@ -228,6 +229,7 @@ NOTE	: 放置在Time中定時掃�?建議掃描週期2ms
 		LEDSEG_UNIT_PIONT = LOW;
 		LEDSEG = LOW;
 	}
+#endif
 }
 /********************************************************************
 Function: 單位轉換

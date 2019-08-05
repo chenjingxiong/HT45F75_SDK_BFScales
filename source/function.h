@@ -1,41 +1,27 @@
 #ifndef __FUNCTION_H__
 #define __FUNCTION_H__
 
-extern u16 gu16v_weigh;
-extern u16 gu16v_lockweigh;
-extern u16 gu16_display_weight;
-extern u16 gu16v_impedence_data;
-extern u16 gu16v_pct_data;
-extern u8 gu8v_weigh_targeunit;
-extern volatile u8  gu8v_05s_count;//led闂儊鏃朵寒鐏箣闂寸殑鏃堕棿闂撮殧鐨勮鏁板�?
-extern volatile u8  gu8v_howtimes;//led闂儊澶氬皯娆★紝璁℃暟涓�浜竴鐏畻2娆?
-extern volatile u8  gu8v_led_speed;//led闂儊鏃朵寒鐏箣闂寸殑鏃堕棿闂撮殧,
-extern volatile u8  gu8v_led_delay;//寤惰繜x*100MS鍚庡紑濮嬫墽琛岄棯鐑佸姛鑳?
-extern u8  gu8v_timed_shutdown;
-extern u8  gu8v_dismode;
-extern u8 gu8v_worktasks;
-extern volatile u8  gu8v_led_delay3S;
+extern u8  gu8_dismode;//LED显示模式.
+extern u16 gu16_display_weight;//已经转换单位后的显示体重数据.
+extern u8 gu8_weigh_targeunit;//目标体重单位.
+
+/* LED 闪烁，显示，定时等变量*/
+extern volatile u8  gu8v_time_dalay; //
+extern volatile u8  gu8v_howtimes;  //
+extern volatile u8  gu8v_led_speed; //闪烁的快慢
+extern volatile u8  gu8v_led_delay; //延时delay时间后才执行闪烁.
+extern volatile u8  gu8v_led_delay3S;//开机LED全显3s计时.
+extern volatile u8  gu8v_timed_shutdown;//定时关机计时.
 
 extern void fun_Unit_Change(u16 weigh);
 extern void set_ledflash(u8 mode, u8 ledflash, u8 count, u8 speed, u8 delay, u8 overtime);
-//extern u8 get_ledflash_status(void);
-extern void set_overtime2poweroff(u8 overtime);
+extern u8 get_ledflash_status(void);
 
-//extern void fun_DisplayMode_NoLoad(void);
-//extern void fun_DisplayMode_LoadFix(void);
-//extern void fun_DisplayMode_LoadDown(void);
-//extern void fun_DisplayMode_OverLoad(void);
-//extern void fun_DisplayMode_ImpedanceFinish(void);
-//extern void task_bodyfatscales(void);
-extern void set_BHSDKState(u8 state);
-extern u8 is_BHSDKState_change(void);
 extern void Set_DisplayMode(u8 dismode);
 //extern u8 Get_DisplayMode(void);
-extern void fun_DiaplsyMode(void);
+extern void fun_diaplay_mode(void);
+extern void set_overtime2poweroff(u8 overtime);
 extern void is_timedshutdown(void);
-extern void task_scales2sleep(void);
-extern void task_scaleswakeup(void);
-extern void task_bodyfatscales(void);
 extern void fun_timing(void);
 
 #endif //__FUNCTION_H__
