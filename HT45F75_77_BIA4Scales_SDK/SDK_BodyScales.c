@@ -453,6 +453,7 @@ OUTPUT	:
 NOTE	: 用於快速喚醒
 ***************************************/
 volatile u32 SDKADCFilterDatatemp;
+volatile unsigned int SDKADCData[4];
 void fun_Weight_AutoOn()
 {
 	if (SDKADCSourceData.flag.b.IsReady)
@@ -491,7 +492,10 @@ void fun_Weight_AutoOn()
 		{
 			SDKADCFilterData.Current = 0;
 		}
-		//自動上秤累加數據4筆求平均
+		/*if (SDKADCSourceData.SamplingCnt)*/
+		SDKADCData[SDKADCSourceData.SamplingCnt-4] =  temp.u32;
+		
+		//自動上秤累加數據4筆求平均	
 		SDKADCFilterDatatemp = SDKADCFilterDatatemp + temp.u32;
 		if (SDKADCSourceData.SamplingCnt == 7)
 		{
@@ -515,7 +519,7 @@ void fun_Weight_AutoOn()
 			// 是否達到自動上稱重量判斷
 			if (SDKADCFilterData.Current > SDKWeight.CalADCData.Cal0)
 			{
-				if (((SDKADCFilterData.Current - SDKWeight.CalADCData.Cal0) > AutoOnWeightADCData) && (haltWeightADCData < AutoOnWeightADCData))
+				if (((SDKADCFilterData.Current - SDKWeight.CalADCData.Cal0) > AutoOnWeightADCData) && (haltWeightADCData < (AutoOnWeightADCData-5*SDKWeight.Span)))
 				{
 					if (BHSDKState == STATE_AUTOON_SLOWMODE)
 					{

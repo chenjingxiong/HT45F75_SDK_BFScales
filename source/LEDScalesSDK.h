@@ -17,7 +17,7 @@ extern volatile bit gbv_Cal_Sucess;
 extern volatile unsigned char 	LEDScan_Cnt;	//顯示掃描計數
 extern volatile unsigned char 	gu8v_LED_Buffer[4];
 extern volatile __byte_type 	gu8v_LED_BufferPoint;
-#define flag_led_Byte    			gu8v_LED_BufferPoint.u8
+#define flag_led_Byte    		gu8v_LED_BufferPoint.u8
 #define fg_led_nosue	     	gu8v_LED_BufferPoint.bits.b7//nosue
 #define fg_led_ble     	    	gu8v_LED_BufferPoint.bits.b6
 #define fg_led_piont2      		gu8v_LED_BufferPoint.bits.b5

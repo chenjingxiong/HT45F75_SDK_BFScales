@@ -118,7 +118,7 @@ void fun_diaplay_mode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_O;
 			gu8v_LED_Buffer[2] = LED_CHAR_L;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			flag_led_Byte &= 0;//0x40;
+			flag_led_Byte &= 0x40;
 			break;
 
 		case DISPLAY_NOLOAD:
@@ -153,7 +153,7 @@ void fun_diaplay_mode(void)
 			gu8v_LED_Buffer[1] = LED_CHAR_L;
 			gu8v_LED_Buffer[2] = LED_CHAR_O;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
-			flag_led_Byte &= 0;//0x40;
+			flag_led_Byte &= 0x00;//0x40;
 			while(!fg_time_10s){
                 gu8_worktasks = TASK_SLEEP;
                 GCC_CLRWDT();
@@ -226,20 +226,6 @@ void fun_diaplay_mode(void)
 							 fg_led_unit_lb = 1;
 						 }
                          fun_HEX2BCD(gu16_display_weight);
-#if 0
-                        if(!fg_time_test2){
-                            fg_time_test2 = 1;
-                            fg_time_test = 0;
-                            gu8v_time_test = C_TIME_10S;
-                        }else{
-                            if(fg_time_test){
-                                fg_time_test = 0;
-                                fg_time_test2 = 0;
-                                set_BHSDKState(ENTER_WEIGHT_NORMAL);
-                                set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
-                            }
-                        }
-#endif
                     }
 					break;
 			}
@@ -258,7 +244,7 @@ void fun_diaplay_mode(void)
 
 		case DISPLAY_CALPASS:
 			while(1){
-				flag_led_Byte &= 0x40;//unit:ble,pct,kg,lb.
+				flag_led_Byte &= 0x00;//unit:ble,pct,kg,lb.
 				gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_P;//'P'
 				gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_A;  //'A'
 				gu8v_LED_Buffer[NUM_SHI]= LED_CHAR_5;  //'S'
@@ -275,11 +261,19 @@ void fun_diaplay_mode(void)
 	}
 
 	if((DISPLAY_POWERON != gu8_dismode) && (DISPLAY_ALLOFF != gu8_dismode)){
-		//蓝牙图标显示
-		if(!P_BT_Status & !P_BLE_EN)
-			fg_led_ble = 1;
-		else
-			fg_led_ble = 0;
+		if(fg_time_100ms){
+			fg_time_100ms = 0;
+			//连接蓝牙图标显示
+			if(!P_BT_Status && !P_BLE_EN){
+				if(C_BLE_COUNT <= gu8_ble_count++){
+					gu8_ble_count = 0;
+					fg_led_ble = 1;
+				}
+			}else{
+				gu8_ble_count = 0;
+				fg_led_ble = 0;
+			}
+		}
 	}
 }
 

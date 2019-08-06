@@ -50,8 +50,9 @@ extern volatile __byte_type  	flag3_remember;// 标志
 
 
 extern u8 gu8v_time_100ms;
-extern u8 R_UartData;
 extern u8 gu8v_time_30s;
+extern u8 gu8_ble_count;
+extern u8 R_UartData;
 
 extern const unsigned char lu8v_LED_HEX[C_LED_CHAR_NUM];
 //由于硬件2COM的LED连接方式与另外三个COM不一样，所以需要再建个不同的显示数字表�?

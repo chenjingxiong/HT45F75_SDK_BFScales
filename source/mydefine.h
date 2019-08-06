@@ -62,7 +62,7 @@
 
 #define C_TIMEING_CYCLE100MS 		2
 #define C_TIMEING_TIMEOUT 			2
-
+#define C_BLE_COUNT					5//5*100MS=500MS.
 
 #define DATA_BUF_LEN				11
 #define REQ_TIME						0xF1//时间同步指令
