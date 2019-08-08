@@ -8,8 +8,8 @@ extern volatile __byte_type  	flag0_time;//时间标志
 #define fg_time_1s				flag0_time.bits.b2
 #define fg_time_3s				flag0_time.bits.b3
 #define fg_time_10s				flag0_time.bits.b4
-#define fg_time_test			flag0_time.bits.b5//for test.
-//#define fg_time_test2			flag0_time.bits.b6//
+//#define fg_time_test			flag0_time.bits.b5//for test.
+//#define fg_time_test2			flag0_time.bits.b6//for test.
 //#define fg_time_test3			flag0_time.bits.b7//
 
 
@@ -30,7 +30,7 @@ extern volatile __byte_type  	flag2;// 标志
 #define fg_uart_rec_start		flag2.bits.b1//=1串口可以开始接收数据; =0 进行判断是否接收数据.
 #define fg_uart_rec_end			flag2.bits.b2//=1串口接收完成
 #define fg_bodyfatrate_rec_ok   flag2.bits.b3//=1串口接收到体脂率; =0 没接收到体脂率.
-//#define 						flag2.bits.b4
+#define fg_scales_dataislock			flag2.bits.b4//=0 发送锁定数据; =1 发送的是过程数据.
 //#define 						flag2.bits.b5
 //#define 						flag2.bits.b6
 //#define 						flag2.bits.b7
@@ -52,6 +52,7 @@ extern volatile __byte_type  	flag3_remember;// 标志
 extern u8 gu8v_time_100ms;
 extern u8 gu8v_time_30s;
 extern u8 gu8_ble_count;
+extern u8 gu8_data_type;
 extern u8 R_UartData;
 
 extern const unsigned char lu8v_LED_HEX[C_LED_CHAR_NUM];

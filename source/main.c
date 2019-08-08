@@ -71,7 +71,6 @@ int main(void)
 				gu8_worktasks = TASK_SCALES;
 				break;
 		}
-
 		/* LEDœ‘ æƒ⁄»›bufferÃÓ≥‰ */
 		fun_diaplay_mode();
 
@@ -82,14 +81,5 @@ int main(void)
 		is_timedshutdown();
 
 		/* For Debug */
-       #if 0
-       	{
-			extern void UART_SendData(u8* pdata, u8 len);
-			if(fg_time_test){
-				fg_time_test = 0;
-				UART_SendData(&gu8v_UartRxBuf[0],UART_LENGTH_RX);//test
-			}
-	   }
-       #endif
 	}
 }

@@ -53,7 +53,7 @@ void fun_TxSDKImpedanceStatus()
 	gu8v_UartTxBuf[6] = 0x00;//0x00;
 	gu8v_UartTxBuf[7] = 0x00;//0x00;
 	gu8v_UartTxBuf[8] = gu8_weigh_targeunit;
-	gu8v_UartTxBuf[9] = 0x00;//锁定数据.
+	gu8v_UartTxBuf[9] = gu8_data_type;//锁定数据.
 	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
 }
@@ -76,7 +76,7 @@ void fun_TxSDKWeightStatus()
  	gu8v_UartTxBuf[5] = 0x00;
  	gu8v_UartTxBuf[6] = 0x00;
  	gu8v_UartTxBuf[7] = 0x00;
- 	gu8v_UartTxBuf[8] = 0x00;//gu8_weigh_targeunit;
+	gu8v_UartTxBuf[8] = gu8_weigh_targeunit;
  	gu8v_UartTxBuf[9] = 0x01;//表示过程数据.
  	gu8v_UartTxBuf[10] = get_XOR_Checksum(gu8v_UartTxBuf,10);
 	fun_UartStartTx(11);
@@ -103,6 +103,7 @@ void fun_TxFinishStatus()
 #endif
 }
 
+#if _UART_DEBUG == ENABLE
 void UART_SendData(u8* pdata, u8 len)
 {
 	volatile u8 i = 0;
@@ -116,6 +117,7 @@ void UART_SendData(u8* pdata, u8 len)
 		}
 	}
 }
+#endif
 
 /********************************************************************
 Function: uart鍙戦�佹暟鎹拰鎺ユ敹鍒扮殑鏁版嵁澶勭悊.

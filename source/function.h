@@ -20,6 +20,7 @@ extern u8 get_ledflash_status(void);
 extern void Set_DisplayMode(u8 dismode);
 //extern u8 Get_DisplayMode(void);
 extern void fun_diaplay_mode(void);
+extern void fun_bluetooth_detected(void);
 extern void set_overtime2poweroff(u8 overtime);
 extern void is_timedshutdown(void);
 extern void fun_timing(void);

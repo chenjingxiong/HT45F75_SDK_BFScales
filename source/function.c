@@ -154,10 +154,12 @@ void fun_diaplay_mode(void)
 			gu8v_LED_Buffer[2] = LED_CHAR_O;
 			gu8v_LED_Buffer[3] = LED_CHAR_OFF;
 			flag_led_Byte &= 0x00;//0x40;
-			while(!fg_time_10s){
-                gu8_worktasks = TASK_SLEEP;
-                GCC_CLRWDT();
-            }
+			if(!gbv_TxSDKWeightStatus){//直到启动发送超重信息.
+				while(!fg_time_10s){
+					gu8_worktasks = TASK_SLEEP;
+					GCC_CLRWDT();
+				}
+			}
 			break;
 
 		case DISPLAY_IMPEDANCEING:
@@ -184,49 +186,58 @@ void fun_diaplay_mode(void)
 					fg_bodyfatrate_rec_ok = 0;
 					fg_led_unit_pct = 0;
                     if(0 == get_ledflash_status()){
-                        set_BHSDKState(ENTER_WEIGHT_NORMAL);//test
+                        set_BHSDKState(ENTER_WEIGHT_NORMAL);
                         set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
                     }
 					break;
 
 				default:
 					gbv_TxSDKImpedanceStatus = 1;
-                    if(fg_bodyfatrate_rec_ok){
-                        set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
-                        if(fg_led_change)
-                        {
-                            fun_HEX2BCD(gu16_BodyFatRate);
-                            fg_led_unit_pct = 1;
-							fg_led_unit_kg = 0;
-							fg_led_unit_lb = 0;
-                        }else{
-                            fun_HEX2BCD(gu16_display_weight);
-                            fg_led_unit_pct = 0;
-							if(UNIT_KG == gu8_weigh_targeunit){
-								fg_led_unit_kg = 1;
-								fg_led_unit_lb = 0;
-							}else if(UNIT_LB == gu8_weigh_targeunit){
+					if(fg_led_ble){
+						//蓝牙有连接,发送完阻抗并等待接收体脂率.
+	                    if(fg_bodyfatrate_rec_ok){
+	                        set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
+	                        if(fg_led_change)
+	                        {
+	                            fun_HEX2BCD(gu16_BodyFatRate);
+	                            fg_led_unit_pct = 1;
 								fg_led_unit_kg = 0;
-								fg_led_unit_lb = 1;
-							}
-                        }
+								fg_led_unit_lb = 0;
+	                        }else{
+	                            fun_HEX2BCD(gu16_display_weight);
+	                            fg_led_unit_pct = 0;
+								if(UNIT_KG == gu8_weigh_targeunit){
+									fg_led_unit_kg = 1;
+									fg_led_unit_lb = 0;
+								}else if(UNIT_LB == gu8_weigh_targeunit){
+									fg_led_unit_kg = 0;
+									fg_led_unit_lb = 1;
+								}
+	                        }
 
-                        if(0 == get_ledflash_status()){
-                            set_BHSDKState(ENTER_WEIGHT_NORMAL);
-                            fg_bodyfatrate_rec_ok = 0;
-							fg_led_unit_pct = 0;
-                        }
-                    }else{
-                    	 fg_led_unit_pct = 0;
-						 if(UNIT_KG == gu8_weigh_targeunit){
-							 fg_led_unit_kg = 1;
-							 fg_led_unit_lb = 0;
-						 }else if(UNIT_LB == gu8_weigh_targeunit){
-							 fg_led_unit_kg = 0;
-							 fg_led_unit_lb = 1;
-						 }
-                         fun_HEX2BCD(gu16_display_weight);
-                    }
+	                        if(0 == get_ledflash_status()){
+	                            set_BHSDKState(ENTER_WEIGHT_NORMAL);
+	                            fg_bodyfatrate_rec_ok = 0;
+								fg_led_unit_pct = 0;
+	                        }
+	                    }else{
+	                    	 fg_led_unit_pct = 0;
+							 if(UNIT_KG == gu8_weigh_targeunit){
+								 fg_led_unit_kg = 1;
+								 fg_led_unit_lb = 0;
+							 }else if(UNIT_LB == gu8_weigh_targeunit){
+								 fg_led_unit_kg = 0;
+								 fg_led_unit_lb = 1;
+							 }
+	                         fun_HEX2BCD(gu16_display_weight);
+	                    }
+					}else{
+						//蓝牙没有连接,直接转到体重状态.
+						if(0 == get_ledflash_status()){
+							set_BHSDKState(ENTER_WEIGHT_NORMAL);
+							set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
+						}
+					}
 					break;
 			}
 			break;
@@ -260,6 +271,12 @@ void fun_diaplay_mode(void)
 			break;
 	}
 
+	fun_bluetooth_detected();
+
+}
+
+void fun_bluetooth_detected(void)
+{
 	if((DISPLAY_POWERON != gu8_dismode) && (DISPLAY_ALLOFF != gu8_dismode)){
 		if(fg_time_100ms){
 			fg_time_100ms = 0;

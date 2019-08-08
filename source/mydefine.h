@@ -5,7 +5,7 @@
 #define	_UART_ENABLE				ENABLE	//1: enable;	0: disable
 #define _LED_FLASH_ENABLE			ENABLE//LED闪烁功能的预编译是都使能位,//可选:ENABLE,DISABLE
 #define _LVD_LVDEN	 	 			DISABLE//可选:ENABLE,DISABLE
-#define _UART_DEBUG					ENABLE  //(_UART_ENABLE && ENABLE) for debug msg
+#define _UART_DEBUG					DISABLE//ENABLE  //(_UART_ENABLE && ENABLE) for debug msg
 
 
 /* TIME */
@@ -22,7 +22,7 @@
 #define C_LED_FLASH_ON				1
 #define C_LED_FLASH_CNT				6	//=2 LED浜伃涓�娆? =4 LED浜伃2娆? =6 LED浜伃3娆?浠ユ绫绘帹.
 #define C_LED_FLASH_IMP				12	//浣撹剛娴嬭瘯瀹屾垚鍚庝綋閲嶅拰浣撹剛浜ゆ浛闂儊3娆?
-#define C_LED_FLASH_DELAY			30  //100MS*30=3S
+#define C_LED_FLASH_DELAY			5//30  //100MS*30=3S
 
 //WORK MODE
 #define TASK_STARTUP				0
@@ -85,5 +85,9 @@
 #define CMDTYPE_LO						0x36//琛ㄧず鏄剧ず浣庣數LO鍛戒护
 #define CMDTYPE_USEROK					0x37//琛ㄧず涓烘湁鏁堢殑鐢ㄦ埛缁勪俊鎭?
 #define CMDTYPE_MOMBABY					0x38//琛ㄧず绉よ繘鍏ユ姳濠?
+
+#define C_DATA_LOCK						0x00//琛ㄧず閿佸畾鏁版嵁.
+#define C_DATA_ING						0x01//琛ㄧず杩囩▼鏁版嵁.
+#define C_DATA_OVERLOAD					0x02//琛ㄧず瓒呴噸.
 
 #endif //__MYDEFINE_H__

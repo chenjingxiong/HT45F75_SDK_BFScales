@@ -35,11 +35,11 @@ asm(" message' **************************************************** ' ");
 //                                  依賴參數                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#define SET_LDO_EN2_4()	  	        { _pwrc = 0x80; }
-#define SET_LDO_EN2_6()		        { _pwrc = 0x81; }
-#define SET_LDO_EN2_9()		        { _pwrc = 0x82; }
-#define SET_LDO_EN3_3()		        { _pwrc = 0x83; }
-#define SET_LDO_ENBYPASS()	        { _pwrc = 0x84; }
+#define SET_LDO_EN2_4()	  	        { _pwrc = 0xc0; }
+#define SET_LDO_EN2_6()		        { _pwrc = 0xc1; }
+#define SET_LDO_EN2_9()		        { _pwrc = 0xc2; }
+#define SET_LDO_EN3_3()		        { _pwrc = 0xc3; }
+#define SET_LDO_ENBYPASS()	        { _pwrc = 0xc4; }
 #define SET_LDO_DISABLE()	        { _enldo = 0; }
 #define SET_LDO_ENABLE()	        { _enldo = 1; }
 #define SET_ADCINTERRUPT_ENABLE()	{ _adf = 0; _ade = 1; _emi = 1;}
@@ -74,7 +74,6 @@ typedef struct
 	} flag;
 } ADCSource_t;
 */
-extern ADCSource_t SDKADCSourceData;
 void fun_ADCStop();
 void fun_ADCStart();
 

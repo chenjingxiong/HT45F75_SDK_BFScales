@@ -14,69 +14,69 @@ asm (" message' **************************************************** ' ");
 #include "SDK_Interface.h"
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
-//                                    åŠŸèƒ½èªªæ˜    				             		    @
+//                                    ¹¦ÄÜÕfÃ÷    				             		    @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 /*
-1. è‡ªå‹•æ¨™å®š,æ¨™å®šé‡é‡å›ºå®šç‚º50Kg/50Kg/50Kg
-2. æ‰‹å‹•æ¨™å®š,æ¨™å®šé‡é‡å›ºå®šç‚º50Kg/50Kg/50Kg
-3. ç©©å®šé‡é‡è§£é–,é‡é‡ç”¨æˆ¶å¯è‡ªè¡Œè¨­ç½®
-4. è‡¨æ™‚é‡é‡è§£é–,é‡é‡ç”¨æˆ¶å¯è‡ªè¡Œè¨­ç½®
-5. è‡ªå‹•å–šé†’,é‡é‡ç”¨æˆ¶å¯è‡ªè¡Œè¨­ç½®
-6. è‡ªé©æ‡‰æ¿¾æ³¢æ•¸æ“š16 / 20Bit ADCçš„è™•ç†
-6. è‡ªé©æ‡‰åŸå§‹æ•¸æ“š20 / 24Bit ADCçš„è™•ç†,å¯é©ç”¨HT45F7xæ—©æœŸ20Bit MCU ä¹Ÿé©ç”¨å¾ŒæœŸçš„24Bit MCU
+1. ×Ô„Ó˜Ë¶¨,˜Ë¶¨ÖØÁ¿¹Ì¶¨é50Kg/50Kg/50Kg
+2. ÊÖ„Ó˜Ë¶¨,˜Ë¶¨ÖØÁ¿¹Ì¶¨é50Kg/50Kg/50Kg
+3. ·€¶¨ÖØÁ¿½âæi,ÖØÁ¿ÓÃ‘ô¿É×ÔĞĞÔOÖÃ
+4. ÅR•rÖØÁ¿½âæi,ÖØÁ¿ÓÃ‘ô¿É×ÔĞĞÔOÖÃ
+5. ×Ô„Ó†¾ĞÑ,ÖØÁ¿ÓÃ‘ô¿É×ÔĞĞÔOÖÃ
+6. ×Ôßm‘ªV²¨”µ“ş16 / 20Bit ADCµÄÌÀí
+6. ×Ôßm‘ªÔ­Ê¼”µ“ş20 / 24Bit ADCµÄÌÀí,¿ÉßmÓÃHT45F7xÔçÆÚ20Bit MCU Ò²ßmÓÃááÆÚµÄ24Bit MCU
 
-1. è‹¥ç”¨æˆ¶ä¸éœ€è¦è‡ªå‹•æ¨™å®š CalADCDataTemp å¯ç”¨CalADCDataå…±ç”¨,ä¸ç„¶ä¸è¡Œ
+1. ÈôÓÃ‘ô²»ĞèÒª×Ô„Ó˜Ë¶¨ CalADCDataTemp ¿ÉÓÃCalADCData¹²ÓÃ,²»È»²»ĞĞ
 */
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
-//                                  å°åº«è¨­ç½®                                            @
+//                                  ·âìÔOÖÃ                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #include "HT45F75.h"
-#define SET_ADCGAIN_WEIGHT()        { _pgac0 = 0x27;}   // ç¨±é‡ADCæ”¾å¤§è¨­ç½®,VGS=0.5,ADGN =1,PGA=128
-#define SET_DCSET_WEIGHT()          { _pgac1 = 0x00;}   // ç¨±é‡DCSETè¨­ç½®,DCSET = 0V
-#define SET_ADCCHAN_WEIGHT()        { _pgacs = 0x00;}   // ç¨±é‡ADC é€šé“AN0&AN1
-#define SET_ADCVREF_WEIGHT()	    { _vrefs = 1; }     // ç¨±é‡ADC å¤–éƒ¨åƒè€ƒé›»å£“
+#define SET_ADCGAIN_WEIGHT()        { _pgac0 = 0x27;}   // ·QÖØADC·Å´óÔOÖÃ,VGS=0.5,ADGN =1,PGA=128
+#define SET_DCSET_WEIGHT()          { _pgac1 = 0x00;}   // ·QÖØDCSETÔOÖÃ,DCSET = 0V
+#define SET_ADCCHAN_WEIGHT()        { _pgacs = 0x00;}   // ·QÖØADC Í¨µÀAN0&AN1
+#define SET_ADCVREF_WEIGHT()	    { _vrefs = 1; _vcms=1;}     // ç¨±é‡ADC å¤–éƒ¨åƒè€ƒé›»å£?
 
-#define CALSPANCHECK 16				// é‡é‡æ¨™å®šçµæŸï¼Œç ç¢¼ä¹‹é–“çš„å…è¨±å·®ç•°çš„æœ€å¤§å€¼16*Span
-#define WEIGHT_CAL1 (50 * 20)		// é‡é‡æ ¡æº–é»1
-#define WEIGHT_CAL2 (50 * 20)		// é‡é‡æ ¡æº–é»2
-#define WEIGHT_CAL3 (50 * 20)		// é‡é‡æ ¡æº–é»3
-#define EEPROM_ADDR_START 0x01		// EEPROM å­˜å„²é–‹å§‹ä½ç½®
-#define EEPROM_DATA_CALID_CODE 0xAA // æ ¡æº–æˆåŠŸæ¨™èªŒæ•¸æ“š,åµæ¸¬åˆ°æ­¤æ•¸æ“š,èªç‚ºæ ¡æº–æˆåŠŸ
-#define WeightADCFilterUseBit 16	// 20 or 16 é‡é‡ ADC æ•¸æ“šä½¿ç”¨çš„Bitæ•¸
-#define ADCSourceUseBit 20			// 24 or 20  ADC åŸå§‹ ADC æ•¸æ“šBitæ•¸,ä¸»è¦ç‚ºåŒ¹é…æ—©æœŸ20Bit MCU æ¯”å¦‚HT45F7x
+#define CALSPANCHECK 16				// ÖØÁ¿˜Ë¶¨½YÊø£¬íÀ´aÖ®égµÄÔÊÔS²î®µÄ×î´óÖµ16*Span
+#define WEIGHT_CAL1 (50 * 20)		// ÖØÁ¿Ğ£œÊüc1
+#define WEIGHT_CAL2 (50 * 20)		// ÖØÁ¿Ğ£œÊüc2
+#define WEIGHT_CAL3 (50 * 20)		// ÖØÁ¿Ğ£œÊüc3
+#define EEPROM_ADDR_START 0x01		// EEPROM ´æƒ¦é_Ê¼Î»ÖÃ
+#define EEPROM_DATA_CALID_CODE 0xAA // Ğ£œÊ³É¹¦˜ËÕI”µ“ş,‚Éœyµ½´Ë”µ“ş,ÕJéĞ£œÊ³É¹¦
+#define WeightADCFilterUseBit 16	// 20 or 16 ÖØÁ¿ ADC ”µ“şÊ¹ÓÃµÄBit”µ
+#define ADCSourceUseBit 20			// 24 or 20  ADC Ô­Ê¼ ADC ”µ“şBit”µ,Ö÷ÒªéÆ¥ÅäÔçÆÚ20Bit MCU ±ÈÈçHT45F7x
 
 #if WeightADCFilterUseBit == 16
 	typedef unsigned int typedefWeight;
 	#define EEPROM_ADDR_END (4 * 2 + EEPROM_ADDR_START + 2)
 	#define EEPROM_SPAN_ADDR (4 * 2 + EEPROM_ADDR_START+1 )
 	#define CAL_Diff_ADC_DEFAULT 1500
-	//**************é‡æ ¡æº–åƒæ•¸é è¨­***********
-	#define CAL0DATA_DEFAULT 32600		// 0é»é»˜èªæ ¡æº–å€¼
-	#define CAL1DATA_DEFAULT 5000		// ç¬¬1é»é»˜èªæ ¡æº–å€¼
-	#define CAL2DATA_DEFAULT 5000		// ç¬¬2é»é»˜èªæ ¡æº–å€¼
-	#define CAL3DATA_DEFAULT 5000		// ç¬¬3é»é»˜èªæ ¡æº–å€¼
-	#define CALDATASPAN_DEFAULT 5		// é»˜èªåˆ†è¾¨ç‡å°æ‡‰ADCå€¼
+	//**************Á¿Ğ£œÊ…¢”µîAÔO***********
+	#define CAL0DATA_DEFAULT 32600		// 0ücÄ¬ÕJĞ£œÊÖµ
+	#define CAL1DATA_DEFAULT 5000		// µÚ1ücÄ¬ÕJĞ£œÊÖµ
+	#define CAL2DATA_DEFAULT 5000		// µÚ2ücÄ¬ÕJĞ£œÊÖµ
+	#define CAL3DATA_DEFAULT 5000		// µÚ3ücÄ¬ÕJĞ£œÊÖµ
+	#define CALDATASPAN_DEFAULT 5		// Ä¬ÕJ·Ö±æÂÊŒ¦‘ªADCÖµ
 #endif
 #if WeightADCFilterUseBit == 20
 	typedef unsigned long typedefWeight;
 	#define EEPROM_ADDR_END (4 * 4 + EEPROM_ADDR_START + 2)
 	#define EEPROM_SPAN_ADDR (4 * 4 + EEPROM_ADDR_START+1 )
 	#define CAL_Diff_ADC_DEFAULT 25000
-	//**************é‡æ ¡æº–åƒæ•¸é è¨­***********
-	#define CAL0DATA_DEFAULT 555556		// 0é»é»˜èªæ ¡æº–å€¼
-	#define CAL1DATA_DEFAULT 80000		// ç¬¬1é»é»˜èªæ ¡æº–å€¼
-	#define CAL2DATA_DEFAULT 80000		// ç¬¬2é»é»˜èªæ ¡æº–å€¼
-	#define CAL3DATA_DEFAULT 80000		// ç¬¬3é»é»˜èªæ ¡æº–å€¼
-	#define CALDATASPAN_DEFAULT 80		// é»˜èªåˆ†è¾¨ç‡å°æ‡‰ADCå€¼
+	//**************Á¿Ğ£œÊ…¢”µîAÔO***********
+	#define CAL0DATA_DEFAULT 555556		// 0ücÄ¬ÕJĞ£œÊÖµ
+	#define CAL1DATA_DEFAULT 80000		// µÚ1ücÄ¬ÕJĞ£œÊÖµ
+	#define CAL2DATA_DEFAULT 80000		// µÚ2ücÄ¬ÕJĞ£œÊÖµ
+	#define CAL3DATA_DEFAULT 80000		// µÚ3ücÄ¬ÕJĞ£œÊÖµ
+	#define CALDATASPAN_DEFAULT 80		// Ä¬ÕJ·Ö±æÂÊŒ¦‘ªADCÖµ
 #endif
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
-//                                  ä¾è³´åƒæ•¸                                            @
+//                                  ÒÀÙ‡…¢”µ                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 void fun_ADCStart();
@@ -86,15 +86,15 @@ void fun_FilterInit();
 void fun_LoadWeightSetting();
 void fun_LoadAutoOnSetting();
 void fun_LoadUserSetting();
-unsigned int fun_unsigned32BitABS(unsigned int a, unsigned int b); // å–32ä½ç„¡ç¬¦è™Ÿå·®å€¼
-void Write_EEPROMByte(unsigned char addr, unsigned char WriteData);   // å¯«ä¸€å€‹Byteæ•¸æ“š
-unsigned char Read_EEPROMByte(unsigned char addr);					  // è®€ä¸€å€‹Byteæ•¸æ“š
-extern unsigned char BHSDKState;     // RW   å·¥ä½œç‹€æ…‹è®€å–èˆ‡åˆ‡æ›,åƒè€ƒ BodyfatSDKState æšèˆ‰
-extern ADCSource_t SDKADCSourceData; // åŸå§‹ADCæ•¸æ“š,è©³ç´°åƒè€ƒSDK_typedef.h ADCSource_t
-extern ADCFilter_t SDKADCFilterData; // æ¿¾æ³¢ADCæ•¸æ“š,è©³ç´°åƒè€ƒSDK_typedef.h ADCFilter_t
+unsigned int fun_unsigned32BitABS(unsigned int a, unsigned int b); // È¡32Î»Ÿo·ûÌ–²îÖµ
+void Write_EEPROMByte(unsigned char addr, unsigned char WriteData);   // Œ‘Ò»‚€Byte”µ“ş
+unsigned char Read_EEPROMByte(unsigned char addr);					  // ×xÒ»‚€Byte”µ“ş
+extern unsigned char BHSDKState;     // RW   ¹¤×÷ î‘B×xÈ¡ÅcÇĞ“Q,…¢¿¼ BodyfatSDKState Ã¶Åe
+extern ADCSource_t SDKADCSourceData; // Ô­Ê¼ADC”µ“ş,Ô”¼š…¢¿¼SDK_typedef.h ADCSource_t
+extern ADCFilter_t SDKADCFilterData; // V²¨ADC”µ“ş,Ô”¼š…¢¿¼SDK_typedef.h ADCFilter_t
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
-//                                  å°å¤–åƒæ•¸                                            @
+//                                  Œ¦Íâ…¢”µ                                            @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 /*
@@ -102,49 +102,49 @@ typedef struct
 {
     struct
     {
-        unsigned long Cal0;	    // R    ADCå€¼ - é›¶é»é‡é‡
-        unsigned long Cal1;	    // R    ADCå€¼ - ç¬¬1å€‹æ¨™å®šé‡é‡
-        unsigned long Cal2;	    // R    ADCå€¼ - ç¬¬2å€‹æ¨™å®šé‡é‡
-        unsigned long Cal3;	    // R    ADCå€¼ - ç¬¬3å€‹æ¨™å®šé‡é‡
-    }CalADCData;// æ ¡æº–æ•¸æ“š
+        unsigned long Cal0;	    // R    ADCÖµ - ÁãücÖØÁ¿
+        unsigned long Cal1;	    // R    ADCÖµ - µÚ1‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal2;	    // R    ADCÖµ - µÚ2‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal3;	    // R    ADCÖµ - µÚ3‚€˜Ë¶¨ÖØÁ¿
+    }CalADCData;// Ğ£œÊ”µ“ş
     struct
     {
-        unsigned long Cal0;	    // R    ADCå€¼ - é›¶é»é‡é‡
-        unsigned long Cal1;	    // R    ADCå€¼ - ç¬¬1å€‹æ¨™å®šé‡é‡
-        unsigned long Cal2;	    // R    ADCå€¼ - ç¬¬2å€‹æ¨™å®šé‡é‡
-        unsigned long Cal3;	    // R    ADCå€¼ - ç¬¬3å€‹æ¨™å®šé‡é‡
-    }CalADCDataTemp; // æ ¡æº–ä¸­æ•¸æ“š,for debug
-    unsigned char Span;	        // R    ADCå€¼ - 1å€‹åˆ†è¾¨ç‡
+        unsigned long Cal0;	    // R    ADCÖµ - ÁãücÖØÁ¿
+        unsigned long Cal1;	    // R    ADCÖµ - µÚ1‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal2;	    // R    ADCÖµ - µÚ2‚€˜Ë¶¨ÖØÁ¿
+        unsigned long Cal3;	    // R    ADCÖµ - µÚ3‚€˜Ë¶¨ÖØÁ¿
+    }CalADCDataTemp; // Ğ£œÊÖĞ”µ“ş,for debug
+    unsigned char Span;	        // R    ADCÖµ - 1‚€·Ö±æÂÊ
 	union {
 		struct
 		{
-			unsigned char IsNeedTare : 1;  // RW å»çš®,ç•¶å‰é‡é‡ç‚ºç©©å®šé‡é‡æ™‚ç•¶å‰é‡é‡ç‚º0
+			unsigned char IsNeedTare : 1;  // RW È¥Æ¤,®”Ç°ÖØÁ¿é·€¶¨ÖØÁ¿•r®”Ç°ÖØÁ¿é0
 		} b;
 		unsigned char byte;
 	} flag;
-    unsigned int  DataCurrent;  // R    å½“å‰é‡é‡å€¼,å–®ä½ç‚ºjin,æ”¾å¤§10å€, è‹¥500,è¡¨ç¤ºé‡é‡ç‚º50.0æ–¤
-    unsigned int  DataStable;   // R    ç©©å®šé‡é‡å€¼,å–®ä½ç‚ºjin,æ”¾å¤§10å€, è‹¥500,è¡¨ç¤ºé‡é‡ç‚º50.0æ–¤
+    unsigned int  DataCurrent;  // R    µ±Ç°ÖØÁ¿Öµ,†ÎÎ»éjin,·Å´ó10±¶, Èô500,±íÊ¾ÖØÁ¿é50.0½ï
+    unsigned int  DataStable;   // R    ·€¶¨ÖØÁ¿Öµ,†ÎÎ»éjin,·Å´ó10±¶, Èô500,±íÊ¾ÖØÁ¿é50.0½ï
 }Weight_t;
 
 typedef struct
 {
-    unsigned long WeightMax;          // RW æœ€å¤§æ¸¬é‡é‡é‡
-    unsigned int WeightMin;           // RW æœ€å°æ¸¬é‡é‡é‡
-    unsigned int WeightAutoOn;        // RW è‡ªåŠ¨å”¤é†’é‡é‡
-    unsigned int WeightUnLockTemp;    // RW è‡ªå‹•è§£é–é‡é‡-è‡¨æ™‚
-    unsigned char WeightUnLockStable; // RW è‡ªå‹•è§£é–é‡é‡-ç©©å®š
+    unsigned long WeightMax;          // RW ×î´óœyÁ¿ÖØÁ¿
+    unsigned int WeightMin;           // RW ×îĞ¡œyÁ¿ÖØÁ¿
+    unsigned int WeightAutoOn;        // RW ×Ô¶¯»½ĞÑÖØÁ¿
+    unsigned int WeightUnLockTemp;    // RW ×Ô„Ó½âæiÖØÁ¿-ÅR•r
+    unsigned char WeightUnLockStable; // RW ×Ô„Ó½âæiÖØÁ¿-·€¶¨
     union {
         struct
         {
-            unsigned char IsAutoCalOn : 1;    // è‡ªå‹•æ ¡æº–å¼€å¯
-            unsigned char IsAutoUnlockOn : 1; // è‡ªå‹•è§£é–å¼€å¯
+            unsigned char IsAutoCalOn : 1;    // ×Ô„ÓĞ£œÊ¿ªÆô
+            unsigned char IsAutoUnlockOn : 1; // ×Ô„Ó½âæi¿ªÆô
         } b;
         unsigned char byte;
     } flag;
 } BodyScalesSetting_t;
 */
 extern Weight_t SDKWeight;
-extern BodyScalesSetting_t SDKWeightSetting; // ç”¨æˆ¶è¨­ç½®å€¼
+extern BodyScalesSetting_t SDKWeightSetting; // ÓÃ‘ôÔOÖÃÖµ
 
 
 void fun_WeightPowerDown();
@@ -160,7 +160,7 @@ void fun_weight_Cal();
 void fun_weightAutoCal();
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
-//                                  æºä»£ç¢¼                                             @
+//                                  Ô´´ú´a                                             @
 // ====================================================================================@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 typedef char s8;
@@ -197,29 +197,29 @@ volatile unsigned char gu8v_WeighWorkStep;
 volatile unsigned char gu8v_WeighCalStep;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ========================================@
-//                  æ ¡æº– ä»£ç¢¼	    	    @
+//                  Ğ£œÊ ´ú´a	    	    @
 // ========================================@
-#define weightCalADCDataLast SDKWeight.CalADCDataTemp.Cal3 // æœ€å¾Œä¸€æ­¥æ‰ç”¨åˆ°buf3,æ­¤è™•å…±ç”¨RAM
-volatile unsigned int *WeightPointer; // æŒ‡é‡ä½¿ç”¨ç‰¹åˆ¥æ³¨æ„ç¯„åœ,é˜²æ­¢è¶Šç•Œæ›´æ”¹å€¼ï¼ï¼ï¼
+#define weightCalADCDataLast SDKWeight.CalADCDataTemp.Cal3 // ×îááÒ»²½²ÅÓÃµ½buf3,´ËÌ¹²ÓÃRAM
+volatile unsigned int *WeightPointer; // Ö¸á˜Ê¹ÓÃÌØ„e×¢Òâ¹ ‡ú,·ÀÖ¹Ô½½ç¸ü¸ÄÖµ£¡£¡£¡
 
 /****************************************
- Function: æ¨™å®šåˆ¤æ–·
+ Function: ˜Ë¶¨ÅĞ”à
  INPUT	:
  OUTPUT	:
-NOTE	:  é€£çºŒä¸‰æ¬¡ç›¸ç­‰é‡é‡æ”¾ä¸Šå»
+NOTE	:  ßBÀmÈı´ÎÏàµÈÖØÁ¿·ÅÉÏÈ¥
 *****************************************/
 void fun_weightAutoCal()
 {
-	if (SDKADCFilterData.Current > (weightCalADCDataLast + CAL_Diff_ADC_DEFAULT)) //é€™æ¬¡ADCå€¼æ¯”ä¸Šæ¬¡å¤§
+	if (SDKADCFilterData.Current > (weightCalADCDataLast + CAL_Diff_ADC_DEFAULT)) //ß@´ÎADCÖµ±ÈÉÏ´Î´ó
 	{
 		WeightPointer++;
 		gu8v_WeighCalStep++;
-		BHSDKState = gu8v_WeighCalStep;					 // è‡ªå‹•æ¨™å®šä¸‹,ç„¡æ³•çœ‹åˆ°æ¨™å®šä¸­é–“éç¨‹.æ­¤å¥æœƒæ”¹è®ŠåŸä¾†çš„ç‹€æ…‹,ä½†æ˜¯å¤–é¢åœ¨é‡æ–°å¹…å€¼
-		// weightCalADCDataLast = SDKADCFilterData.Current; // æ›´æ–°
+		BHSDKState = gu8v_WeighCalStep;					 // ×Ô„Ó˜Ë¶¨ÏÂ,Ÿo·¨¿´µ½˜Ë¶¨ÖĞégß^³Ì.´Ë¾ä•ş¸Ä×ƒÔ­íµÄ î‘B,µ«ÊÇÍâÃæÔÚÖØĞÂ·ùÖµ
+		// weightCalADCDataLast = SDKADCFilterData.Current; // ¸üĞÂ
 		*WeightPointer = SDKADCFilterData.Current;
 		if (gu8v_WeighCalStep == STATE_WEIGHT_CALCHECK)
 		{
-			WeightPointer = &SDKWeight.CalADCDataTemp.Cal0; // ä¸‰æ¬¡æ”¾ç½®é‡ç‰©,ä¸ç®¡çµæœæŒ‡é‡å›å¾©åˆå€¼,é˜²æ­¢ç•°å¸¸å¯«å€¼
+			WeightPointer = &SDKWeight.CalADCDataTemp.Cal0; // Èı´Î·ÅÖÃÖØÎï,²»¹Ü½Y¹ûÖ¸á˜»ØÍ³õÖµ,·ÀÖ¹®³£Œ‘Öµ
 			SDKWeight.CalADCDataTemp.Cal3 = SDKWeight.CalADCDataTemp.Cal3 - SDKWeight.CalADCDataTemp.Cal2;
 			SDKWeight.CalADCDataTemp.Cal2 = SDKWeight.CalADCDataTemp.Cal2 - SDKWeight.CalADCDataTemp.Cal1;
 			SDKWeight.CalADCDataTemp.Cal1 = SDKWeight.CalADCDataTemp.Cal1 - SDKWeight.CalADCData.Cal0;
@@ -230,7 +230,7 @@ void fun_weightAutoCal()
 			ABS1=fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal3, SDKWeight.CalADCDataTemp.Cal2);
 			ABS2=fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal2, SDKWeight.CalADCDataTemp.Cal1);
 			temp=(unsigned int)SDKWeight.Span * CALSPANCHECK;
-			// æ¯æ®µæ–œç‡ä¹‹é–“å·®å€¼ä¸èƒ½è¶…é8å€Span
+			// Ã¿¶ÎĞ±ÂÊÖ®ég²îÖµ²»ÄÜ³¬ß^8±¶Span
 			if (fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal3, SDKWeight.CalADCDataTemp.Cal2) < (unsigned int)SDKWeight.Span * CALSPANCHECK &&
 				fun_unsigned32BitABS(SDKWeight.CalADCDataTemp.Cal2, SDKWeight.CalADCDataTemp.Cal1) < (unsigned int)SDKWeight.Span * CALSPANCHECK)
 			{
@@ -243,8 +243,8 @@ void fun_weightAutoCal()
 					p++;
 				}
 				Write_EEPROMByte(EEPROM_ADDR_START, EEPROM_DATA_CALID_CODE);
-				// æ­¤éƒ¨åˆ†è³¦å€¼æ‹¿æ‰,é€™æ¨£è¿«ä½¿ç”Ÿç”¢éœ€è¦æ‰é›»ååœ¨çœ‹æ•¸æ“š
-				// é˜²æ­¢EEPROMæœªæ­£å¸¸å¯«å…¥,ä½†ç”¢ç·šæœªæ‰é›»è€Œæµå‡º
+				// ´Ë²¿·ÖÙxÖµÄÃµô,ß@˜ÓÆÈÊ¹Éú®aĞèÒªµôëŠºóÔÚ¿´”µ“ş
+				// ·ÀÖ¹EEPROMÎ´Õı³£Œ‘Èë,µ«®a¾€Î´µôëŠ¶øÁ÷³ö
 				// weightCalADCData1 = weightCalADCData1Temp;
 				// weightCalADCData2 = weightCalADCData2Temp;
 				// weightCalADCData3 = weightCalADCData3Temp;
@@ -255,17 +255,17 @@ void fun_weightAutoCal()
 				BHSDKState = STATE_WEIGHT_CALFAIL;
 			}
 		}
-		weightCalADCDataLast = SDKADCFilterData.Current; // æ›´æ–°
+		weightCalADCDataLast = SDKADCFilterData.Current; // ¸üĞÂ
 	}
 }
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ========================================@
-//               æ­£å¸¸ç¨±é‡ ä»£ç¢¼	     	    @
+//               Õı³£·QÖØ ´ú´a	     	    @
 // ========================================@
-// æ¥å£è®Šé‡
-BodyScalesSetting_t SDKWeightSetting;	  // ç”¨æˆ¶è¨­ç½®å€¼
-volatile typedefWeight haltWeightADCData;  // ä¼‘çœ æ®˜ç•™ADCå€¼ï¼Œç”¨æ–¼è‡ªå‹•å–šé†’,ä¼‘çœ å‰é‡é‡å¯èƒ½æ»¿é‡ç¨‹,éœ€è¦ä½¿ç”¨typedefWeight
-volatile unsigned int AutoOnWeightADCData; // è‡ªå‹•é–‹æ©ŸADCå€¼,è‡ªå‹•é–‹æ©Ÿé‡é‡è¼ƒå°,int å‹å³å¯
+// ½Ó¿Ú×ƒÁ¿
+BodyScalesSetting_t SDKWeightSetting;	  // ÓÃ‘ôÔOÖÃÖµ
+volatile typedefWeight haltWeightADCData;  // ĞİÃßšˆÁôADCÖµ£¬ÓÃì¶×Ô„Ó†¾ĞÑ,ĞİÃßÇ°ÖØÁ¿¿ÉÄÜMÁ¿³Ì,ĞèÒªÊ¹ÓÃtypedefWeight
+volatile unsigned int AutoOnWeightADCData; // ×Ô„Óé_™CADCÖµ,×Ô„Óé_™CÖØÁ¿İ^Ğ¡,int ĞÍ¼´¿É
 
 void fun_WeightPowerOn()
 {
@@ -282,7 +282,7 @@ void fun_WeightPowerOn()
 			*p = Read_EEPROMByte(eepromAddress);
 			p++;
 		}
-		// åœ°å€ä¸è¿ç»­ï¼Œspanå•ç‹¬è¯»
+		// µØÖ·²»Á¬Ğø£¬spanµ¥¶À¶Á
 		SDKWeight.Span = Read_EEPROMByte(EEPROM_SPAN_ADDR);
 	}
 	else
@@ -306,7 +306,7 @@ void fun_WeightPowerDown()
 	fun_ADCStop();
 }
 /***********************************
-Function: ç¨±é‡ç¡¬ä»¶é…ç½®
+Function: ·QÖØÓ²¼şÅäÖÃ
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -319,14 +319,14 @@ void fun_WeightHardwareSetting()
 	SET_ADCVREF_WEIGHT();
 }
 /***********************************
-Function: åˆ©ç”¨ADCå€¼å¾—åˆ°é«”é‡å€¼
+Function: ÀûÓÃADCÖµµÃµ½ówÖØÖµ
 INPUT	:
 OUTPUT	:
 NOTE	:
 ***********************************/
 void fun_GetWeighData()
 {
-	if (SDKADCFilterData.Current < SDKWeight.CalADCData.Cal0) // TODO ç›´æ¥åœ¨æ­¤åšå°æ–¼ç§¤å°é‡é‡æ›´æ–°ç‚º0
+	if (SDKADCFilterData.Current < SDKWeight.CalADCData.Cal0) // TODO Ö±½ÓÔÚ´Ë×öĞ¡ì¶³ÓÌ¨ÖØÁ¿¸üĞÂé0
 	{
 		SDKWeight.DataCurrent = 0;
 		haltWeightADCData = 0;
@@ -346,15 +346,15 @@ void fun_GetWeighData()
 		{
 			SDKWeight.DataCurrent = WEIGHT_CAL1 + WEIGHT_CAL2 + WEIGHT_CAL3 * (u32)(haltWeightADCData - SDKWeight.CalADCData.Cal2 - SDKWeight.CalADCData.Cal1) / (u32)SDKWeight.CalADCData.Cal3;
 		}
-		// å››æ¨äº”å…¥
+		// ËÄ’ÎÎåÈë
 		// SDKWeight.DataCurrent = (SDKWeight.DataCurrent + 5) / 10;
 	}
 }
 /***********************************
-Function: æ™®é€šç¨±é‡æ¨¡å¼
+Function: ÆÕÍ¨·QÖØÄ£Ê½
 INPUT	:
 OUTPUT	:
-NOTE	: åŒ…å«åˆæ¬¡ä¸Šé›»çš„æ ¡æº–
+NOTE	: °üº¬³õ´ÎÉÏëŠµÄĞ£œÊ
 ************************************/
 void fun_Weight_Normal()
 {
@@ -363,18 +363,18 @@ void fun_Weight_Normal()
 	{
 		SDKADCFilterData.flag.b.IsReady = 0;
 		fun_GetWeighData();
-		// äººç‚ºæ›´æ–°é›¶é»,å¸¸ç”¨èˆ‡ä¸Šé›»ç¬¬ä¸€æ¬¡é‡é‡ç›´æ¥ç‚ºé›¶é»é‡é‡
+		// ÈËé¸üĞÂÁãüc,³£ÓÃÅcÉÏëŠµÚÒ»´ÎÖØÁ¿Ö±½ÓéÁãücÖØÁ¿
 		if (SDKWeight.flag.b.IsNeedTare && SDKADCFilterData.flag.b.IsStable)
 		{
 			SDKWeight.flag.b.IsNeedTare = 0;
 			SDKWeight.CalADCData.Cal0 = SDKADCFilterData.Current;
 			SDKWeight.DataCurrent = 0x00;
-			// TODO é›¶é»å¯«å…¥EEPROM
+			// TODO ÁãücŒ‘ÈëEEPROM
 		}
-		// å°æ–¼ç¨±é‡ç¯„åœ
+		// Ğ¡ì¶·QÖØ¹ ‡ú
 		if (SDKWeight.DataCurrent < SDKWeightSetting.WeightMin)
 		{
-			// å°é‡é‡è¿½é›¶å‹•ä½œ
+			// Ğ¡ÖØÁ¿×·Áã„Ó×÷
 			SDKWeight.DataCurrent = 0;
 			if (SDKADCFilterData.flag.b.IsStable)
 			{
@@ -385,22 +385,22 @@ void fun_Weight_Normal()
 			}
 			if (BHSDKState == STATE_WEIGHT_LOADOK || BHSDKState == STATE_WEIGHT_LOADFIX || BHSDKState == STATE_WEIGHT_LOADDOWN)
 			{
-				BHSDKState = STATE_WEIGHT_LOADDOWN; // ç•¶å‰é‡é‡ç‚º0ä¸”å¾—åˆ°ä¸€ç­†æœ‰æ•ˆé‡é‡,ç‚ºä¸‹ç§¤å‹•ä½œ
+				BHSDKState = STATE_WEIGHT_LOADDOWN; // ®”Ç°ÖØÁ¿é0ÇÒµÃµ½Ò»¹PÓĞĞ§ÖØÁ¿,éÏÂ³Ó„Ó×÷
 			}
 			else
 			{
-				BHSDKState = STATE_WEIGHT_NOLOAD; //	ç•¶å‰é‡é‡ç‚º0ä¸”æ²’æœ‰å¾—åˆ°æœ‰æ•ˆé‡é‡,ç‚ºç©ºè¼‰
+				BHSDKState = STATE_WEIGHT_NOLOAD; //	®”Ç°ÖØÁ¿é0ÇÒ›]ÓĞµÃµ½ÓĞĞ§ÖØÁ¿,é¿Õİd
 			}
 		}
-		// å¤§æ–¼ç¨±é‡ç¯„åœ
-		else if (SDKWeight.DataCurrent > SDKWeightSetting.WeightMax && !SDKWeightSetting.flag.b.IsAutoCalOn) // é–‹å•Ÿè‡ªå‹•æ ¡æº–ä¸åšè¶…è¼‰è™•ç†
+		// ´óì¶·QÖØ¹ ‡ú
+		else if (SDKWeight.DataCurrent > SDKWeightSetting.WeightMax && !SDKWeightSetting.flag.b.IsAutoCalOn) // é_†¢×Ô„ÓĞ£œÊ²»×ö³¬İdÌÀí
 		{
 			BHSDKState = STATE_WEIGHT_OVERLOAD;
 		}
-		// æ­£å¸¸ç¨±é‡ç¯„åœ
+		// Õı³£·QÖØ¹ ‡ú
 		else
 		{
-			if (SDKADCFilterData.flag.b.IsStable) // ç•¶å‰é‡é‡ç‚ºç©©å®šçš„
+			if (SDKADCFilterData.flag.b.IsStable) // ®”Ç°ÖØÁ¿é·€¶¨µÄ
 			{
 				if (BHSDKState == STATE_WEIGHT_LOADOK || BHSDKState == STATE_WEIGHT_LOADFIX)
 				{
@@ -413,7 +413,7 @@ void fun_Weight_Normal()
 				}
 				if (BHSDKState == STATE_WEIGHT_LOADUP || BHSDKState == STATE_WEIGHT_OVERLOAD)
 				{
-					if (SDKWeightSetting.flag.b.IsAutoCalOn) // å•Ÿç”¨è‡ªå‹•æ ¡æº–
+					if (SDKWeightSetting.flag.b.IsAutoCalOn) // †¢ÓÃ×Ô„ÓĞ£œÊ
 					{
 						fun_weightAutoCal();
 					}
@@ -424,14 +424,14 @@ void fun_Weight_Normal()
 					}
 				}
 			}
-			else //  ç•¶å‰é‡é‡ç‚ºä¸ç©©å®š
+			else //  ®”Ç°ÖØÁ¿é²»·€¶¨
 			{
 				if (BHSDKState == STATE_WEIGHT_LOADOK || BHSDKState == STATE_WEIGHT_LOADFIX)
 				{
-					// è‡ªå‹•è§£é–åŠŸèƒ½ 3KG
+					// ×Ô„Ó½âæi¹¦ÄÜ 3KG
 					if (SDKWeightSetting.flag.b.IsAutoUnlockOn)
 					{
-						if ((SDKWeight.DataCurrent > SDKWeight.DataStable) && (SDKWeight.DataCurrent - SDKWeight.DataStable > SDKWeightSetting.WeightUnLockTemp)) // ä¸‹ç§¤å³æ­¸é›¶
+						if ((SDKWeight.DataCurrent > SDKWeight.DataStable) && (SDKWeight.DataCurrent - SDKWeight.DataStable > SDKWeightSetting.WeightUnLockTemp)) // ÏÂ³Ó¼´šwÁã
 						{
 							BHSDKState = STATE_WEIGHT_LOADUP;
 						}
@@ -443,14 +443,14 @@ void fun_Weight_Normal()
 				}
 			}
 		}
-		gu8v_WeighWorkStep = BHSDKState; // ä½œç‚ºä¸åŒåˆ‡æ›æ™‚çš„ä¿å­˜å€¼
+		gu8v_WeighWorkStep = BHSDKState; // ×÷é²»Í¬ÇĞ“Q•rµÄ±£´æÖµ
 	}
 }
 /**************************************
-Function: è‡ªå‹•ä¸Šç¨±åˆ¤æ–·
+Function: ×Ô„ÓÉÏ·QÅĞ”à
 INPUT	:
 OUTPUT	:
-NOTE	: ç”¨æ–¼å¿«é€Ÿå–šé†’
+NOTE	: ÓÃì¶¿ìËÙ†¾ĞÑ
 ***************************************/
 volatile u32 SDKADCFilterDatatemp;
 volatile unsigned int SDKADCData[4];
@@ -459,7 +459,7 @@ void fun_Weight_AutoOn()
 	if (SDKADCSourceData.flag.b.IsReady)
 	{
 		SDKADCSourceData.flag.b.IsReady = 0;
-		// å»é™¤æ­£è² è½‰æ›ç‚ºå–®å‘ç·šæ€§,å¹¶çµ±ä¸€ç‚º20Bit
+		// È¥³ıÕıØ“ŞD“Qé†ÎÏò¾€ĞÔ,²¢½yÒ»é20Bit
 	#if ADCSourceUseBit == 24
 		__32_type temp;
 		temp.byte.byte0 = SDKADCSourceData.ByteLow;
@@ -467,10 +467,10 @@ void fun_Weight_AutoOn()
 		temp.byte.byte2 = SDKADCSourceData.ByteHigh + 0x80;
 		temp.byte.byte3 = 0x00;
 		#if WeightADCFilterUseBit == 16
-			temp.u32 = temp.u32 >> 8; // å–16bit
+			temp.u32 = temp.u32 >> 8; // È¡16bit
 		#endif
 		#if WeightADCFilterUseBit == 20
-			temp.u32 = temp.u32 >> 4; // å–20bit
+			temp.u32 = temp.u32 >> 4; // È¡20bit
 		#endif
 	#endif
 
@@ -482,10 +482,10 @@ void fun_Weight_AutoOn()
 		temp.byte.byte2 &= 0x0F;
 		temp.byte.byte3 = 0x00;
 		#if WeightADCFilterUseBit == 16
-			temp.u32 = temp.u32 >> 4; // å–16bit
+			temp.u32 = temp.u32 >> 4; // È¡16bit
 		#endif
 		#if WeightADCFilterUseBit == 20
-			temp.u32 = temp.u32 >> 0; // å–20bit
+			temp.u32 = temp.u32 >> 0; // È¡20bit
 		#endif
 	#endif
 		if (BHSDKState == STATE_AUTOON_SLOWMODE)
@@ -494,8 +494,8 @@ void fun_Weight_AutoOn()
 		}
 		/*if (SDKADCSourceData.SamplingCnt)*/
 		SDKADCData[SDKADCSourceData.SamplingCnt-4] =  temp.u32;
-		
-		//è‡ªå‹•ä¸Šç§¤ç´¯åŠ æ•¸æ“š4ç­†æ±‚å¹³å‡	
+
+		//è‡ªå‹•ä¸Šç§¤ç´¯åŠ æ•¸æ“š4ç­†æ±‚å¹³å‡
 		SDKADCFilterDatatemp = SDKADCFilterDatatemp + temp.u32;
 		if (SDKADCSourceData.SamplingCnt == 7)
 		{
@@ -504,7 +504,7 @@ void fun_Weight_AutoOn()
 			{
 				if((SDKADCFilterDatatemp/ 4)<65535)
 				{
-					SDKADCFilterData.Current =(int)(SDKADCFilterDatatemp/ 4); // å¿«é€Ÿé »ç‡,å››ç­†æ±‚å¹³å‡
+					SDKADCFilterData.Current =(int)(SDKADCFilterDatatemp/ 4); // ¿ìËÙîlÂÊ,ËÄ¹PÇóÆ½¾ù
 				}
 				else
 				{
@@ -516,7 +516,7 @@ void fun_Weight_AutoOn()
 				SDKADCFilterData.Current=(int)temp.u32;
 			}
 			SDKADCFilterDatatemp=0;
-			// æ˜¯å¦é”åˆ°è‡ªå‹•ä¸Šç¨±é‡é‡åˆ¤æ–·
+			// ÊÇ·ñß_µ½×Ô„ÓÉÏ·QÖØÁ¿ÅĞ”à
 			if (SDKADCFilterData.Current > SDKWeight.CalADCData.Cal0)
 			{
 				if (((SDKADCFilterData.Current - SDKWeight.CalADCData.Cal0) > AutoOnWeightADCData) && (haltWeightADCData < (AutoOnWeightADCData-5*SDKWeight.Span)))
@@ -530,8 +530,8 @@ void fun_Weight_AutoOn()
 					{
 						fun_WeightHardwareSetting();
 						fun_ADCStart();
-						BHSDKState = STATE_AUTOON_SLOWMODE; // é€™å€‹æ•¸æ“šæœƒæ¥µå¤§é™åˆ¶ï¼Œéœ€è¦ç‰¹åˆ¥æ³¨æ„
-						SDKADCSourceData.SamplingCnt = 3;   // ä½é€Ÿåªéœ€è¦ä¸€ç­†æ•¸æ“šå³å¯,é€™æ¨£å»é™¤å‰ä¸‰ç­†ç¬¬å››ç­†å³å¯
+						BHSDKState = STATE_AUTOON_SLOWMODE; // ß@‚€”µ“ş•ş˜O´óÏŞÖÆ£¬ĞèÒªÌØ„e×¢Òâ
+						SDKADCSourceData.SamplingCnt = 3;   // µÍËÙÖ»ĞèÒªÒ»¹P”µ“ş¼´¿É,ß@˜ÓÈ¥³ıÇ°Èı¹PµÚËÄ¹P¼´¿É
 					}
 				}
 				else
@@ -553,7 +553,7 @@ void fun_Weight_AutoOn()
 void fun_Enter_Weight_Normal()
 {
 	BHSDKState = gu8v_WeighWorkStep;
-	// é˜²æ­¢ä¸­é–“ADCæ¨¡å¼ï¼Œåœ¨åˆ‡å›æ™‚ç‹€æ…‹ä¸Ÿå¤±
+	// ·ÀÖ¹ÖĞégADCÄ£Ê½£¬ÔÚÇĞ»Ø•r î‘BGÊ§
 	if (BHSDKState == STATE_WEIGHT_LOADOK)
 	{
 		BHSDKState = STATE_WEIGHT_LOADFIX;
@@ -568,7 +568,7 @@ void fun_Enter_Weight_AutoOn()
 	BHSDKState = STATE_AUTOON_FASTMODE;
 	fun_WeightHardwareSetting();
 	fun_LoadAutoOnSetting();
-	GCC_DELAY(800);
+//	GCC_DELAY(800);
 	fun_ADCStart();
 	fun_FilterInit();
 }

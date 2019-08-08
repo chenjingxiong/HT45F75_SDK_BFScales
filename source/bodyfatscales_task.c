@@ -71,6 +71,7 @@ void task_bodyfatscales(void)
 		fun_Unit_Change(SDKWeight.DataCurrent);
 		Set_DisplayMode(DISPLAY_LOADUP);
 		gbv_TxSDKWeightStatus = 1;
+		gu8_data_type = C_DATA_ING;
 		break;
 
 		case STATE_WEIGHT_LOADOK:	// 完成一次稱重測量
@@ -113,6 +114,7 @@ void task_bodyfatscales(void)
 			}else{
 				if(is_BHSDKState_change()){
 					gbv_TxSDKWeightStatus = 1;
+					gu8_data_type = C_DATA_LOCK;
 					#if 0
 					if(!fg_remember_200g){
 						fg_remember_200g = 1;
@@ -144,7 +146,10 @@ void task_bodyfatscales(void)
 			break;
 		case STATE_WEIGHT_OVERLOAD:	// 超重,當前重量大於最大稱重重量
 			// fun_DisplayMode_OverLoad();此處寫User UI,,比如顯示-OL-等
+			fun_Unit_Change(SDKWeight.DataCurrent);
 			Set_DisplayMode(DISPLAY_OVERLOAD);
+			gbv_TxSDKWeightStatus = 1;
+			gu8_data_type = C_DATA_OVERLOAD;
 			break;
 		case STATE_IMPEDANCE_REFERENCE1:// 正在量測參考電阻1
 		case STATE_IMPEDANCE_REFERENCE2:// 正在量測參考電阻2
@@ -158,6 +163,8 @@ void task_bodyfatscales(void)
 		case STATE_IMPEDANCE_FINISH:	// 阻抗量測結束,此時可以讀取gu16v_CurrentImpedance_ohm
 			// fun_DisplayMode_ImpedanceFinish();
 			//BHSDKState = ENTER_IMPEDANCE;
+
+			gu8_data_type = C_DATA_LOCK;
 			gu16_impedence_data = SDKImpedance.Data;
 			Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
 		    break;
@@ -285,6 +292,7 @@ void task_scaleswakeup(void)
 	SET_UART_ENABLE();
 
 	gu8v_time_30s = C_TIME_30S;
+	gu8_ble_count = 0;
 
 	// TM0
 	_tm0c0 = 0x20;		// fsys/16 4us

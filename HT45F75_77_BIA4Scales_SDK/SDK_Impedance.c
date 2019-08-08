@@ -55,8 +55,9 @@ asm(" message' **************************************************** ' ");
 #define SET_ADCGAIN_IMPENDACNE()    { _pgac0 = 0x20;}   // 阻抗ADC放大設置,VGS=0.5,ADGN =1,PGA=1
 #define SET_DCSET_IMPENDACNE()      { _pgac1 = 0x00;}   // 阻抗DCSET設置,DCSET = 0V
 #define SET_ADCCHAN_IMPENDACNE()    { _pgacs = 0x61;}   // 阻抗ADC 通道VCM&AN2
+
 //#define SET_ADCCHAN_IMPENDACNE()    { _pgacs = 0x68;}   // 阻抗ADC 通道VCM&RFC
-#define SET_ADCVREF_IMPEDANCE()	    { _vrefs = 1; }     // 外部參考電壓
+#define SET_ADCVREF_IMPEDANCE()	    { _vrefs = 1;_enldo=1;_envcm=1;_vcms=1; }     // 外部參考電壓
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // ====================================================================================@
 //                                  依賴參數                                            @
