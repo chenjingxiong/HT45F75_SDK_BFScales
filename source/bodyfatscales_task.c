@@ -137,6 +137,9 @@ void task_bodyfatscales(void)
 			if(C_UNLOCK_WEIGHT >= SDKWeight.DataStable){
 				fun_Unit_Change(SDKWeight.DataCurrent);
 				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
+				if(is_BHSDKState_change()){
+					gbv_TxSDKWeightStatus = 1;
+				}
 			}else{
 				if(is_BHSDKState_change()){
 					fun_Unit_Change(gu16_rememberweigh);
