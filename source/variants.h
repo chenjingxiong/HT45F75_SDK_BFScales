@@ -30,9 +30,9 @@ extern volatile __byte_type  	flag2;// 标志
 #define fg_uart_rec_start		flag2.bits.b1//=1串口可以开始接收数据; =0 进行判断是否接收数据.
 #define fg_uart_rec_end			flag2.bits.b2//=1串口接收完成
 #define fg_bodyfatrate_rec_ok   flag2.bits.b3//=1串口接收到体脂率; =0 没接收到体脂率.
-#define fg_scales_dataislock			flag2.bits.b4//=0 发送锁定数据; =1 发送的是过程数据.
-//#define 						flag2.bits.b5
-//#define 						flag2.bits.b6
+#define fg_scales_dataislock	flag2.bits.b4//=0 发送锁定数据; =1 发送的是过程数据.
+#define fg_manual_cal			flag2.bits.b5// =0 已经校准过; =1 还没校准过;
+#define fg_manual_readycal		flag2.bits.b6// =0 没达到手动校准条件; =1 准备进入手动校准.
 //#define 						flag2.bits.b7
 
 
@@ -49,14 +49,14 @@ extern volatile __byte_type  	flag3_remember;// 标志
 //#define 			flag3_remember.bits.b7
 
 
-extern u8 gu8v_time_100ms;
-extern u8 gu8v_time_30s;
+extern u8 gu8_time_100ms;
+extern u8 gu8_time_30s;
 extern u8 gu8_ble_count;
 extern u8 gu8_data_type;
-extern u8 R_UartData;
+extern u8 gu8_UartData;
 
-extern const unsigned char lu8v_LED_HEX[C_LED_CHAR_NUM];
+extern const unsigned char lu8_LED_HEX[C_LED_CHAR_NUM];
 //由于硬件2COM的LED连接方式与另外三个COM不一样，所以需要再建个不同的显示数字表�?
-extern const unsigned char lu8v_2COM_HEX[16];
+extern const unsigned char lu8_2COM_HEX[C_LED_CHAR_NUM2];
 
 #endif //__VARIANTS_H__

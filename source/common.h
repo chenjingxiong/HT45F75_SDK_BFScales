@@ -14,4 +14,6 @@
 #include "mydefine.h"
 #include "bodyfatscales_task.h"
 #include "function.h"
+
+#define IsAutoCalOn SDKWeightSetting.flag.b.IsAutoCalOn
 #endif

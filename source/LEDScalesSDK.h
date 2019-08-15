@@ -30,7 +30,6 @@ extern volatile __byte_type 	gu8v_LED_BufferPoint;
 //void fun_HEX2BCD4(unsigned int DisplayNum);
 void fun_HEX2BCD(unsigned int DisplayNum);
 extern void Set_AllLEDBuffer(u8 OnOff);
-void fun_LEDBufScan();
 unsigned int fun_WeightUnitChange(unsigned int weightJin);
 void fun_Display_PownDown();
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IO congfig @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -53,9 +52,13 @@ void fun_Display_PownDown();
 #define LED_CHAR__					13
 #define LED_CHAR_ALL				14
 #define LED_CHAR_OFF				15
-#define LED_CHAR_P					16
-#define LED_CHAR_A					17
-#define C_LED_CHAR_NUM				18
+#define LED_CHAR_A					16
+#define LED_CHAR_P					17
+#define LED_CHAR_F					18
+#define LED_CHAR_I					19
+#define C_LED_CHAR_NUM				20
+
+#define C_LED_CHAR_NUM2				17
 
 //#define LED_CHAR_P					14
 //#define LED_CHAR_A					15

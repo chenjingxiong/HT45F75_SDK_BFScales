@@ -36,7 +36,7 @@ void fun_UARTPowerOnInit()
 }
 
 ///********************************************************************
-//Function: Uart數據發送和接收中斷子程�?
+//Function: Uart Receive & Send
 //INPUT	:
 //OUTPUT:
 //NOTE	:
@@ -91,7 +91,7 @@ DEFINE_ISR(UART_ISR, MuFunction1_VECTOR)
 		_rxif = 0;
 
 		_acc = _usr;
-		R_UartData = _txrrxr;
+		gu8_UartData = _txrrxr;
 		if(gbv_UartRxSuccess) {
 			fg_uart_rec_start = 0;
 			return;
@@ -100,15 +100,15 @@ DEFINE_ISR(UART_ISR, MuFunction1_VECTOR)
 		gu8v_TBRxTimeOutCnt = C_TIMEING_TIMEOUT;
 
 		if(!fg_uart_rec_start){
-			switch(R_UartData)
+			switch(gu8_UartData)
 			{
-				case REQ_UNITSYN:
+				case REC_HEAD_CODE:
 					fg_uart_rec_start = 1;
 					fg_uart_rec_end = 0;
-					lu8v_RxBufLength = DATA_BUF_LEN;
+					lu8v_RxBufLength = REC_BUF_DATA_LEN;
 					break;
 				default:
-					lu8v_RxBufLength = DATA_BUF_LEN;
+					lu8v_RxBufLength = REC_BUF_DATA_LEN;
 					break;
 			}
 			lu8v_RxBufoffset = 0;
@@ -123,7 +123,7 @@ DEFINE_ISR(UART_ISR, MuFunction1_VECTOR)
 				lu8v_RxBufoffset = 0;
 			}
 
-			gu8v_UartRxBuf[lu8v_RxBufoffset++] = R_UartData;
+			gu8v_UartRxBuf[lu8v_RxBufoffset++] = gu8_UartData;
 
 			if(lu8v_RxBufLength <= lu8v_RxBufoffset)
 				fg_uart_rec_end = 1;

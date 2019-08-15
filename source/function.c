@@ -12,8 +12,12 @@ volatile u8  gu8v_led_delay; //延时delay时间后才执行闪烁.
 volatile u8  gu8v_led_delay3S;//开机LED全显3s计时.
 volatile u8  gu8v_timed_shutdown;//定时关机计时.
 
-
-//精度:0.1jin;	eg:weigh  =100,计算:100*0.1jin=10jin.
+/********************************************************************
+Function: 重量单位切换.
+INPUT	:
+OUTPUT	:
+NOTE	://精度:0.1jin;	eg:weigh  =100,计算:100*0.1jin=10jin.
+********************************************************************/
 void fun_Unit_Change(u16 weigh)
 {
 	gu16_weigh = weigh;
@@ -66,6 +70,12 @@ void set_ledflash(u8 mode, u8 ledflash, u8 count, u8 speed, u8 delay, u8 overtim
 	}
 }
 
+/********************************************************************
+Function: LED闪烁状态.
+INPUT	:
+OUTPUT	:
+NOTE	:获取LED闪烁状态.
+********************************************************************/
 u8 get_ledflash_status(void)
 {
 	return fg_led_timing;
@@ -163,9 +173,6 @@ void fun_diaplay_mode(void)
 			break;
 
 		case DISPLAY_IMPEDANCEING:
-//			set_ledflash(DISPLAY_IMPEDANCEING,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
-			//������֬���ȶ�ʱ�ᳬ��10s�У����Դ�ʱ��Ҫ���¶�ʱ���ߵĶ�ʱʱ��.
-
 			gu8v_LED_Buffer[0] = LED_CHAR_OFF;
 			gu8v_LED_Buffer[1] = LED_CHAR__;
 			gu8v_LED_Buffer[2] = LED_CHAR__;
@@ -185,10 +192,8 @@ void fun_diaplay_mode(void)
                     gu16_impedence_data = 0x00;
 					fg_bodyfatrate_rec_ok = 0;
 					fg_led_unit_pct = 0;
-                    if(0 == get_ledflash_status()){
-                        set_BHSDKState(ENTER_WEIGHT_NORMAL);
-                        set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
-                    }
+                    set_BHSDKState(ENTER_WEIGHT_NORMAL);
+                    set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_OFF,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
 					break;
 
 				default:
@@ -199,10 +204,24 @@ void fun_diaplay_mode(void)
 	                        set_ledflash(DISPLAY_IMPEDANCE_FINISH,C_LED_FLASH_ON,C_LED_FLASH_IMP,C_TIME_05S,0,C_TIME_10S);
 	                        if(fg_led_change)
 	                        {
-	                            fun_HEX2BCD(gu16_BodyFatRate);
-	                            fg_led_unit_pct = 1;
-								fg_led_unit_kg = 0;
-								fg_led_unit_lb = 0;
+	                        	if(C_BODYFATRATE_MIN > gu16_BodyFatRate){
+									flag_led_Byte &= 0x40;
+									gu8v_LED_Buffer[0] = LED_CHAR_OFF;
+									gu8v_LED_Buffer[1] = LED_CHAR_L;
+									gu8v_LED_Buffer[2] = LED_CHAR_OFF;
+									gu8v_LED_Buffer[3] = LED_CHAR_OFF;
+								}else if(C_BODYFATRATE_MAX < gu16_BodyFatRate){
+									flag_led_Byte &= 0x40;
+									gu8v_LED_Buffer[0] = LED_CHAR_OFF;
+									gu8v_LED_Buffer[1] = LED_CHAR_H;
+									gu8v_LED_Buffer[2] = LED_CHAR_OFF;
+									gu8v_LED_Buffer[3] = LED_CHAR_OFF;
+								}else{
+									fg_led_unit_pct = 1;
+									fg_led_unit_kg = 0;
+									fg_led_unit_lb = 0;
+									fun_HEX2BCD(gu16_BodyFatRate);
+								}
 	                        }else{
 	                            fun_HEX2BCD(gu16_display_weight);
 	                            fg_led_unit_pct = 0;
@@ -247,10 +266,25 @@ void fun_diaplay_mode(void)
 			set_ledflash(DISPLAY_UNLOCK_WEIGHT,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
             break;
 
-//		case DISPLAY_CAL:
+		case DISPLAY_CAL0:
+			fun_HEX2BCD(gu16_display_weight);
+			set_ledflash(DISPLAY_CAL0,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
+			set_overtime2poweroff(C_TIME_10S);
+			break;
+
+//		case DISPLAY_CAL1:
 //			fun_HEX2BCD(gu16_display_weight);
-//			set_ledflash(DISPLAY_CAL,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
-//			set_overtime2poweroff(C_TIME_10S);
+//			set_ledflash(DISPLAY_CAL1,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
+//			break;
+
+//		case DISPLAY_CAL2:
+//			fun_HEX2BCD(gu16_display_weight);
+//			set_ledflash(DISPLAY_CAL2,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
+//			break;
+
+//		case DISPLAY_CAL3:
+//			fun_HEX2BCD(gu16_display_weight);
+//			set_ledflash(DISPLAY_CAL3,C_LED_FLASH_OFF,0,0,0,C_TIME_10S);
 //			break;
 
 		case DISPLAY_CALPASS:
@@ -259,6 +293,17 @@ void fun_diaplay_mode(void)
 				gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_P;//'P'
 				gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_A;  //'A'
 				gu8v_LED_Buffer[NUM_SHI]= LED_CHAR_5;  //'S'
+				gu8v_LED_Buffer[NUM_GE] = LED_CHAR_5;  //'S'
+				GCC_CLRWDT();
+			}
+			break;
+
+		case DISPLAY_CALFAIL:
+			while(1){
+				flag_led_Byte &= 0x00;//unit:ble,pct,kg,lb.
+				gu8v_LED_Buffer[NUM_QIAN] = LED_CHAR_F;//'F'
+				gu8v_LED_Buffer[NUM_BAI]= LED_CHAR_I;  //'I'
+				gu8v_LED_Buffer[NUM_SHI]= LED_CHAR_A;  //'A'
 				gu8v_LED_Buffer[NUM_GE] = LED_CHAR_5;  //'S'
 				GCC_CLRWDT();
 			}
@@ -275,6 +320,12 @@ void fun_diaplay_mode(void)
 
 }
 
+/********************************************************************
+Function: 检测蓝牙连接.
+INPUT	:
+OUTPUT	:
+NOTE	:检测app是否连接上蓝牙.
+********************************************************************/
 void fun_bluetooth_detected(void)
 {
 	if((DISPLAY_POWERON != gu8_dismode) && (DISPLAY_ALLOFF != gu8_dismode)){
@@ -319,80 +370,3 @@ void is_timedshutdown(void)
 	}
 }
 
-
-/********************************************************************
-Function: 定时时间计数.
-INPUT	:
-OUTPUT	:
-NOTE	:每100MS进入一次.
-********************************************************************/
-void fun_timing(void)
-{
-#if 0
-	if(fg_time_100ms){
-		fg_time_100ms = 0;
-
-		if(!fg_time_3s){
-			gu8v_led_delay3S++;
-			if(C_TIME_3S <= gu8v_led_delay3S){
-				gu8v_led_delay3S = 0;
-				fg_time_3s = 1;
-			}
-		}
-
-		/* 串口发送周期计数 */
-		if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
-
-		/* 串口接收超时检测 */
-		if(!gbv_UartRxSuccess && fg_uart_rec_start){
-			if(gu8v_TBRxTimeOutCnt){
-				gu8v_TBRxTimeOutCnt--;
-			}else{
-			  	//gbv_UartRxSuccess = 1;
-				fg_uart_rec_start = 0;
-			}
-		}
-
-		/* LED显示闪烁定时 */
-		if(fg_led_timing){
-			//先延后执行LED闪烁功能.
-			if(!fg_led_delay){
-				if(gu8v_led_delay)
-					gu8v_led_delay--;
-				else
-					fg_led_delay = 1;
-			}
-			//延时时间到后执行LED显示闪烁切换标志
-			if(fg_led_delay){
-				gu8v_time_dalay++;
-				if(gu8v_led_speed <= gu8v_time_dalay){
-					gu8v_time_dalay = 0;
-					if(gu8v_howtimes){
-						fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪.
-						//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁
-						//注意:最好在fg_led_flash=1即LED处于熄灭状态下切换.
-						if(fg_led_flash){
-							fg_led_change = !fg_led_change;
-						}
-						gu8v_howtimes--;
-					}else{
-						fg_led_delay = 0;
-						fg_led_timing = 0;
-						fg_led_flash = 0;
-						fg_led_change = 0;
-					}
-				}
-			}
-		}else{
-			/*执行闪烁完成后开始计时定时关机*/
-			if(gu8v_timed_shutdown){
-				gu8v_timed_shutdown--;
-				fg_time_10s = 0;
-				fg_led_flash = 0;
-			}else{
-				fg_time_10s = 1;
-			}
-		}
-	}
-#endif
-}

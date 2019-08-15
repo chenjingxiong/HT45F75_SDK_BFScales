@@ -7,6 +7,12 @@ u16 gu16_currentweigh;
 u16 gu16_impedence_data;//原始阻抗数据.
 u16 gu16_BodyFatRate;//来自蓝牙的体脂率.
 
+/********************************************************************
+Function: 设置秤工作状态.
+INPUT	:
+OUTPUT	:
+NOTE	:.
+********************************************************************/
 void set_BHSDKState(u8 state)
 {
 	BHSDKState = state;
@@ -49,9 +55,16 @@ u8 is_BHSDKState_change(void)
 //	gu16_impedence_data = SDKImpedance.Data;
 //}
 
+
+/********************************************************************
+Function: 依据 BHSDKState状态完成UI或者其他動作.
+INPUT	:
+OUTPUT	:
+NOTE	: 秤正在工作的所有状态BHSDKState.
+********************************************************************/
 void task_bodyfatscales(void)
 {
-	//依據gu8v_BodyfatSDKState 完成UI或者其他動作
+	//依據BHSDKState完成UI或者其他動作
 	switch (BHSDKState)
 	{
 		case STATE_WEIGHT_PREPARE:	// 稱重準備中
@@ -63,6 +76,11 @@ void task_bodyfatscales(void)
             if(is_BHSDKState_change()){
                 fun_Unit_Change(SDKWeight.DataCurrent);
                 Set_DisplayMode(DISPLAY_NOLOAD);
+
+				if(fg_manual_readycal){
+					fg_manual_readycal = 0;
+					set_BHSDKState(ENTER_WEIGHT_CAL);
+				}
             }
 			break;
 
@@ -71,7 +89,7 @@ void task_bodyfatscales(void)
 		fun_Unit_Change(SDKWeight.DataCurrent);
 		Set_DisplayMode(DISPLAY_LOADUP);
 		gbv_TxSDKWeightStatus = 1;
-		gu8_data_type = C_DATA_ING;
+		gu8_data_type = DATA_TYPE_ING;
 		break;
 
 		case STATE_WEIGHT_LOADOK:	// 完成一次稱重測量
@@ -89,7 +107,7 @@ void task_bodyfatscales(void)
 			break;
 		case STATE_WEIGHT_LOADFIX:	// 完成一次稱重測量后重量穩定沒有解鎖
 			// fun_DisplayMode_LoadFix();此處寫User UI,,比如開始閃爍穩定重量SDKWeight.DataState等
-			gu8v_time_30s = C_TIME_30S;
+			gu8_time_30s = C_TIME_30S;
 			if(!fg_remember_200g){
 				fg_remember_200g = 1;
 				gu16_rememberweigh = SDKWeight.DataStable;
@@ -104,7 +122,7 @@ void task_bodyfatscales(void)
 				if(fun_unsigned32BitABS(SDKWeight.DataCurrent,gu16_currentweigh) > C_REMEBER_200G){
 					gu16_currentweigh = SDKWeight.DataCurrent;
 					fun_Unit_Change(SDKWeight.DataCurrent);
-					set_overtime2poweroff(C_TIME_10S);//如果重量有变??更新时间不去睡眠.
+					set_overtime2poweroff(C_TIME_10S);//如果重量有变化更新时间不去睡眠.
 				}else{
 //					fun_Unit_Change(SDKWeight.DataStable);
 					fun_Unit_Change(gu16_rememberweigh);
@@ -114,23 +132,20 @@ void task_bodyfatscales(void)
 			}else{
 				if(is_BHSDKState_change()){
 					gbv_TxSDKWeightStatus = 1;
-					gu8_data_type = C_DATA_LOCK;
-					#if 0
-					if(!fg_remember_200g){
-						fg_remember_200g = 1;
-						gu16_rememberweigh = SDKWeight.DataStable;
-					}else{
-						if(fun_unsigned32BitABS(gu16_rememberweigh,SDKWeight.DataStable) <= C_REMEBER_200G){
-							GCC_NOP();
-						}else{
-							gu16_rememberweigh = SDKWeight.DataStable;
-						}
-					}
-					#endif
+					gu8_data_type = DATA_TYPE_LOCK;
 				}
 				fun_Unit_Change(gu16_rememberweigh);
 				Set_DisplayMode(DISPLAY_LOADFIX);
+
+				//Ready to manual cal
+				if(fg_manual_cal){
+					if(C_WEIGHT_MANUALCAL < gu16_rememberweigh){
+						fg_manual_cal = 0;
+						fg_manual_readycal = 1;
+					}
+				}
 			}
+
 			break;
 		case STATE_WEIGHT_LOADDOWN:	// 下秤動作
             // fun_DisplayMode_LoadDown();此處寫User UI,,比如顯示鎖定SDKWeight.DataState等
@@ -146,13 +161,18 @@ void task_bodyfatscales(void)
 					Set_DisplayMode(DISPLAY_LOADDOWN);
 				}
 			}
+
+			if(fg_manual_readycal){
+				fg_manual_readycal = 0;
+				set_BHSDKState(ENTER_WEIGHT_CAL);
+			}
 			break;
 		case STATE_WEIGHT_OVERLOAD:	// 超重,當前重量大於最大稱重重量
 			// fun_DisplayMode_OverLoad();此處寫User UI,,比如顯示-OL-等
 			fun_Unit_Change(SDKWeight.DataCurrent);
 			Set_DisplayMode(DISPLAY_OVERLOAD);
 			gbv_TxSDKWeightStatus = 1;
-			gu8_data_type = C_DATA_OVERLOAD;
+			gu8_data_type = DATA_TYPE_OVERLOAD;
 			break;
 		case STATE_IMPEDANCE_REFERENCE1:// 正在量測參考電阻1
 		case STATE_IMPEDANCE_REFERENCE2:// 正在量測參考電阻2
@@ -167,7 +187,7 @@ void task_bodyfatscales(void)
 			// fun_DisplayMode_ImpedanceFinish();
 			//BHSDKState = ENTER_IMPEDANCE;
 
-			gu8_data_type = C_DATA_LOCK;
+			gu8_data_type = DATA_TYPE_LOCK;
 			gu16_impedence_data = SDKImpedance.Data;
 			Set_DisplayMode(DISPLAY_IMPEDANCE_FINISH);
 		    break;
@@ -186,15 +206,23 @@ void task_bodyfatscales(void)
 			break;
 		case STATE_WEIGHT_CAL0: // 正在標定零點
 			// fun_DisplayMode_CAL0();此處寫User UI,,比如提示CAL 0kg
+			fun_Unit_Change(0);
+			Set_DisplayMode(DISPLAY_CAL0);
 			break;
 		case STATE_WEIGHT_CAL1:	// 正在標定第1點
 			// fun_DisplayMode_CAL1();此處寫User UI,,比如提示CAL 50kg
+			fun_Unit_Change(1000);
+			Set_DisplayMode(DISPLAY_CAL0);
 			break;
 		case STATE_WEIGHT_CAL2:	// 正在標定第2點
 			// fun_DisplayMode_CAL2();此處寫User UI,,比如提示CAL 100kg
+			fun_Unit_Change(2000);
+			Set_DisplayMode(DISPLAY_CAL0);
 			break;
 		case STATE_WEIGHT_CAL3:	// 正在標定第3點
 			// fun_DisplayMode_CAL3();此處寫User UI,,比如提示CAL 150kg
+			fun_Unit_Change(3000);
+			Set_DisplayMode(DISPLAY_CAL0);
 			break;
 		case STATE_WEIGHT_CALPASS:	// 標定成功
 			// fun_DisplayMode_CALPASS();此處寫User UI,,比如提示PASS
@@ -202,6 +230,7 @@ void task_bodyfatscales(void)
 			break;
 		case STATE_WEIGHT_CALFAIL:	// 標定失敗
 			// fun_DisplayMode_CALFAIL();此處寫User UI,,比如提示FIAS
+			Set_DisplayMode(DISPLAY_CALFAIL);
 			break;
 		default:
 			break;
@@ -265,14 +294,13 @@ void task_scales2sleep(void)
 
 	set_overtime2poweroff(C_TIME_10S);
 
-	if(gu8v_time_30s){
-		gu8v_time_30s--;
+	if(gu8_time_30s){
+		gu8_time_30s--;
 	}else{
 		fg_remember_200g = 0;
 	}
 	fun_BodyFatScalesSDK_PowerDown();
 	_idlen = 0;
-	GCC_NOP();
 	GCC_NOP();
 	GCC_NOP();
 	GCC_HALT();
@@ -294,7 +322,7 @@ void task_scaleswakeup(void)
 	gbv_IsBusyUartTx = 0;
 	SET_UART_ENABLE();
 
-	gu8v_time_30s = C_TIME_30S;
+	gu8_time_30s = C_TIME_30S;
 	gu8_ble_count = 0;
 
 	// TM0

@@ -393,7 +393,7 @@ void fun_Weight_Normal()
 			}
 		}
 		// 大於稱重範圍
-		else if (SDKWeight.DataCurrent > SDKWeightSetting.WeightMax && !SDKWeightSetting.flag.b.IsAutoCalOn) // 開啟自動校準不做超載處理
+		else if (SDKWeight.DataCurrent > SDKWeightSetting.WeightMax /*&& !SDKWeightSetting.flag.b.IsAutoCalOn*/) // 開啟自動校準不做超載處理
 		{
 			BHSDKState = STATE_WEIGHT_OVERLOAD;
 		}
@@ -499,7 +499,7 @@ void fun_Weight_AutoOn()
 		SDKADCFilterDatatemp = SDKADCFilterDatatemp + temp.u32;
 		if (SDKADCSourceData.SamplingCnt == 7)
 		{
-		
+
 			if (BHSDKState == STATE_AUTOON_FASTMODE)
 			{
 				if((SDKADCFilterDatatemp/ 4)<65535)

@@ -221,6 +221,9 @@ INPUT	:
 OUTPUT	:
 NOTE	:初始化一些变量,打开中断等.
 ********************************************************************/
+#define EEPROM_ADDR_START 			0x01		// EEPROM 存儲開始位置
+#define EEPROM_DATA_CALID_CODE 		0xAA // 校準成功標誌數據,偵測到此數據,認為校準成功
+
 void user_init(void)
 {
 	Set_AllLEDBuffer(0);
@@ -233,7 +236,12 @@ void user_init(void)
 	flag1_Byte = 0x00;
 	flag2_Byte = 0x00;
 	flag3_remenber_Byte = 0x00;
-
+	if (Read_EEPROMByte(EEPROM_ADDR_START) == EEPROM_DATA_CALID_CODE){
+		fg_manual_cal = 0;
+	}else{
+		fg_manual_cal = 1;
+		IsAutoCalOn = 0;
+	}
 
     gbv_IsBusyUartTx = 0;
     gbv_UartRxSuccess = 0;
@@ -272,8 +280,8 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 	fg_time_2ms = 1;
 
 	/* 定时时间 */
-	if(C_TIME_100MS <= ++gu8v_time_100ms){
-		gu8v_time_100ms = 0;
+	if(C_TIME_100MS <= ++gu8_time_100ms){
+		gu8_time_100ms = 0;
 		fg_time_100ms = 1;
 
 		//timing
@@ -343,7 +351,6 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 	}
 
 	//*********** LED *************//
-	//fun_LEDBufScan();
 	LEDCOM1 = LOW ;
 	LEDCOM2 = LOW ;
 	LEDCOM3 = LOW ;
@@ -357,7 +364,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 		switch (LEDScan_Cnt)
 		{
 			case 0:
-				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_GE]];
+				LEDSEG = lu8_LED_HEX[gu8v_LED_Buffer[NUM_GE]];
 				if(fg_led_unit_kg)
 				{
 					LEDSEG_UNIT_PIONT=HIGH;
@@ -367,7 +374,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				break;
 
 			case 1:
-				LEDSEG = lu8v_2COM_HEX[gu8v_LED_Buffer[NUM_SHI]];
+				LEDSEG = lu8_2COM_HEX[gu8v_LED_Buffer[NUM_SHI]];
 				if(fg_led_unit_lb)
 				{
 					LEDSEG_UNIT_PIONT=HIGH;
@@ -377,7 +384,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				break;
 
 			case 2:
-				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_BAI]];
+				LEDSEG = lu8_LED_HEX[gu8v_LED_Buffer[NUM_BAI]];
 				if(fg_led_piont1)
 				{
 					LEDSEG_UNIT_PIONT = HIGH;
@@ -387,7 +394,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				break;
 
 			case 3:
-				LEDSEG = lu8v_LED_HEX[gu8v_LED_Buffer[NUM_QIAN]];
+				LEDSEG = lu8_LED_HEX[gu8v_LED_Buffer[NUM_QIAN]];
 				if(fg_led_piont2)
 				{
 					LEDSEG_UNIT_PIONT=HIGH;
@@ -496,7 +503,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		_rxif = 0;
 
 		_acc = _usr;
-		R_UartData = _txrrxr;
+		gu8_UartData = _txrrxr;
 		if(gbv_UartRxSuccess) {
 			fg_uart_rec_start = 0;
 			return;
@@ -505,15 +512,15 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		gu8v_TBRxTimeOutCnt = C_TIMEING_TIMEOUT;
 
 		if(!fg_uart_rec_start){
-			switch(R_UartData)
+			switch(gu8_UartData)
 			{
-				case REQ_UNITSYN:
+				case REC_HEAD_CODE:
 					fg_uart_rec_start = 1;
 					fg_uart_rec_end = 0;
-					lu8v_RxBufLength = DATA_BUF_LEN;
+					lu8v_RxBufLength = REC_BUF_DATA_LEN;
 					break;
 				default:
-					lu8v_RxBufLength = DATA_BUF_LEN;
+					lu8v_RxBufLength = REC_BUF_DATA_LEN;
 					break;
 			}
 			lu8v_RxBufoffset = 0;
@@ -528,7 +535,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 				lu8v_RxBufoffset = 0;
 			}
 
-			gu8v_UartRxBuf[lu8v_RxBufoffset++] = R_UartData;
+			gu8v_UartRxBuf[lu8v_RxBufoffset++] = gu8_UartData;
 
 			if(lu8v_RxBufLength <= lu8v_RxBufoffset)
 				fg_uart_rec_end = 1;

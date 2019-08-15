@@ -39,12 +39,13 @@ int main(void)
 		//UART配置
 		fun_UARTPowerOnInit();
 
-		/* 用户初始化变量 */
-		user_init();
-
 		//显示
 		//上電后調用fun_BodyFatScalesSDK_PowerOn()函數
 		fun_BodyFatScalesSDK_PowerOn();
+
+		/* 用户初始化变量 */
+		user_init();
+
 		// 切換為阻抗模式
 		/*BHSDKState = ENTER_IMPEDANCE;*/
 		// 切換為稱重模式
@@ -99,9 +100,6 @@ int main(void)
 		}
 		/* LED显示内容buffer填充 */
 		fun_diaplay_mode();
-
-		/* 时间定时每次进入为100MS */
-		//fun_timing();
 
 		/* 判断定时关机 */
 		is_timedshutdown();

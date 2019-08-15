@@ -19,9 +19,7 @@ extern volatile bit gbv_TxFinishStatus;
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 共用函數 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 extern u8 get_XOR_Checksum(volatile u8 * psurce, u8 length);
-extern void fun_TxSDKImpedanceStatus();
-extern void fun_TxSDKWeightStatus();
-extern void fun_TxFinishStatus();
+extern void fun_TxSDKImpedanceWeightStatus();
 extern void fun_UserProtocol();
 
 
