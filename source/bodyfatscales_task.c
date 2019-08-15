@@ -124,9 +124,7 @@ void task_bodyfatscales(void)
 					fun_Unit_Change(SDKWeight.DataCurrent);
 					set_overtime2poweroff(C_TIME_10S);//如果重量有变化更新时间不去睡眠.
 				}else{
-//					fun_Unit_Change(SDKWeight.DataStable);
 					fun_Unit_Change(gu16_rememberweigh);
-
 				}
 				Set_DisplayMode(DISPLAY_UNLOCK_WEIGHT);
 			}else{
@@ -285,6 +283,7 @@ void task_scales2sleep(void)
 	SETWDTTIME_1000MS();
 	SET_UART_DISABLE();
 
+	//Bluetooth Disable
     P_BLE_EN = HIGH;
 
 	flag0_time_Byte = 0x00;
