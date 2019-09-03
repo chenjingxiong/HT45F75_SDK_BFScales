@@ -2,7 +2,7 @@
 #include "common.h"
 
 //===============================================================
-//function: 时钟初始化,在编译器中配置选项设定
+//function: 时钟初始�?在编译器中配置选项设定
 //input   : none.
 //output  : none
 //description:
@@ -24,7 +24,7 @@ void fun_RamInit(void)
 	_mp1l = 0x80;
 	while(_mp1h <2)
 	{
-		for(_tblp = 0x00;_tblp < 128;_tblp++)
+		for(_tblp = 0x00;_tblp <= 128;_tblp++)
 		{
 			 _iar1 = 0;
 			  _mp1l++;
@@ -35,7 +35,7 @@ void fun_RamInit(void)
 
 	_mp1h = 3;
 	_mp1l = 0x80;
-	for(_tblp = 0x00;_tblp < 128;_tblp++)
+	for(_tblp = 0x00;_tblp <= 128;_tblp++)
 	{
 		_iar1 = 0;
 		_mp1l++;
@@ -43,10 +43,10 @@ void fun_RamInit(void)
 
 }
 /********************************************************************
-Function: GPIO初始化
+Function: GPIO初始�?
 INPUT	: none
 OUTPUT	: none
-NOTE	: 配置所有IO口初始状态.
+NOTE	: 配置所有IO口初始状�?
 ********************************************************************/
 void fun_GPIOInit(void)
 {
@@ -68,13 +68,13 @@ void fun_GPIOInit(void)
 	_pdc = PDC_Default;
 	_pdpu= PDPU_Default;
 
-	 P_LED_BLE = LOW;//����
+	 P_LED_BLE = LOW;//����
 	 P_LED_BLE_C = OUTPUT;
-	 P_LED_UNIT_PCT	= LOW;//�ٷ�??%
+	 P_LED_UNIT_PCT	= LOW;//�ٷ�??%
 	 P_LED_UNIT_PCT_C = OUTPUT;
 
 	/*Bluetooth init */
-	 P_BT_Status_C = INPUT;//INPUT;//OUTPUT;//�ͻ��������Ŷ���:����  BLE_EN�������룬BLE_ST�ߵ�ƽ���
+	 P_BT_Status_C = INPUT;//INPUT;//OUTPUT;//�ͻ��������Ŷ���:����  BLE_EN�������룬BLE_ST�ߵ�ƽ���
 	 P_BLE_EN_C = OUTPUT;
 	 P_BLE_EN = LOW;
 //	 P_BT_Status = LOW;//LOW;
@@ -84,7 +84,7 @@ void fun_GPIOInit(void)
 
 
 //===============================================================
-//function: LED 所有IO口初始化为关闭LED状态.
+//function: LED 所有IO口初始化为关闭LED状�?
 //input   : none.
 //output  : none
 //description:
@@ -108,7 +108,7 @@ void LED_Init(void)
 }
 
 /********************************************************************
-Function: Timer初始化
+Function: Timer初始�?
 INPUT	: none
 OUTPUT	: none
 NOTE	:
@@ -158,7 +158,7 @@ void fun_TimerInit(void)
 }
 
 /********************************************************************
-Function: MCU上電初始化
+Function: MCU上電初始�?
 INPUT	:
 OUTPUT	:
 NOTE	:
@@ -179,7 +179,7 @@ void fun_PowerOnSysInit(void)
 	//WDT
 	SETWDTTIME_125MS();
 	//LVR
-	SETLVR_2_1V();//����ִ��??LVR �������߻����ʱ�Զ����ܹر�??
+	SETLVR_2_1V();//����ִ��??LVR �������߻����ʱ�Զ����ܹر�??
 	//LVD
 //	SETLVD_LVDIN();
 //	SETLVD_ENABLE();
@@ -204,22 +204,22 @@ NOTE	:
 void fun_PrepareToHalt()
 {
 
-	//�P�] timer
+	//�P�] timer
 	_t0on = 0;
 	_t1on = 0;
 	_t2on = 0;
-	// �P�]�Д�
+	// �P�]�Д�
 	_emi = 0;
 	SETTIMEBASE_OFF();
 //	_tbon = 1;
-	SETWDTTIME_1000MS();// 1S����
+	SETWDTTIME_1000MS();// 1S����
 }
 
 /********************************************************************
-Function: 用户设定初始化.
+Function: 用户设定初始�?
 INPUT	:
 OUTPUT	:
-NOTE	:初始化一些变量,打开中断等.
+NOTE	:初始化一些变�?打开中断�?
 ********************************************************************/
 #define EEPROM_ADDR_START 			0x01		// EEPROM 存儲開始位置
 #define EEPROM_DATA_CALID_CODE 		0xAA // 校準成功標誌數據,偵測到此數據,認為校準成功
@@ -228,7 +228,7 @@ void user_init(void)
 {
 	Set_AllLEDBuffer(0);
 	Set_DisplayMode(DISPLAY_ALLOFF);
-	gu8_weigh_targeunit = UNIT_KG;
+	gu8_weigh_targeunit = UNIT_LB;
 	set_overtime2poweroff(C_TIME_10S);
 
 	flag_led_Byte = 0x00;
@@ -251,25 +251,25 @@ void user_init(void)
     gu8_worktasks = TASK_STARTUP;
 
 
-	//中断:定时和显示扫描.
+	//中断:定时和显示扫�?
 	_t0on  = 1;
 	SETCTMA_ISR_ENABLE();
 	_emi = 1;
 }
 
-//@------------???��?0???????-------------@
+//@------------???��?0???????-------------@
 #if 0
 DEFINE_ISR(INT0_ISR, INT0_VECTOR)
 {
 
 }
-//@------------???��?0???????-------------@
+//@------------???��?0???????-------------@
 DEFINE_ISR(INT1_ISR, INT1_VECTOR)
 {
 	//gbv_Data_Recive_flag = 1;
 }
 #endif
-//@-------MuFunction0 ?��????????-----------@
+//@-------MuFunction0 ?��????????-----------@
 //TM0
 DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 {
@@ -294,10 +294,10 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 				}
 			}
 
-			/* 串口发送周期计数 */
+			/* 串口发送周期计�?*/
 			if(C_TIMEING_CYCLE100MS >= gu8v_UartTxCycle) gu8v_UartTxCycle++;
 
-			/* 串口接收超时检测 */
+			/* 串口接收超时检�?*/
 			if(!gbv_UartRxSuccess && fg_uart_rec_start){
 				if(gu8v_TBRxTimeOutCnt){
 					gu8v_TBRxTimeOutCnt--;
@@ -323,7 +323,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 						gu8v_time_dalay = 0;
 						if(gu8v_howtimes){
 							fg_led_flash = !fg_led_flash;//控制LED一亮一灭闪.
-							//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪烁
+							//fg_led_change:可以用来控制闪烁时体脂与体重的轮流闪�?
 							//注意:最好在fg_led_flash=1即LED处于熄灭状态下切换.
 							if(fg_led_flash){
 								fg_led_change = !fg_led_change;
@@ -338,7 +338,7 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 					}
 				}
 			}else{
-				/*执行闪烁完成后开始计时定时关机*/
+				/*执行闪烁完成后开始计时定时关机.*/
 				if(gu8v_timed_shutdown){
 					gu8v_timed_shutdown--;
 					fg_time_10s = 0;
@@ -429,12 +429,12 @@ DEFINE_ISR(MuFunction0_ISR, MuFunction0_VECTOR)
 		LEDSEG = LOW;
 	}
 }
-//@------------ADC ?��????????--------------@
+//@------------ADC ?��????????--------------@
 //DEFINE_ISR(ADC_ISR, ADC_VECTOR)
 //{
 //
 //}
-//@----------Timebase0 ?��????????----------@
+//@----------Timebase0 ?��????????----------@
 #if 0
 DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 {
@@ -443,7 +443,7 @@ DEFINE_ISR(Timebase0_ISR, Timebase0_VECTOR)
 //	gu16v_Test_OutTime++;
 //	gbv_8ms_Using_Key_Scan = 1;
 }
-//@----------Timebase1 ?��????????----------@
+//@----------Timebase1 ?��????????----------@
 DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 {
 /*	gu8v_HaltTime++;*/
@@ -451,7 +451,7 @@ DEFINE_ISR(Timebase1_ISR, Timebase1_VECTOR)
 
 }
 #endif
-//@-------MuFunction1 ?��????????----------@
+//@-------MuFunction1 ?��????????----------@
 // LVD&EEPROM&UART&SIM
 #if 0
 DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
@@ -464,7 +464,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// 帧错�?
+	// 帧错�?
 	if (_ferr)
 	{
 		_acc = _usr;
@@ -478,7 +478,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 		_acc = _txrrxr;
 		lu8v_RxBufoffset = 0;
 	}
-	// 发送数�?
+	// 发送数�?
 	if (_txif && gbv_IsBusyUartTx)
 	{
 		if (lu8v_TxBufoffset < lu8v_TxBufLength)
@@ -497,7 +497,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 
 
 	_uif = 0;
-	// ��������
+	// ��������
 	if (_rxif)
 	{
 		_rxif = 0;
@@ -554,7 +554,7 @@ DEFINE_ISR(MuFunction1_ISR, MuFunction1_VECTOR)
 }
 #endif
 #if 0
-//@-------MuFunction2 ?��????????----------@
+//@-------MuFunction2 ?��????????----------@
 // I2C &TM1
 DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
 {
@@ -562,7 +562,7 @@ DEFINE_ISR(MuFunction2_ISP, MuFunction2_VECTOR)
 	_t1af=0;
 	_mf2f=0;
 }
-//@-------MuFunction3 ?��????????----------@
+//@-------MuFunction3 ?��????????----------@
 // TM2
 DEFINE_ISR(MuFunction3_ISP, MuFunction3_VECTOR)
 {
